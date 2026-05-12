@@ -38,69 +38,7 @@ of India using Artificial Intelligence and modern web technology.
 ## 🚀 How to Run
 
 ### 1. Clone the repository
+
 ```bash
-git clone https://github.com/yourusername/banjara-platform.git
+git clone https://github.com/santoshpl2005/banjara-platform.git
 cd banjara-platform
-```
-
-### 2. Create virtual environment
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Setup database
-- Install MySQL
-- Create database: `banjara_db`
-- Run the SQL from `database_setup.sql`
-
-### 5. Configure settings
-```bash
-copy config_example.py config.py
-# Edit config.py with your MySQL password
-```
-
-### 6. Run the application
-```bash
-python app.py
-```
-
-Open browser: **http://127.0.0.1:5000**
-
-## 🔐 Admin Panel
-
-URL: `http://127.0.0.1:5000/admin`
-- Username: `admin`
-- Password: `admin123`
-
-## 📱 Mobile Access
-
-Run the app and open on phone:
-`http://YOUR_COMPUTER_IP:5000`
-
-## 🗄️ Database Tables
-
-- `users` — User accounts
-- `admins` — Admin login
-- `cultural_content` — Culture articles
-- `temples` — Temple information
-- `media` — Images, audio, video
-- `user_queries` — AI chat log
-- `quiz_questions` — Quiz questions
-- `password_resets` — Password reset tokens
-
-## 📋 Project Information
-
-- **Community:** Banjara (Lambani) of India
-- **Language:** English + Kannada (ಕನ್ನಡ)
-- **Duration:** 2 Months
-- **Type:** Full-Stack Web Application
-
-## 🙏 Jai Sevalal!
-
-*Preserving Banjara Heritage Through Technology*
