@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Banjara Quiz</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#fef9f0}
+    nav{background:#8B1A1A;padding:14px 30px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+    nav .logo{color:#ffd700;font-size:17px;font-weight:bold;margin-right:auto}
+    nav a{color:white;text-decoration:none;font-size:14px;font-weight:bold}
+    nav a:hover{color:#ffd700}
+    .lang-bar{background:#7B0F0F;padding:8px 30px;display:flex;justify-content:flex-end;gap:10px;align-items:center}
+    .lang-bar span{color:rgba(255,255,255,.7);font-size:13px}
+    .lbtn{padding:5px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.5);background:transparent;color:white;font-size:12px;cursor:pointer;font-weight:bold}
+    .lbtn.active{background:#ffd700;color:#8B1A1A;border-color:#ffd700}
+    .page-title{text-align:center;padding:40px 20px;background:linear-gradient(135deg,#6B0F0F,#8B1A1A);color:white}
+    .page-title h1{font-size:28px;margin-bottom:8px}
+    .en{display:inline}.kn{display:none}
+
+    /* Category Buttons */
+    .cat-bar{display:flex;justify-content:center;gap:10px;padding:20px;flex-wrap:wrap}
+    .cat-btn{padding:9px 20px;border-radius:30px;border:2px solid #8B1A1A;background:white;color:#8B1A1A;font-size:13px;font-weight:bold;cursor:pointer}
+    .cat-btn.active,.cat-btn:hover{background:#8B1A1A;color:white}
+
+    .quiz-wrap{max-width:680px;margin:0 auto;padding:20px}
+    .qbox{background:white;border-radius:14px;padding:28px;box-shadow:0 4px 18px rgba(0,0,0,.1);margin-bottom:18px}
+    .qnum{color:#8B1A1A;font-size:13px;font-weight:bold;margin-bottom:10px}
+    .qtext{font-size:17px;color:#333;margin-bottom:22px;line-height:1.5}
+    .progress{background:#ddd;border-radius:10px;height:8px;margin-bottom:20px}
+    .progress-bar{background:#8B1A1A;height:8px;border-radius:10px;transition:width .3s}
+    .opts{display:flex;flex-direction:column;gap:11px}
+    .opt{padding:13px 18px;border-radius:8px;border:2px solid #ddd;background:white;font-size:15px;text-align:left;cursor:pointer;transition:all .2s}
+    .opt:hover{border-color:#8B1A1A;background:#fdf0d0}
+    .opt.correct{background:#d4edda;border-color:#28a745;color:#155724}
+    .opt.wrong{background:#f8d7da;border-color:#dc3545;color:#721c24}
+    .score-box{text-align:center;background:white;border-radius:14px;padding:40px;box-shadow:0 4px 18px rgba(0,0,0,.1);display:none}
+    .score-box h2{font-size:26px;color:#8B1A1A;margin-bottom:14px}
+    .score-num{font-size:52px;color:#ffd700;font-weight:bold}
+    .score-box p{color:#555;margin:14px 0;font-size:15px}
+    .restart{background:#8B1A1A;color:white;padding:12px 28px;border:none;border-radius:8px;font-size:15px;cursor:pointer;margin:6px}
+    .fact-box{background:#fff8e8;border-left:4px solid #ffd700;border-radius:0 8px 8px 0;padding:12px 16px;margin-top:12px;font-size:13px;color:#555;display:none}
+    footer{background:#4a0f0f;color:white;text-align:center;padding:22px;font-size:14px}
+    @media(max-width:768px){
+      nav{padding:10px 14px;gap:8px}
+      nav a{font-size:11px}
+      .quiz-wrap{padding:14px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 <span class="en">Home</span><span class="kn">ಮುಖಪುಟ</span></a>
+  <a href="/culture">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></a>
+  <a href="/temples">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></a>
+  <a href="/gallery">🖼️ <span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></a>
+  <a href="/quiz">📝 <span class="en">Quiz</span><span class="kn">ಕ್ವಿಜ್</span></a>
+  <a href="/ai_chat">🤖 AI</a>
+  {% if session.get('user_id') %}
+    <a href="/profile" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px">
+      👤 {{ session.get('user_name','').split()[0] }}
+    </a>
+    <a href="/logout">🚪</a>
+  {% else %}
+    <a href="/login" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px;font-weight:bold">
+      🔑 <span class="en">Login</span><span class="kn">ಲಾಗಿನ್</span>
+    </a>
+    <a href="/register">📝 <span class="en">Register</span><span class="kn">ನೋಂದಣಿ</span></a>
+  {% endif %}
+</nav>
+<div class="lang-bar">
+  <span>🌐 <span class="en">Language</span><span class="kn">ಭಾಷೆ</span>:</span>
+  <button class="lbtn active" onclick="setLang('en',this)">English</button>
+  <button class="lbtn" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+</div>
+
+<div class="page-title">
+  <h1>📝 <span class="en">Banjara Cultural Quiz</span><span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ಕ್ವಿಜ್</span></h1>
+  <p><span class="en">Test your knowledge — choose a category!</span><span class="kn">ನಿಮ್ಮ ಜ್ಞಾನ ಪರೀಕ್ಷಿಸಿ — ವಿಭಾಗ ಆರಿಸಿ!</span></p>
+</div>
+
+<!-- Category Select -->
+<div class="cat-bar">
+  <button class="cat-btn active" onclick="startQuiz('all',this)">🌟 <span class="en">All Topics</span><span class="kn">ಎಲ್ಲ ವಿಷಯ</span></button>
+  <button class="cat-btn" onclick="startQuiz('history',this)">📜 <span class="en">History</span><span class="kn">ಇತಿಹಾಸ</span></button>
+  <button class="cat-btn" onclick="startQuiz('temples',this)">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></button>
+  <button class="cat-btn" onclick="startQuiz('culture',this)">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></button>
+  <button class="cat-btn" onclick="startQuiz('karnataka',this)">🌿 Karnataka</button>
+</div>
+
+<div class="quiz-wrap">
+  <div class="qbox" id="qbox">
+    <div class="progress"><div class="progress-bar" id="pbar" style="width:0%"></div></div>
+    <div class="qnum" id="qnum">Question 1</div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fact-box" id="fact-box"></div>
+  </div>
+  <div class="score-box" id="score-box">
+    <h2>🎉 <span class="en">Quiz Complete!</span><span class="kn">ಕ್ವಿಜ್ ಪೂರ್ಣ!</span></h2>
+    <div class="score-num" id="score-num"></div>
+    <p id="score-msg"></p>
+    <button class="restart" onclick="startQuiz(currentCat,null)">🔄 <span class="en">Try Again</span><span class="kn">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</span></button>
+    <button class="restart" onclick="startQuiz('all',null)" style="background:#555">🌟 <span class="en">All Topics</span><span class="kn">ಎಲ್ಲ ವಿಷಯ</span></button>
+  </div>
+</div>
+
+<footer>🌿 <span class="en">Banjara Cultural Platform</span><span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ವೇದಿಕೆ</span></footer>
+
+<script>
+const allQ = [
+  // History
+  {c:'history',q:'Where did the Banjara community originally come from?',opts:['Gujarat','Punjab','Mewar, Rajasthan','Tamil Nadu'],a:2,fact:'Banjaras trace roots to Mewar region of Rajasthan and identify as Rajput descendants.',qkn:'ಬಂಜಾರ ಸಮುದಾಯ ಮೂಲತಃ ಎಲ್ಲಿಂದ ಬಂದಿತು?',okn:['ಗುಜರಾತ್','ಪಂಜಾಬ್','ಮೇವಾರ, ರಾಜಸ್ಥಾನ','ತಮಿಳ್ನಾಡು'],fkn:'ಬಂಜಾರರು ರಾಜಸ್ಥಾನದ ಮೇವಾರ ಪ್ರದೇಶದಿಂದ ರಾಜಪುತ್ ವಂಶಸ್ಥರು.'},
+  {c:'history',q:'Which British Act of 1871 unfairly branded Banjaras as criminals?',opts:['Forest Rights Act','Criminal Tribes Act','Land Acquisition Act','Trade Restriction Act'],a:1,fact:'The Criminal Tribes Act 1871 unfairly stigmatized Banjaras, forcing them from trade to agriculture.',qkn:'1871ರ ಯಾವ ಕಾಯ್ದೆ ಬಂಜಾರರನ್ನು ಅನ್ಯಾಯವಾಗಿ ಅಪರಾಧಿಗಳೆಂದು ಕರೆಯಿತು?',okn:['ಅರಣ್ಯ ಹಕ್ಕು ಕಾಯ್ದೆ','ಅಪರಾಧ ಬುಡಕಟ್ಟು ಕಾಯ್ದೆ','ಭೂ ಸ್ವಾಧೀನ ಕಾಯ್ದೆ','ವ್ಯಾಪಾರ ನಿಷೇಧ ಕಾಯ್ದೆ'],fkn:'1871ರ ಅಪರಾಧ ಬುಡಕಟ್ಟು ಕಾಯ್ದೆ ಬಂಜಾರರನ್ನು ವ್ಯಾಪಾರದಿಂದ ಕೃಷಿಗೆ ತಳ್ಳಿತು.'},
+  {c:'history',q:'What were Banjaras historically famous for transporting?',opts:['Silk and cotton','Salt and grain','Gold and silver','Weapons'],a:1,fact:'Banjaras were nomadic salt and grain merchants moving in large Tanda caravans on bullocks.',qkn:'ಬಂಜಾರರು ಐತಿಹಾಸಿಕವಾಗಿ ಯಾವುದನ್ನು ಸಾಗಿಸಲು ಪ್ರಸಿದ್ಧರಾಗಿದ್ದರು?',okn:['ರೇಷ್ಮೆ ಮತ್ತು ಹತ್ತಿ','ಉಪ್ಪು ಮತ್ತು ಧಾನ್ಯ','ಚಿನ್ನ ಮತ್ತು ಬೆಳ್ಳಿ','ಆಯುಧ'],fkn:'ಬಂಜಾರರು ತಾಂಡಾ ಕಾರವಾನ್‌ಗಳಲ್ಲಿ ಉಪ್ಪು ಮತ್ತು ಧಾನ್ಯ ಸಾಗಿಸಿದರು.'},
+  {c:'history',q:'What is the Banjara name for their settlement or village?',opts:['Mohalla','Tanda','Basti','Pura'],a:1,fact:'Tanda is the name for a Banjara settlement. Each Tanda is led by a Naik (headman).',qkn:'ಬಂಜಾರರ ವಸಾಹತು ಅಥವಾ ಗ್ರಾಮವನ್ನು ಏನು ಕರೆಯುತ್ತಾರೆ?',okn:['ಮೊಹಲ್ಲಾ','ತಾಂಡಾ','ಬಸ್ತಿ','ಪುರ'],fkn:'ತಾಂಡಾ ಬಂಜಾರ ವಸಾಹತಿನ ಹೆಸರು. ನಾಯಕ ಮುಖ್ಯಸ್ಥ.'},
+  {c:'history',q:'What does "Gor" mean — the Banjara self-name?',opts:['Traders','Warriors','The People','Nomads'],a:2,fact:'"Gor" is what the Banjara people call themselves, meaning "the people" in Gor-Boli language.',qkn:'"ಗೋರ್" ಎಂದರೇನು — ಬಂಞಾರರ ಸ್ವಯಂ ಹೆಸರು?',okn:['ವ್ಯಾಪಾರಿಗಳು','ಯೋಧರು','ಜನರು','ಅಲೆಮಾರಿಗಳು'],fkn:'"ಗೋರ್" ಎಂದರೆ "ಜನರು" ಎಂದು ಅರ್ಥ.'},
+
+  // Temples
+  {c:'temples',q:'What is the most sacred pilgrimage site of the Banjara community?',opts:['Tirupati','Poharadevi','Varanasi','Shirdi'],a:1,fact:'Poharadevi in Washim Maharashtra is the Samadhi of Sant Sevalal Maharaj — "Kashi of Banjaras".',qkn:'ಬಂಜಾರ ಸಮುದಾಯದ ಅತ್ಯಂತ ಪವಿತ್ರ ಯಾತ್ರಾ ಸ್ಥಳ ಯಾವುದು?',okn:['ತಿರುಪತಿ','ಪೋಹರದೇವಿ','ವಾರಾಣಸಿ','ಶಿರಡಿ'],fkn:'ಪೋಹರದೇವಿ "ಬಂಜಾರರ ಕಾಶಿ" — ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಸಮಾಧಿ ಸ್ಥಳ.'},
+  {c:'temples',q:'Where is the birthplace of Sant Sevalal Maharaj?',opts:['Poharadevi Maharashtra','Suragondankoppa Karnataka','Sevagad Andhra Pradesh','Katenahalli Karnataka'],a:1,fact:'Suragondankoppa in Honnali Taluk, Davanagere district Karnataka is the birthplace of Sevalal Maharaj.',qkn:'ಸಂತ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಜನ್ಮಸ್ಥಳ ಎಲ್ಲಿದೆ?',okn:['ಪೋಹರದೇವಿ ಮಹಾರಾಷ್ಟ್ರ','ಸೂರಗೊಂಡನಕೊಪ್ಪ ಕರ್ನಾಟಕ','ಸೇವಗಡ ಆಂಧ್ರ','ಕಾಟೇನಹಳ್ಳಿ ಕರ್ನಾಟಕ'],fkn:'ದಾವಣಗೆರೆ ಜಿಲ್ಲೆಯ ಹೊನ್ನಾಳಿ ತಾಲ್ಲೂಕಿನ ಸೂರಗೊಂಡನಕೊಪ್ಪ ಜನ್ಮಸ್ಥಳ.'},
+  {c:'temples',q:'Poharadevi is popularly known as?',opts:['Banjara Kailash','Kashi of Banjaras','Banjara Varanasi','Lambani Temple'],a:1,fact:'Poharadevi is called the "Kashi of Banjaras" because it is the most sacred site like Varanasi is for Hindus.',qkn:'ಪೋಹರದೇವಿಯನ್ನು ಜನಪ್ರಿಯವಾಗಿ ಏನು ಕರೆಯಲಾಗುತ್ತದೆ?',okn:['ಬಂಜಾರ ಕೈಲಾಸ','ಬಂಜಾರರ ಕಾಶಿ','ಬಂಜಾರ ವಾರಾಣಸಿ','ಲಂಬಾಣಿ ದೇವಸ್ಥಾನ'],fkn:'ಪೋಹರದೇವಿಯನ್ನು "ಬಂಜಾರರ ಕಾಶಿ" ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ.'},
+  {c:'temples',q:'Sevalal Maharaj was born on which date?',opts:['15 January 1739','15 February 1739','4 December 1739','15 August 1739'],a:1,fact:'Sant Sevalal Maharaj was born on 15 February 1739 at Suragondankoppa, Davanagere, Karnataka.',qkn:'ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಜನ್ಮ ದಿನಾಂಕ ಯಾವುದು?',okn:['15 ಜನವರಿ 1739','15 ಫೆಬ್ರವರಿ 1739','4 ಡಿಸೆಂಬರ್ 1739','15 ಆಗಸ್ಟ್ 1739'],fkn:'ಸಂತ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರು ಫೆಬ್ರವರಿ 15, 1739ರಂದು ಜನಿಸಿದರು.'},
+  {c:'temples',q:'Which temple is connected to Sevalal Maharaj\'s divine power of Marikamba?',opts:['Tirupati Balaji','Sirsi Marikamba Temple','Tulja Bhavani Temple','Poharadevi Temple'],a:1,fact:'Sirsi Marikamba Temple in Uttara Kannada is connected to Sevalal Maharaj — he possessed Marikamba\'s divine power.',qkn:'ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಮಾರಿಕಾಂಬ ದೈವ ಶಕ್ತಿಗೆ ಸಂಬಂಧಿತ ದೇವಸ್ಥಾನ ಯಾವುದು?',okn:['ತಿರುಪತಿ ಬಾಲಾಜಿ','ಸಿರಸಿ ಮಾರಿಕಾಂಬ','ತುಳಜಾ ಭವಾನಿ','ಪೋಹರದೇವಿ'],fkn:'ಸಿರಸಿ ಮಾರಿಕಾಂಬ ದೇವಸ್ಥಾನ ಸೇವಾಲಾಲ್‌ರ ದೈವ ಶಕ್ತಿಗೆ ಸಂಬಂಧಿತ.'},
+  {c:'temples',q:'The Moolasthala of Sitasati Dakuraj is located at?',opts:['Dodda Ennegere Tumakuru','Katenahalli Haveri','Dasarahalli Tanda Vijayanagara','Suragondankoppa Davanagere'],a:1,fact:'Katenahalli village in Byadagi Taluk, Haveri district Karnataka is the Moolasthala of Sitasati Dakuraj.',qkn:'ಸೀತಾಸತಿ ಡಾಕುರಾಜರ ಮೂಲಸ್ಥಳ ಎಲ್ಲಿದೆ?',okn:['ದೊಡ್ಡ ಎಣ್ಣೆಗೆರೆ','ಕಾಟೇನಹಳ್ಳಿ ಹಾವೇರಿ','ದಾಸರಹಳ್ಳಿ ತಾಂಡ','ಸೂರಗೊಂಡನಕೊಪ್ಪ'],fkn:'ಕಾಟೇನಹಳ್ಳಿ ಗ್ರಾಮ, ಬೈದಗಿ ತಾಲ್ಲೂಕು, ಹಾವೇರಿ ಜಿಲ್ಲೆ — ಸೀತಾಸತಿ ಡಾಕುರಾಜ ಮೂಲಸ್ಥಳ.'},
+
+  // Culture
+  {c:'culture',q:'What language do Banjara people speak?',opts:['Marathi','Hindi','Gor Boli (Lambadi)','Telugu'],a:2,fact:'Gor Boli (Lambadi) is an Indo-Aryan language — a blend of Marwari, Gujarati, Hindi and Marathi.',qkn:'ಬಂಜಾರ ಜನರು ಯಾವ ಭಾಷೆ ಮಾತಾಡುತ್ತಾರೆ?',okn:['ಮರಾಠಿ','ಹಿಂದಿ','ಗೋರ್ ಬೋಲಿ (ಲಂಬಾಡಿ)','ತೆಲುಗು'],fkn:'ಗೋರ್ ಬೋಲಿ (ಲಂಬಾಡಿ) ಮಾರವಾಡಿ, ಗುಜರಾತಿ, ಹಿಂದಿ ಮತ್ತು ಮರಾಠಿಯ ಮಿಶ್ರಣ.'},
+  {c:'culture',q:'What are the traditional ivory bangles worn by Banjara women called?',opts:['Churma','Baliya','Kolda','Bhuria'],a:1,fact:'Baliya are ivory or bone bangles worn from the wrist to the shoulder — a symbol of marital status.',qkn:'ಬಂಜಾರ ಮಹಿಳೆಯರ ಸಾಂಪ್ರದಾಯಿಕ ದಂತ ಬಳೆಯನ್ನು ಏನೆನ್ನುತ್ತಾರೆ?',okn:['ಚೂರ್ಮ','ಬಾಲಿಯಾ','ಕೋಲ್ಡಾ','ಭೂರಿಯಾ'],fkn:'ಬಾಲಿಯಾ ದಂತ ಬಳೆ ಮಣಿಕಟ್ಟಿನಿಂದ ಭುಜದವರೆಗೆ — ಮದುವೆ ಸಂಕೇತ.'},
+  {c:'culture',q:'What is the main staple food of the Banjara community?',opts:['Rice','Wheat Roti','Bajra Roti','Maize'],a:2,fact:'Bajra Roti (pearl millet flatbread) is the main staple food — nutritious and suited for nomadic lifestyle.',qkn:'ಬಂಜಾರ ಸಮುದಾಯದ ಮುಖ್ಯ ಆಹಾರ ಯಾವುದು?',okn:['ಅಕ್ಕಿ','ಗೋಧಿ ರೊಟ್ಟಿ','ಬಜ್ರಾ ರೊಟ್ಟಿ','ಮೆಕ್ಕೆಜೋಳ'],fkn:'ಬಜ್ರಾ ರೊಟ್ಟಿ (ಸಜ್ಜೆ ರೊಟ್ಟಿ) ಅಲೆಮಾರಿ ಜೀವನಕ್ಕೆ ಸೂಕ್ತ ಮುಖ್ಯ ಆಹಾರ.'},
+  {c:'culture',q:'What is Banjara marriage ceremony called?',opts:['Vivah','Biyav','Shaadi','Kalyana'],a:1,fact:'Banjara marriage is called Biyav — a multi-day ceremony with Sakhi Puja, Haldi, Phera and community feast.',qkn:'ಬಂಜಾರ ಮದುವೆ ಸಮಾರಂಭವನ್ನು ಏನೆಂದು ಕರೆಯುತ್ತಾರೆ?',okn:['ವಿವಾಹ','ಬಿಯಾವ್','ಶಾದಿ','ಕಲ್ಯಾಣ'],fkn:'ಬಂಜಾರ ಮದುವೆ "ಬಿಯಾವ್" — ಸಖಿ ಪೂಜ, ಅರಿಸಿನ, ಫೇರಾ ಮತ್ತು ಸಮುದಾಯ ಭೋಜನ.'},
+  {c:'culture',q:'What are the Seven ancestral female deities of Banjara called?',opts:['Sapta Devata','Saati Sati','Kul Mata','Graam Devta'],a:1,fact:'Saati Sati (Seven Satis) are 7 ancestral female deities worshipped as stones under Jeenzero or Neem tree.',qkn:'ಬಂಜಾರರ ಏಳು ಪೂರ್ವಜ ಮಹಿಳಾ ದೇವತೆಗಳನ್ನು ಏನೆಂದು ಕರೆಯುತ್ತಾರೆ?',okn:['ಸಪ್ತ ದೇವತೆ','ಸಾತಿ ಸತಿ','ಕುಲ ಮಾತಾ','ಗ್ರಾಮ ದೇವತೆ'],fkn:'ಸಾತಿ ಸತಿ — ಜೀಂಜೆರೊ ಅಥವಾ ಬೇವಿನ ಮರದಡಿ ಕಲ್ಲು ರೂಪದಲ್ಲಿ ಪೂಜಿಸಲಾಗುವ 7 ಸತಿಗಳು.'},
+  {c:'culture',q:'What does the white Jhanda flag in every Tanda represent?',opts:['Victory in war','Sevalal Maharaj\'s presence','Harvest season','Founding of the Tanda'],a:1,fact:'White Jhanda (flag) in every Tanda represents Sant Sevalal Maharaj\'s blessing and presence over the community.',qkn:'ಪ್ರತಿ ತಾಂಡಾದ ಬಿಳಿ ಝಂಡಾ ಧ್ವಜ ಏನನ್ನು ಪ್ರತಿನಿಧಿಸುತ್ತದೆ?',okn:['ಯುದ್ಧ ವಿಜಯ','ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಉಪಸ್ಥಿತಿ','ಕೊಯ್ಲು ಋತು','ತಾಂಡಾ ಸ್ಥಾಪನೆ'],fkn:'ಬಿಳಿ ಝಂಡಾ ಧ್ವಜ ಸಂತ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಆಶೀರ್ವಾದ ಮತ್ತು ಉಪಸ್ಥಿತಿಯ ಸಂಕೇತ.'},
+
+  // Karnataka
+  {c:'karnataka',q:'What is the name for Banjara community in Karnataka?',opts:['Banjara','Lambani','Gor','Vanjara'],a:1,fact:'In Karnataka the Banjara community is called Lambani or Lamani. They are a major Scheduled Tribe.',qkn:'ಕರ್ನಾಟಕದಲ್ಲಿ ಬಂಜಾರ ಸಮುದಾಯವನ್ನು ಏನೆಂದು ಕರೆಯುತ್ತಾರೆ?',okn:['ಬಂಜಾರ','ಲಂಬಾಣಿ','ಗೋರ್','ವಂಜಾರ'],fkn:'ಕರ್ನಾಟಕದಲ್ಲಿ ಲಂಬಾಣಿ ಅಥವಾ ಲಮಾಣಿ ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ.'},
+  {c:'karnataka',q:'Which Karnataka district is famous for Sandur Lambani embroidery?',opts:['Mysuru','Mangaluru','Bellary (Ballari)','Bengaluru'],a:2,fact:'Bellary (Ballari) district especially Sandur is the world-famous center of Lambani GI embroidery.',qkn:'ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿಗೆ ಪ್ರಸಿದ್ಧ ಕರ್ನಾಟಕ ಜಿಲ್ಲೆ ಯಾವುದು?',okn:['ಮೈಸೂರು','ಮಂಗಳೂರು','ಬಳ್ಳಾರಿ','ಬೆಂಗಳೂರು'],fkn:'ಬಳ್ಳಾರಿ ಜಿಲ್ಲೆ, ವಿಶೇಷವಾಗಿ ಸಂದೂರ್ GI ಲಂಬಾಣಿ ಕಸೂತಿ ಕೇಂದ್ರ.'},
+  {c:'karnataka',q:'The Sandur Lambani embroidery has received which special recognition?',opts:['UNESCO Heritage','GI (Geographical Indication) Status','National Award','Padma Award'],a:1,fact:'Sandur Lambani embroidery received GI (Geographical Indication) status — protecting it as a unique cultural art.',qkn:'ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿಗೆ ಯಾವ ವಿಶೇಷ ಮಾನ್ಯತೆ ದೊರೆತಿದೆ?',okn:['UNESCO ಪರಂಪರೆ','GI (ಭೌಗೋಳಿಕ ಸೂಚ್ಯಂಕ) ಸ್ಥಾನಮಾನ','ರಾಷ್ಟ್ರೀಯ ಪ್ರಶಸ್ತಿ','ಪದ್ಮ ಪ್ರಶಸ್ತಿ'],fkn:'ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿಗೆ GI (ಭೌಗೋಳಿಕ ಸೂಚ್ಯಂಕ) ಟ್ಯಾಗ್ ದೊರೆತಿದೆ.'},
+  {c:'karnataka',q:'Which Karnataka dance is performed by Lambani community during harvest?',opts:['Yakshagana','Suggi Dance','Bharatanatyam','Kamsale'],a:1,fact:'Suggi Dance is performed by Karnataka Lambani community during harvest season celebrating good crops.',qkn:'ಕೊಯ್ಲು ಸಮಯದಲ್ಲಿ ಲಂಬಾಣಿ ಸಮುದಾಯ ಯಾವ ನೃತ್ಯ ಮಾಡುತ್ತಾರೆ?',okn:['ಯಕ್ಷಗಾನ','ಸುಗ್ಗಿ ನೃತ್ಯ','ಭರತನಾಟ್ಯ','ಕಂಸಾಳೆ'],fkn:'ಸುಗ್ಗಿ ನೃತ್ಯ ಕೊಯ್ಲು ಋತುವಿನಲ್ಲಿ ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಸಮುದಾಯ ಆಡುವ ನೃತ್ಯ.'},
+  {c:'karnataka',q:'Sevalal Maharaj was born in which taluk of Karnataka?',opts:['Haveri Taluk','Bellary Taluk','Honnali Taluk Davanagere','Koppal Taluk'],a:2,fact:'Sevalal Maharaj was born at Suragondankoppa in Honnali Taluk, Davanagere District, Karnataka.',qkn:'ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರು ಕರ್ನಾಟಕದ ಯಾವ ತಾಲ್ಲೂಕಿನಲ್ಲಿ ಜನಿಸಿದರು?',okn:['ಹಾವೇರಿ ತಾಲ್ಲೂಕು','ಬಳ್ಳಾರಿ ತಾಲ್ಲೂಕು','ಹೊನ್ನಾಳಿ ತಾಲ್ಲೂಕು ದಾವಣಗೆರೆ','ಕೊಪ್ಪಳ ತಾಲ್ಲೂಕು'],fkn:'ದಾವಣಗೆರೆ ಜಿಲ್ಲೆಯ ಹೊನ್ನಾಳಿ ತಾಲ್ಲೂಕಿನ ಸೂರಗೊಂಡನಕೊಪ್ಪ.'},
+];
+
+let questions=[], current=0, score=0, currentCat='all', currentLang='en';
+
+function setLang(lang,btn){
+  currentLang=lang;
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.en').forEach(e=>e.style.display=lang==='en'?'inline':'none');
+  document.querySelectorAll('.kn').forEach(e=>e.style.display=lang==='kn'?'inline':'none');
+  if(questions.length>0 && current<questions.length) showQuestion();
+}
+
+function startQuiz(cat,btn){
+  currentCat=cat;
+  if(btn){document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  let pool = cat==='all' ? allQ : allQ.filter(q=>q.c===cat);
+  // Shuffle and pick 10
+  pool=[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(12,pool.length));
+  questions=pool; current=0; score=0;
+  document.getElementById('qbox').style.display='block';
+  document.getElementById('score-box').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=questions[current];
+  const lang=currentLang;
+  document.getElementById('qnum').textContent=`Question ${current+1} of ${questions.length}`;
+  document.getElementById('qtext').textContent=lang==='kn'&&q.qkn ? q.qkn : q.q;
+  document.getElementById('pbar').style.width=((current/questions.length)*100)+'%';
+  document.getElementById('fact-box').style.display='none';
+  const opts=document.getElementById('opts');
+  opts.innerHTML='';
+  const optsArr = lang==='kn'&&q.okn ? q.okn : q.opts;
+  optsArr.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt'; btn.textContent=o;
+    btn.onclick=()=>selectAns(i,btn);
+    opts.appendChild(btn);
+  });
+}
+
+function selectAns(idx,btn){
+  const q=questions[current];
+  const lang=currentLang;
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=null);
+  const allOpts=document.querySelectorAll('.opt');
+  if(idx===q.a){btn.classList.add('correct');score++;}
+  else{btn.classList.add('wrong');allOpts[q.a].classList.add('correct');}
+  const fb=document.getElementById('fact-box');
+  fb.textContent='💡 '+(lang==='kn'&&q.fkn?q.fkn:q.fact);
+  fb.style.display='block';
+  setTimeout(()=>{current++;current<questions.length?showQuestion():showScore();},1800);
+}
+
+function showScore(){
+  document.getElementById('qbox').style.display='none';
+  document.getElementById('score-box').style.display='block';
+  document.getElementById('score-num').textContent=score+'/'+questions.length;
+  const pct=score/questions.length;
+  const msgs={en:['Keep learning about Banjara culture! 📚','Good effort! Try again! 💪','Well done! 🌟','Excellent! You know Banjara culture very well! 🏆'],
+              kn:['ಬಂಜಾರ ಸಂಸ್ಕೃತಿ ಕಲಿಯುತ್ತಾ ಇರಿ! 📚','ಒಳ್ಳೆಯ ಪ್ರಯತ್ನ! 💪','ಶಾಬ್ಬಾಸ್! 🌟','ಅದ್ಭುತ! ಬಂಜಾರ ಸಂಸ್ಕೃತಿ ಚೆನ್ನಾಗಿ ತಿಳಿದಿದೆ! 🏆']};
+  const arr=currentLang==='kn'?msgs.kn:msgs.en;
+  const msg=pct<.4?arr[0]:pct<.6?arr[1]:pct<.8?arr[2]:arr[3];
+  document.getElementById('score-msg').textContent=msg;
+}
+
+startQuiz('all',null);
+</script>
+</body>
+</html>

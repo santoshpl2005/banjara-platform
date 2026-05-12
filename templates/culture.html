@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Banjara Culture</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#fef9f0}
+    nav{background:#8B1A1A;padding:14px 30px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+    nav .logo{color:#ffd700;font-size:17px;font-weight:bold;margin-right:auto}
+    nav a{color:white;text-decoration:none;font-size:14px;font-weight:bold}
+    nav a:hover{color:#ffd700}
+    .page-title{text-align:center;padding:46px 20px;background:linear-gradient(135deg,#6B0F0F,#8B1A1A);color:white}
+    .page-title h1{font-size:30px;margin-bottom:8px}
+    .page-title p{font-size:15px;opacity:.85}
+
+    /* Language Bar */
+    .lang-bar{background:#7B0F0F;padding:8px 30px;display:flex;justify-content:flex-end;gap:10px;align-items:center}
+    .lang-bar span{color:rgba(255,255,255,.7);font-size:13px}
+    .lbtn{padding:5px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.5);background:transparent;color:white;font-size:12px;cursor:pointer;font-weight:bold}
+    .lbtn.active{background:#ffd700;color:#8B1A1A;border-color:#ffd700}
+
+    /* Search */
+    .search-bar{padding:18px 30px;background:white;border-bottom:1px solid #eee;display:flex;justify-content:center}
+    .search-wrap{display:flex;width:100%;max-width:600px;gap:10px}
+    .search-wrap input{flex:1;padding:12px 18px;border:2px solid #8B1A1A;border-radius:30px;font-size:15px;outline:none}
+    .search-wrap button{background:#8B1A1A;color:white;border:none;padding:12px 24px;border-radius:30px;font-size:14px;cursor:pointer;font-weight:bold}
+    #search-results{max-width:900px;margin:0 auto;padding:0 30px}
+    .src-card{background:white;border-radius:10px;padding:14px 18px;margin:8px 0;box-shadow:0 2px 10px rgba(0,0,0,.08);border-left:4px solid #8B1A1A;display:none}
+    .src-card.show{display:block}
+
+    /* Tabs */
+    .tab-bar{display:flex;justify-content:center;gap:8px;padding:20px 14px 0;flex-wrap:wrap;background:#fef9f0}
+    .tab-btn{padding:8px 16px;border-radius:30px;border:2px solid #8B1A1A;background:white;color:#8B1A1A;font-size:12px;font-weight:bold;cursor:pointer}
+    .tab-btn.active,.tab-btn:hover{background:#8B1A1A;color:white}
+
+    .content{padding:26px 28px 60px;max-width:1000px;margin:0 auto}
+    .tab-section{display:none}
+    .tab-section.active{display:block}
+
+    /* Hero banner */
+    .sec-hero{border-radius:16px;padding:26px;color:white;margin-bottom:22px}
+    .sec-hero h2{font-size:21px;margin-bottom:8px}
+    .sec-hero p{font-size:14px;opacity:.9;line-height:1.7}
+
+    /* Cards */
+    .icard{background:white;border-radius:14px;padding:26px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.08);border-top:4px solid #8B1A1A}
+    .icard h3{color:#8B1A1A;font-size:16px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #ffd700}
+    .icard p{color:#444;font-size:14px;line-height:1.9}
+
+    /* Highlight */
+    .hl{background:#fff8e8;border-left:4px solid #ffd700;border-radius:0 8px 8px 0;padding:12px 16px;margin:12px 0;font-size:13px;color:#555;line-height:1.7}
+    .hl strong{color:#8B1A1A}
+
+    /* Grid */
+    .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:14px 0}
+    .dbox{background:#fef9f0;border-radius:10px;padding:14px;border:1px solid #f0d9a0;text-align:center}
+    .dbox .di{font-size:30px;margin-bottom:6px}
+    .dbox h4{color:#8B1A1A;font-size:13px;margin-bottom:4px}
+    .dbox p{color:#666;font-size:12px;line-height:1.5}
+
+    /* Tags */
+    .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+    .tag{background:#fde8e8;color:#8B1A1A;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:bold;border:1px solid #f5c6c6}
+
+    /* Timeline */
+    .tl{margin:14px 0}
+    .tli{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+    .tld{width:34px;height:34px;background:#8B1A1A;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ffd700;font-weight:bold;font-size:12px;flex-shrink:0;margin-top:2px}
+    .tlb h4{color:#8B1A1A;font-size:14px;margin-bottom:3px}
+    .tlb p{color:#555;font-size:13px;line-height:1.6}
+
+    /* Food grid */
+    .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:14px 0}
+    .fbox{background:white;border-radius:10px;padding:14px;border:1px solid #f0d9a0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .fbox .fi{font-size:26px;margin-bottom:6px}
+    .fbox h4{color:#8B1A1A;font-size:14px;margin-bottom:4px}
+    .fbox p{color:#666;font-size:12px;line-height:1.6}
+
+    /* Karnataka section */
+    .ka-badge{display:inline-block;background:linear-gradient(135deg,#FF9933,#138808);color:white;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:bold;margin-bottom:10px}
+
+    /* Language toggle content */
+    .en{display:inline}.kn{display:none}
+    .en-block{display:block}.kn-block{display:none}
+
+    footer{background:#4a0f0f;color:white;text-align:center;padding:22px;font-size:14px}
+    @media(max-width:768px){
+      nav{padding:10px 14px;gap:8px}
+      nav a{font-size:11px}
+      .content{padding:14px 12px 40px}
+      .dgrid,.fgrid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 <span class="en">Home</span><span class="kn">ಮುಖಪುಟ</span></a>
+  <a href="/culture">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></a>
+  <a href="/temples">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></a>
+  <a href="/gallery">🖼️ <span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></a>
+  <a href="/quiz">📝 <span class="en">Quiz</span><span class="kn">ಕ್ವಿಜ್</span></a>
+  <a href="/ai_chat">🤖 AI</a>
+  {% if session.get('user_id') %}
+    <a href="/profile" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px">
+      👤 {{ session.get('user_name','').split()[0] }}
+    </a>
+    <a href="/logout">🚪</a>
+  {% else %}
+    <a href="/login" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px;font-weight:bold">
+      🔑 <span class="en">Login</span><span class="kn">ಲಾಗಿನ್</span>
+    </a>
+    <a href="/register">📝 <span class="en">Register</span><span class="kn">ನೋಂದಣಿ</span></a>
+  {% endif %}
+</nav>
+
+<div class="lang-bar">
+  <span>🌐 <span class="en">Language</span><span class="kn">ಭಾಷೆ</span>:</span>
+  <button class="lbtn active" onclick="setLang('en',this)">English</button>
+  <button class="lbtn" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+</div>
+
+<div class="page-title">
+  <h1>🎭 <span class="en">Banjara Culture & Heritage</span><span class="kn">ಬಂಜಾರ ಸಂಸ್ಕೃತಿ & ಪರಂಪರೆ</span></h1>
+  <p><span class="en">Explore traditions, history, art and lifestyle including Karnataka Lambani culture</span><span class="kn">ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಸಂಸ್ಕೃತಿ ಸೇರಿದಂತೆ ಸಂಪ್ರದಾಯ, ಕಲೆ ಮತ್ತು ಜೀವನಶೈಲಿ ಅನ್ವೇಷಿಸಿ</span></p>
+</div>
+
+<!-- Search -->
+<div class="search-bar">
+  <div class="search-wrap">
+    <input type="text" id="csearch"
+      placeholder="Search culture topics..."
+      oninput="searchCulture()">
+    <button onclick="searchCulture()">
+      <span class="en">Search</span><span class="kn">ಹುಡುಕು</span>
+    </button>
+  </div>
+</div>
+<div id="search-results"></div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('history',this)">📜 <span class="en">The Journey</span><span class="kn">ಇತಿಹಾಸ</span></button>
+  <button class="tab-btn" onclick="showTab('karnataka',this)">🌿 <span class="en">Karnataka</span><span class="kn">ಕರ್ನಾಟಕ</span></button>
+  <button class="tab-btn" onclick="showTab('dress',this)">👗 <span class="en">Dress & Art</span><span class="kn">ಉಡುಗೆ & ಕಲೆ</span></button>
+  <button class="tab-btn" onclick="showTab('marriage',this)">💒 <span class="en">Marriage</span><span class="kn">ಮದುವೆ</span></button>
+  <button class="tab-btn" onclick="showTab('faith',this)">🕉️ <span class="en">Faith</span><span class="kn">ಆಧ್ಯಾತ್ಮ</span></button>
+  <button class="tab-btn" onclick="showTab('festivals',this)">🎉 <span class="en">Festivals</span><span class="kn">ಹಬ್ಬಗಳು</span></button>
+  <button class="tab-btn" onclick="showTab('food',this)">🥘 <span class="en">Food</span><span class="kn">ಆಹಾರ</span></button>
+  <button class="tab-btn" onclick="showTab('language',this)">🗣️ <span class="en">Gor Boli</span><span class="kn">ಗೋರ್ ಬೋಲಿ</span></button>
+ <button class="tab-btn" onclick="showTab('districts',this)">🗺️ <span class="en">Karnataka Districts</span><span class="kn">ಕರ್ನಾಟಕ ಜಿಲ್ಲೆ</span></button>
+<button class="tab-btn" onclick="showTab('goroboli',this)">📖 <span class="en">Gor Boli Words</span><span class="kn">ಗೋರ್ ಬೋಲಿ ಪದಗಳು</span></button> 
+</div>
+
+<div class="content">
+
+<!-- ═══ HISTORY ═══ -->
+<div id="tab-history" class="tab-section active">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#8B1A1A,#c0392b)">
+    <h2>📜 <span class="en">The Journey — History & Origins</span><span class="kn">ಇತಿಹಾಸ & ಮೂಲ</span></h2>
+    <p><span class="en">The Banjaras — "Gypsies of India" — trace roots to Mewar, Rajasthan as Rajput descendants.</span><span class="kn">ಬಂಜಾರರು — "ಭಾರತದ ಜಿಪ್ಸಿಗಳು" — ರಾಜಸ್ಥಾನದ ಮೇವಾರದ ರಾಜಪುತ್ ವಂಶಸ್ಥರು.</span></p>
+  </div>
+  <div class="icard">
+    <h3>🏰 <span class="en">Ancestry & Origins</span><span class="kn">ವಂಶ & ಮೂಲ</span></h3>
+    <p><span class="en">The Banjara community traces roots to <strong>Mewar, Rajasthan</strong>. They are descendants of <strong>Rajput clans</strong> — Chauhan, Rathod, Pawar, and Vadtya. Known as Lambani in Karnataka, Lamani in Andhra Pradesh, and Gor among themselves.</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px">ಬಂಜಾರ ಸಮುದಾಯ <strong>ರಾಜಸ್ಥಾನದ ಮೇವಾರ</strong>ದಲ್ಲಿ ಮೂಲ ಹೊಂದಿದೆ. ರಾಜಪುತ್ ವಂಶಸ್ಥರು — ಚೌಹಾಣ, ರಾಠೋಡ್, ಪವಾರ್, ವಡ್ತ್ಯ. ಕರ್ನಾಟಕದಲ್ಲಿ <strong>ಲಂಬಾಣಿ</strong>, ಆಂಧ್ರದಲ್ಲಿ ಲಮಾಣಿ ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ.</p>
+    <div class="hl"><strong class="en">🌍 Names:</strong><strong class="kn">🌍 ಹೆಸರುಗಳು:</strong> <span class="en">Banjara (Maharashtra/North India) • Lambani (Karnataka) • Lamani (Andhra Pradesh) • Gor (self-name)</span><span class="kn">ಬಂಜಾರ (ಮಹಾರಾಷ್ಟ್ರ) • ಲಂಬಾಣಿ (ಕರ್ನಾಟಕ) • ಲಮಾಣಿ (ಆಂಧ್ರ) • ಗೋರ್ (ಸ್ವಯಂ ಹೆಸರು)</span></div>
+  </div>
+  <div class="icard">
+    <h3>🐂 <span class="en">Nomadic Traders</span><span class="kn">ಅಲೆಮಾರಿ ವ್ಯಾಪಾರಿಗಳು</span></h3>
+    <p><span class="en">Banjaras were nomadic salt and grain merchants moving in <strong>Tanda caravans</strong> on bullocks across India. They supplied Mughal and Maratha armies with essential goods.</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px">ಬಂಜಾರರು <strong>ತಾಂಡಾ ಕಾರವಾನ್</strong>ಗಳಲ್ಲಿ ಭಾರತಾದ್ಯಂತ ಉಪ್ಪು ಮತ್ತು ಧಾನ್ಯ ಸಾಗಿಸುತ್ತಿದ್ದರು. ಮೊಘಲ್ ಮತ್ತು ಮರಾಠ ಸೈನ್ಯಕ್ಕೆ ಅಗತ್ಯ ಸಾಮಗ್ರಿ ಪೂರೈಸಿದರು.</p>
+    <div class="tags">
+      <span class="tag">🐂 <span class="en">Bullock Caravans</span><span class="kn">ಎತ್ತಿನ ಬಂಡಿ</span></span>
+      <span class="tag">🧂 <span class="en">Salt Trade</span><span class="kn">ಉಪ್ಪು ವ್ಯಾಪಾರ</span></span>
+      <span class="tag">🏘️ <span class="en">Tanda System</span><span class="kn">ತಾಂಡಾ ವ್ಯವಸ್ಥೆ</span></span>
+    </div>
+  </div>
+  <div class="icard">
+    <h3>📅 <span class="en">Historical Timeline</span><span class="kn">ಐತಿಹಾಸಿಕ ಕಾಲಮಾಪನ</span></h3>
+    <div class="tl">
+      <div class="tli"><div class="tld">1</div><div class="tlb"><h4><span class="en">Ancient — Rajasthan Origins</span><span class="kn">ಪ್ರಾಚೀನ — ರಾಜಸ್ಥಾನ ಮೂಲ</span></h4><p><span class="en">Lived in Mewar as Rajput descendants, brave traders and warriors</span><span class="kn">ಮೇವಾರದಲ್ಲಿ ರಾಜಪುತ್ ವಂಶಸ್ಥರಾಗಿ ವಾಸ</span></p></div></div>
+      <div class="tli"><div class="tld">2</div><div class="tlb"><h4><span class="en">Medieval — Salt Trade Era</span><span class="kn">ಮಧ್ಯಕಾಲ — ಉಪ್ಪು ವ್ಯಾಪಾರ</span></h4><p><span class="en">Backbone of India's trade network, supplied Maratha forces</span><span class="kn">ಭಾರತದ ವ್ಯಾಪಾರ ಜಾಲದ ಬೆನ್ನೆಲುಬು</span></p></div></div>
+      <div class="tli"><div class="tld">3</div><div class="tlb"><h4><span class="en">1739 — Birth of Sant Sevalal</span><span class="kn">1739 — ಸೇವಾಲಾಲ್ ಜನನ</span></h4><p><span class="en">Born 15 February 1739 at Suragondankoppa, Karnataka</span><span class="kn">ಫೆ. 15, 1739 ಸೂರಗೊಂಡನಕೊಪ್ಪ, ಕರ್ನಾಟಕ</span></p></div></div>
+      <div class="tli"><div class="tld">4</div><div class="tlb"><h4><span class="en">1871 — Criminal Tribes Act</span><span class="kn">1871 — ಅಪರಾಧ ಬುಡಕಟ್ಟು ಕಾಯ್ದೆ</span></h4><p><span class="en">British unfairly branded them, forced shift to agriculture</span><span class="kn">ಬ್ರಿಟಿಷರು ಅನ್ಯಾಯವಾಗಿ ಹಣೆಪಟ್ಟಿ ಕಟ್ಟಿದರು</span></p></div></div>
+      <div class="tli"><div class="tld">5</div><div class="tlb"><h4><span class="en">1952 — Denotification</span><span class="kn">1952 — ಡಿನೋಟಿಫಿಕೇಶನ್</span></h4><p><span class="en">Recognized as Scheduled Tribe after Indian independence</span><span class="kn">ಪರಿಶಿಷ್ಟ ಜನಾಂಗ ಎಂದು ಮಾನ್ಯತೆ</span></p></div></div>
+      <div class="tli"><div class="tld">6</div><div class="tlb"><h4><span class="en">Today — Cultural Revival</span><span class="kn">ಇಂದು — ಸಾಂಸ್ಕೃತಿಕ ಪುನರುಜ್ಜೀವನ</span></h4><p><span class="en">Preserving heritage through art, language and digital platforms</span><span class="kn">ಕಲೆ, ಭಾಷೆ ಮತ್ತು ಡಿಜಿಟಲ್ ವೇದಿಕೆಗಳ ಮೂಲಕ ಸಂರಕ್ಷಣೆ</span></p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KARNATAKA ═══ -->
+<div id="tab-karnataka" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#CC0000,#FF9933)">
+    <h2>🌿 <span class="en">Karnataka Lambani — Banjara in Karnataka</span><span class="kn">ಕರ್ನಾಟಕ ಲಂಬಾಣಿ — ಕರ್ನಾಟಕದಲ್ಲಿ ಬಂಜಾರ</span></h2>
+    <p><span class="en">In Karnataka, Banjaras are called Lambani or Lamani. They are one of the largest tribal communities in the state with a uniquely vibrant culture.</span><span class="kn">ಕರ್ನಾಟಕದಲ್ಲಿ ಬಂಜಾರರನ್ನು ಲಂಬಾಣಿ ಅಥವಾ ಲಮಾಣಿ ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ. ರಾಜ್ಯದ ಅತಿದೊಡ್ಡ ಬುಡಕಟ್ಟು ಸಮುದಾಯಗಳಲ್ಲಿ ಒಂದು.</span></p>
+  </div>
+
+  <div class="icard">
+    <span class="ka-badge">🇮🇳 Karnataka Lambani</span>
+    <h3>📍 <span class="en">Lambani Districts in Karnataka</span><span class="kn">ಕರ್ನಾಟಕದ ಲಂಬಾಣಿ ಜಿಲ್ಲೆಗಳು</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">🏛️</div><h4>Bellary (Ballari)</h4><p><span class="en">Largest Lambani population. Home of Sandur GI embroidery</span><span class="kn">ಅತಿ ಹೆಚ್ಚು ಲಂಬಾಣಿ ಜನಸಂಖ್ಯೆ. ಸಂದೂರ್ GI ಕಸೂತಿ ಕೇಂದ್ರ</span></p></div>
+      <div class="dbox"><div class="di">🌾</div><h4>Koppal</h4><p><span class="en">Strong Lambani culture with traditional Tanda settlements</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ತಾಂಡಾ ನೆಲೆಗಳೊಂದಿಗೆ ಲಂಬಾಣಿ ಸಂಸ್ಕೃತಿ</span></p></div>
+      <div class="dbox"><div class="di">🌿</div><h4>Raichur</h4><p><span class="en">Rich Lambani folk music and dance traditions</span><span class="kn">ಶ್ರೀಮಂತ ಲಂಬಾಣಿ ಜಾನಪದ ಸಂಗೀತ ಮತ್ತು ನೃತ್ಯ</span></p></div>
+      <div class="dbox"><div class="di">🏘️</div><h4>Bidar</h4><p><span class="en">Ancient Lambani settlements with traditional culture</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ಲಂಬಾಣಿ ನೆಲೆಗಳು</span></p></div>
+      <div class="dbox"><div class="di">🌸</div><h4>Kalaburagi</h4><p><span class="en">Important Lambani cultural center in Hyderabad-Karnataka region</span><span class="kn">ಹೈದರಾಬಾದ್-ಕರ್ನಾಟಕ ಪ್ರದೇಶದ ಲಂಬಾಣಿ ಕೇಂದ್ರ</span></p></div>
+      <div class="dbox"><div class="di">🎨</div><h4>Haveri</h4><p><span class="en">Home of Sitasati Dakuraj Kuladevata at Katenahalli</span><span class="kn">ಕಾಟೇನಹಳ್ಳಿಯ ಸೀತಾಸತಿ ಡಾಕುರಾಜ ಕುಲದೇವತೆ ಕೇಂದ್ರ</span></p></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <span class="ka-badge">🧵 GI Status</span>
+    <h3>🧵 <span class="en">Sandur Lambani Embroidery — Karnataka's Pride</span><span class="kn">ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿ — ಕರ್ನಾಟಕದ ಹೆಮ್ಮೆ</span></h3>
+    <p><span class="en">Sandur in Bellary district is the world-famous center of Lambani embroidery. The art uses <strong>Shisha (mirror work)</strong>, shells, coins and colorful threads. This unique art has received <strong>Geographical Indication (GI) status</strong>. It is taught in government schools and exported to Japan, USA and Europe. Women artisan cooperatives support thousands of families.</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px">ಬಳ್ಳಾರಿ ಜಿಲ್ಲೆಯ ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿಯ ವಿಶ್ವಪ್ರಸಿದ್ಧ ಕೇಂದ್ರ. <strong>ಶೀಶ (ಕನ್ನಡಿ ಕೆಲಸ)</strong>, ಚಿಪ್ಪು, ನಾಣ್ಯ ಮತ್ತು ಬಣ್ಣದ ದಾರ ಬಳಸಿ ರಚಿಸಲಾಗುತ್ತದೆ. <strong>ಭೌಗೋಳಿಕ ಸೂಚ್ಯಂಕ (GI) ಟ್ಯಾಗ್</strong> ದೊರೆತಿದೆ. ಜಪಾನ್, ಅಮೆರಿಕ ಮತ್ತು ಯುರೋಪ್‌ಗೆ ರಫ್ತಾಗುತ್ತದೆ.</p>
+    <div class="hl"><strong>🏆 GI Tag:</strong> <span class="en">Sandur Lambani embroidery is a protected cultural art form. It provides livelihood to thousands of Lambani women in Karnataka.</span><span class="kn">ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿ ರಕ್ಷಿತ ಸಾಂಸ್ಕೃತಿಕ ಕಲೆ. ಕರ್ನಾಟಕದ ಸಾವಿರಾರು ಲಂಬಾಣಿ ಮಹಿಳೆಯರಿಗೆ ಜೀವನೋಪಾಯ ನೀಡುತ್ತದೆ.</span></div>
+  </div>
+
+  <div class="icard">
+    <span class="ka-badge">💃 Karnataka Dances</span>
+    <h3>💃 <span class="en">Karnataka Lambani Folk Dances</span><span class="kn">ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಜಾನಪದ ನೃತ್ಯಗಳು</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">🌾</div><h4><span class="en">Suggi Dance</span><span class="kn">ಸುಗ್ಗಿ ನೃತ್ಯ</span></h4><p><span class="en">Harvest festival dance celebrating good crops</span><span class="kn">ಸಮೃದ್ಧ ಬೆಳೆ ಆಚರಿಸುವ ಕೊಯ್ಲು ನೃತ್ಯ</span></p></div>
+      <div class="dbox"><div class="di">🎭</div><h4><span class="en">Phantasi Dance</span><span class="kn">ಫಾಂಟಾಸಿ ನೃತ್ಯ</span></h4><p><span class="en">Festival dance with colorful costumes and mirrors</span><span class="kn">ಬಣ್ಣದ ಉಡುಗೆ ಮತ್ತು ಕನ್ನಡಿಯೊಂದಿಗೆ ಹಬ್ಬದ ನೃತ್ಯ</span></p></div>
+      <div class="dbox"><div class="di">🤸</div><h4><span class="en">Kolata Dance</span><span class="kn">ಕೋಲಾಟ</span></h4><p><span class="en">Stick dance performed in circles during festivals</span><span class="kn">ಹಬ್ಬಗಳಲ್ಲಿ ವೃತ್ತಾಕಾರದಲ್ಲಿ ಕೋಲು ನೃತ್ಯ</span></p></div>
+      <div class="dbox"><div class="di">💃</div><h4><span class="en">Garba Dance</span><span class="kn">ಗರ್ಬಾ ನೃತ್ಯ</span></h4><p><span class="en">9 nights of Navratri dance around decorated Garbha pot</span><span class="kn">ನವರಾತ್ರಿ 9 ರಾತ್ರಿ ಗರ್ಭ ಮಡಕೆ ಸುತ್ತ ನೃತ್ಯ</span></p></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <span class="ka-badge">🛕 Karnataka Sacred Sites</span>
+    <h3>🛕 <span class="en">Important Karnataka Banjara Sacred Sites</span><span class="kn">ಕರ್ನಾಟಕದ ಪ್ರಮುಖ ಬಂಜಾರ ಪವಿತ್ರ ಸ್ಥಳಗಳು</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">🌱</div><h4>Suragondankoppa</h4><p><span class="en">Birthplace of Sant Sevalal Maharaj — Davanagere</span><span class="kn">ಸಂತ ಸೇವಾಲಾಲ್ ಜನ್ಮಸ್ಥಳ — ದಾವಣಗೆರೆ</span></p></div>
+      <div class="dbox"><div class="di">🌺</div><h4>Sirsi Marikamba</h4><p><span class="en">Connected to Sevalal's divine power — Uttara Kannada</span><span class="kn">ಸೇವಾಲಾಲ್ ದೈವ ಶಕ್ತಿಗೆ ಸಂಬಂಧಿತ</span></p></div>
+      <div class="dbox"><div class="di">🔱</div><h4>Katenahalli</h4><p><span class="en">Sitasati Dakuraj Moolasthala — Haveri</span><span class="kn">ಸೀತಾಸತಿ ಡಾಕುರಾಜ ಮೂಲಸ್ಥಳ — ಹಾವೇರಿ</span></p></div>
+      <div class="dbox"><div class="di">✨</div><h4>Dodda Ennegere</h4><p><span class="en">Bhima Sati sacred temple — Tumakuru</span><span class="kn">ಭೀಮಾಸತಿ ಪವಿತ್ರ ದೇವಸ್ಥಾನ — ತುಮಕೂರು</span></p></div>
+      <div class="dbox"><div class="di">🌸</div><h4>Dasarahalli Tanda</h4><p><span class="en">Tokari Banaki Devi — Vijayanagara</span><span class="kn">ಟೋಕರಿ ಬನಕಿ ದೇವಿ — ವಿಜಯನಗರ</span></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DRESS ═══ -->
+<div id="tab-dress" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#6B0F0F,#c0392b)">
+    <h2>👗 <span class="en">Threads of Identity — Dress & Art</span><span class="kn">ಗುರುತಿನ ದಾರಗಳು — ಉಡುಗೆ & ಕಲೆ</span></h2>
+    <p><span class="en">The most recognizable tribal dress in India — symbolizing identity, status, and centuries of artistic tradition.</span><span class="kn">ಭಾರತದ ಅತ್ಯಂತ ಗುರುತಿಸಬಹುದಾದ ಬುಡಕಟ್ಟು ಉಡುಗೆ.</span></p>
+  </div>
+  <div class="icard">
+    <h3>👗 <span class="en">Traditional Clothing</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ಉಡುಗೆ</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">👘</div><h4>Phetiya</h4><p><span class="en">High-waist skirt in red, yellow, blue with embroidery</span><span class="kn">ಕೆಂಪು, ಹಳದಿ ನೀಲಿ ಬಣ್ಣದ ಲಂಗ</span></p></div>
+      <div class="dbox"><div class="di">👚</div><h4>Kanchali</h4><p><span class="en">Embroidered blouse with Shisha mirror work</span><span class="kn">ಕನ್ನಡಿ ಕಸೂತಿಯ ಜಾಕೀಟ್</span></p></div>
+      <div class="dbox"><div class="di">🧣</div><h4>Odhni</h4><p><span class="en">Colorful embroidered headscarf</span><span class="kn">ಬಣ್ಣದ ಕಸೂತಿ ತಲೆ ಬಟ್ಟೆ</span></p>
+    </div>
+      <div class="dbox"><div class="di">👔</div><h4><span class="en">Men's Dress</span><span class="kn">ಪುರುಷರ ಉಡುಗೆ</span></h4><p><span class="en">White dhoti, colorful turban, traditional kurta</span><span class="kn">ಬಿಳಿ ಧೋತಿ, ಬಣ್ಣದ ಪಗಡಿ</span></p></div>
+    </div>
+  </div>
+  <div class="icard">
+    <h3>💍 <span class="en">Jewelry</span><span class="kn">ಆಭರಣ</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">💎</div><h4>Baliya</h4><p><span class="en">Ivory bangles wrist to shoulder — marital symbol</span><span class="kn">ದಂತ ಬಳೆ ಮಣಿಕಟ್ಟಿನಿಂದ ಭುಜದವರೆಗೆ</span></p></div>
+      <div class="dbox"><div class="di">🦶</div><h4>Kolda</h4><p><span class="en">Heavy brass anklets making distinctive sound</span><span class="kn">ಹಿತ್ತಾಳೆ ಕಾಲ್ಗೆಜ್ಜೆ</span></p></div>
+      <div class="dbox"><div class="di">👃</div><h4>Bhuria</h4><p><span class="en">Large silver nose ring</span><span class="kn">ದೊಡ್ಡ ಬೆಳ್ಳಿ ಮೂಗುತಿ</span></p></div>
+      <div class="dbox"><div class="di">🔵</div><h4><span class="en">Tattoos</span><span class="kn">ಹಚ್ಚೆ</span></h4><p><span class="en">Permanent jewelry protecting from evil eye</span><span class="kn">ದೃಷ್ಟಿ ತಡೆಯುವ ಶಾಶ್ವತ ಆಭರಣ</span></p></div>
+    </div>
+    <div class="hl"><strong>🧵 GI Status:</strong> <span class="en">Sandur Lambani embroidery received Geographical Indication status — a protected Indian art form.</span><span class="kn">ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿಗೆ ಭೌಗೋಳಿಕ ಸೂಚ್ಯಂಕ ಸ್ಥಾನಮಾನ ದೊರೆತಿದೆ.</span></div>
+  </div>
+</div>
+
+<!-- ═══ MARRIAGE ═══ -->
+<div id="tab-marriage" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#8B1A1A,#9B59B6)">
+    <h2>💒 <span class="en">Banjara Marriage — Biyav Ceremony</span><span class="kn">ಬಂಜಾರ ಮದುವೆ — ಬಿಯಾವ್ ಸಮಾರಂಭ</span></h2>
+    <p><span class="en">Banjara marriage (Biyav) is a grand multi-day celebration full of music, dance, rituals and community participation.</span><span class="kn">ಬಂಜಾರ ಮದುವೆ (ಬಿಯಾವ್) ಸಂಗೀತ, ನೃತ್ಯ ಮತ್ತು ಆಚರಣೆಗಳಿಂದ ತುಂಬಿದ ಬಹುದಿನದ ಸಮಾರಂಭ.</span></p>
+  </div>
+  <div class="icard">
+    <h3>💒 <span class="en">Marriage Rituals Step by Step</span><span class="kn">ಮದುವೆ ಆಚರಣೆಗಳು ಹಂತಹಂತವಾಗಿ</span></h3>
+    <div class="tl">
+      <div class="tli"><div class="tld">1</div><div class="tlb"><h4><span class="en">Sakhi Puja — Friends' Worship</span><span class="kn">ಸಖಿ ಪೂಜ — ಸ್ನೇಹಿತರ ಪೂಜೆ</span></h4><p><span class="en">Bride's friends gather to worship and bless the bride with songs and dance</span><span class="kn">ವಧುವಿನ ಸ್ನೇಹಿತರು ಸೇರಿ ಹಾಡು ನೃತ್ಯದೊಂದಿಗೆ ಆಶೀರ್ವಾದ</span></p></div></div>
+      <div class="tli"><div class="tld">2</div><div class="tlb"><h4><span class="en">Haldi Ceremony</span><span class="kn">ಅರಿಸಿನ ಸಮಾರಂಭ</span></h4><p><span class="en">Turmeric paste applied to bride and groom for purification and blessings</span><span class="kn">ಶುದ್ಧೀಕರಣ ಮತ್ತು ಆಶೀರ್ವಾದಕ್ಕಾಗಿ ವಧು-ವರರಿಗೆ ಅರಿಸಿನ ಲೇಪನ</span></p></div></div>
+      <div class="tli"><div class="tld">3</div><div class="tlb"><h4><span class="en">Toran Decoration</span><span class="kn">ತೋರಣ ಅಲಂಕಾರ</span></h4><p><span class="en">Entrance of the Tanda decorated with colorful Toran (garlands) of flowers and leaves</span><span class="kn">ತಾಂಡಾ ಪ್ರವೇಶದ್ವಾರವನ್ನು ಬಣ್ಣದ ಮಾಲೆಗಳಿಂದ ಅಲಂಕರಿಸುವುದು</span></p></div></div>
+      <div class="tli"><div class="tld">4</div><div class="tlb"><h4><span class="en">Groom's Arrival on Horse</span><span class="kn">ಕುದುರೆಯ ಮೇಲೆ ವರನ ಆಗಮನ</span></h4><p><span class="en">Groom arrives on a decorated horse with music, drums and procession</span><span class="kn">ವರ ಢೋಲ ತಾಳ ಮೆರವಣಿಗೆಯೊಂದಿಗೆ ಅಲಂಕೃತ ಕುದುರೆ ಮೇಲೆ ಆಗಮಿಸುತ್ತಾನೆ</span></p></div></div>
+      <div class="tli"><div class="tld">5</div><div class="tlb"><h4><span class="en">Phera — Sacred Fire Walk</span><span class="kn">ಫೇರಾ — ಅಗ್ನಿ ಸುತ್ತು</span></h4><p><span class="en">Bride and groom walk around the sacred fire 7 times with Naik's blessings</span><span class="kn">ವಧು-ವರರು ನಾಯಕನ ಆಶೀರ್ವಾದದೊಂದಿಗೆ ಪವಿತ್ರ ಅಗ್ನಿ ಸುತ್ತ 7 ಸಾರಿ ಪ್ರದಕ್ಷಿಣೆ</span></p></div></div>
+      <div class="tli"><div class="tld">6</div><div class="tlb"><h4><span class="en">Naik's Blessing</span><span class="kn">ನಾಯಕನ ಆಶೀರ್ವಾದ</span></h4><p><span class="en">The Tanda Naik (headman) officially blesses the couple and announces the marriage</span><span class="kn">ತಾಂಡಾ ನಾಯಕ ದಂಪತಿಗೆ ಅಧಿಕೃತ ಆಶೀರ್ವಾದ ನೀಡಿ ಮದುವೆ ಘೋಷಿಸುತ್ತಾರೆ</span></p></div></div>
+      <div class="tli"><div class="tld">7</div><div class="tlb"><h4><span class="en">Community Feast</span><span class="kn">ಸಮುದಾಯ ಭೋಜನ</span></h4><p><span class="en">Entire Tanda celebrates with Bajra Roti, Saloi, Churma and traditional sweets</span><span class="kn">ಇಡೀ ತಾಂಡಾ ಬಜ್ರಾ ರೊಟ್ಟಿ, ಸಾಲೋಯಿ, ಚೂರ್ಮ ಮತ್ತು ಸಾಂಪ್ರದಾಯಿಕ ಸಿಹಿಯೊಂದಿಗೆ ಭೋಜನ</span></p></div></div>
+    </div>
+  </div>
+  <div class="icard">
+    <h3>🎵 <span class="en">Marriage Songs & Dress</span><span class="kn">ಮದುವೆ ಹಾಡು & ಉಡುಗೆ</span></h3>
+    <p><span class="en">The bride wears the heaviest Phetiya and Kanchali loaded with all jewelry including Baliya bangles, Kolda anklets and Bhuria nose ring. Traditional <strong>Vivah Geet</strong> (wedding songs) are sung by women throughout the ceremony. Men play Dholak and Manjeera continuously.</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px">ವಧು ಎಲ್ಲ ಆಭರಣ ಸಮೇತ ಅತ್ಯಂತ ಭಾರದ ಫೆಟಿಯಾ ಮತ್ತು ಕಂಚಲಿ ಧರಿಸುತ್ತಾಳೆ. ಮಹಿಳೆಯರು <strong>ವಿವಾಹ ಗೀತ್</strong> ಹಾಡುತ್ತಾರೆ. ಪುರುಷರು ಢೋಲಕ್ ಮತ್ತು ಮಂಜೀರ ನುಡಿಸುತ್ತಾರೆ.</p>
+    <div class="tags">
+      <span class="tag">🎵 <span class="en">Vivah Geet</span><span class="kn">ವಿವಾಹ ಗೀತ್</span></span>
+      <span class="tag">🥁 Dholak</span>
+      <span class="tag">🐴 <span class="en">Horse Procession</span><span class="kn">ಕುದುರೆ ಮೆರವಣಿಗೆ</span></span>
+      <span class="tag">🔥 <span class="en">Sacred Fire</span><span class="kn">ಪವಿತ್ರ ಅಗ್ನಿ</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FAITH ═══ -->
+<div id="tab-faith" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#1a5c8B,#2980b9)">
+    <h2>🕉️ <span class="en">Faith & Folklore</span><span class="kn">ಆಧ್ಯಾತ್ಮ & ಜಾನಪದ</span></h2>
+    <p><span class="en">A unique fusion of nature worship, ancestral respect, and Hinduism centered around Sant Sevalal Maharaj.</span><span class="kn">ಪ್ರಕೃತಿ ಪೂಜೆ, ಪಿತೃ ಗೌರವ ಮತ್ತು ಹಿಂದೂ ಧರ್ಮದ ಅನನ್ಯ ಸಂಮಿಶ್ರಣ.</span></p>
+  </div>
+  <div class="icard">
+    <h3>🙏 Sant Sevalal Maharaj</h3>
+    <p><span class="en">Born <strong>15 February 1739</strong> at Suragondankoppa, Karnataka. Preached <strong>non-violence, environmental protection, equality</strong>. Every Tanda has a <strong>white Jhanda flag</strong> representing him. Samadhi at Poharadevi — "Kashi of Banjaras."</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px"><strong>ಫೆಬ್ರವರಿ 15, 1739</strong>ರಂದು ಸೂರಗೊಂಡನಕೊಪ್ಪ, ಕರ್ನಾಟಕದಲ್ಲಿ ಜನಿಸಿದರು. <strong>ಅಹಿಂಸೆ, ಪರಿಸರ ರಕ್ಷಣೆ, ಸಮಾನತೆ</strong> ಬೋಧಿಸಿದರು. ಪ್ರತಿ ತಾಂಡಾದಲ್ಲಿ <strong>ಬಿಳಿ ಝಂಡಾ ಧ್ವಜ</strong>. ಸಮಾಧಿ — ಪೋಹರದೇವಿ "ಬಂಜಾರರ ಕಾಶಿ."</p>
+  </div>
+  <div class="icard">
+    <h3>⭐ <span class="en">Saati Sati — Seven Sacred Satis</span><span class="kn">ಸಾತಿ ಸತಿ — ಏಳು ಪವಿತ್ರ ಸತಿಗಳು</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">1️⃣</div><h4>Hoona Satti</h4><p><span class="en">Matriarch — governs lineage and family unity</span><span class="kn">ಕುಲ ಮತ್ತು ಕುಟುಂಬ ಏಕತೆ</span></p></div>
+      <div class="dbox"><div class="di">2️⃣</div><h4>Kesi Rani</h4><p><span class="en">Healer — protects from epidemics</span><span class="kn">ರೋಗ ನಿವಾರಕ ದೇವಿ</span></p></div>
+      <div class="dbox"><div class="di">3️⃣</div><h4>Sita Satti</h4><p><span class="en">Judge — goddess of truth and justice</span><span class="kn">ಸತ್ಯ ಮತ್ತು ನ್ಯಾಯದ ದೇವಿ</span></p></div>
+      <div class="dbox"><div class="di">4️⃣</div><h4>Bheema Satti</h4><p><span class="en">Warrior — symbol of courage and strength</span><span class="kn">ಧೈರ್ಯ ಮತ್ತು ಶಕ್ತಿ</span></p></div>
+      <div class="dbox"><div class="di">5️⃣</div><h4>Tola Satti</h4><p><span class="en">Provider — goddess of wealth and trade</span><span class="kn">ಸಂಪತ್ತು ಮತ್ತು ವ್ಯಾಪಾರ</span></p></div>
+      <div class="dbox"><div class="di">6️⃣</div><h4>Tulaja Satti</h4><p><span class="en">Visionary — goddess of wisdom</span><span class="kn">ಜ್ಞಾನ ಮತ್ತು ಅಂತರ್ಜ್ಞಾನ</span></p></div>
+      <div class="dbox"><div class="di">7️⃣</div><h4>Roopa Satti</h4><p><span class="en">Culture Guardian — protects language and arts</span><span class="kn">ಭಾಷೆ ಮತ್ತು ಕಲೆ ರಕ್ಷಕ</span></p></div>
+    </div>
+    <div class="hl"><span class="en">🪨 The Seven Satis are worshipped as <strong>seven natural stones</strong> in a row under a <strong>Jeenzero (Bauhinia)</strong> or <strong>Neem tree</strong>. Sacred Valang songs in Gor-Boli preserve their stories.</span><span class="kn">🪨 ಏಳು ಸತಿಯರನ್ನು <strong>ಜೀಂಜೆರೊ ಅಥವಾ ಬೇವಿನ ಮರ</strong>ದಡಿ <strong>ಏಳು ನೈಸರ್ಗಿಕ ಕಲ್ಲುಗಳಾಗಿ</strong> ಪೂಜಿಸಲಾಗುತ್ತದೆ.</span></div>
+  </div>
+</div>
+
+<!-- ═══ FESTIVALS ═══ -->
+<div id="tab-festivals" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#1a6B1a,#27ae60)">
+    <h2>🎉 <span class="en">Festivals & Celebrations</span><span class="kn">ಹಬ್ಬಗಳು & ಆಚರಣೆಗಳು</span></h2>
+    <p><span class="en">Banjara festivals are communal, high-energy events involving music, dance and deep cultural expression.</span><span class="kn">ಬಂಜಾರ ಹಬ್ಬಗಳು ಸಂಗೀತ, ನೃತ್ಯ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಅಭಿವ್ಯಕ್ತಿಯ ಸಾಮೂಹಿಕ ಕಾರ್ಯಕ್ರಮ.</span></p>
+  </div>
+
+  {% for item in items %}
+  {% if item[2] == 'festival' %}
+  <div class="icard">
+    <h3>🎉 {{ item[1] }}</h3>
+    <p>{{ item[3] }}</p>
+  </div>
+  {% endif %}
+  {% endfor %}
+
+  <!-- Static Festival Cards -->
+  <div class="icard">
+    <h3>🎉 <span class="en">Sevalal Jayanti — 15 February</span><span class="kn">ಸೇವಾಲಾಲ್ ಜಯಂತಿ — ಫೆಬ್ರವರಿ 15</span></h3>
+    <p><span class="en">The most important Banjara festival. Lakhs of devotees gather at Poharadevi for prayers, bhajans, processions and cultural programs. Every Tanda hoists the white Jhanda flag.</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px">ಅತ್ಯಂತ ಮಹತ್ವದ ಬಂಜಾರ ಹಬ್ಬ. ಲಕ್ಷಾಂತರ ಭಕ್ತರು ಪೋಹರದೇವಿಯಲ್ಲಿ ಸೇರುತ್ತಾರೆ. ಪ್ರತಿ ತಾಂಡಾ ಬಿಳಿ ಝಂಡಾ ಹಾರಿಸುತ್ತದೆ.</p>
+    <div class="tags"><span class="tag">📅 15 February</span><span class="tag">🛕 Poharadevi</span><span class="tag">🏳️ White Jhanda</span></div>
+  </div>
+
+  <div class="icard">
+    <h3>💃 <span class="en">Navratri — Nine Nights</span><span class="kn">ನವರಾತ್ರಿ — ಒಂಬತ್ತು ರಾತ್ರಿ</span></h3>
+    <p><span class="en">For 9 nights women perform Garba dance around a decorated Garbha pot. Special prayers to Goddess Tulja Bhavani. Men play Dholak and women sing Navratri Geet. On Dasara day a grand community procession is held.</span></p>
+    <p class="kn-block" style="color:#444;font-size:14px;line-height:1.9;margin-top:8px">9 ರಾತ್ರಿ ಮಹಿಳೆಯರು ಗರ್ಭ ಮಡಕೆ ಸುತ್ತ ಗರ್ಬಾ ನೃತ್ಯ. ತುಳಜಾ ಭವಾನಿ ಪ್ರಾರ್ಥನೆ. ದಸರಾ ದಿನ ಸಾಮೂಹಿಕ ಮೆರವಣಿಗೆ.</p>
+  </div>
+</div>
+
+<!-- ═══ FOOD ═══ -->
+<div id="tab-food" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#6B4E1A,#d68910)">
+    <h2>🥘 <span class="en">A Taste of Tradition</span><span class="kn">ಸಂಪ್ರದಾಯದ ರುಚಿ</span></h2>
+    <p><span class="en">Simple, hearty food designed for nomadic lifestyle with bold spices and local ingredients.</span><span class="kn">ಸ್ಥಳೀಯ ಪದಾರ್ಥ ಮತ್ತು ಮಸಾಲೆಯೊಂದಿಗೆ ಅಲೆಮಾರಿ ಜೀವನಕ್ಕೆ ಸೂಕ್ತ ಸರಳ ಆಹಾರ.</span></p>
+  </div>
+  <div class="icard">
+    <h3>🍽️ <span class="en">Traditional Dishes</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ತಿಂಡಿ</span></h3>
+    <div class="fgrid">
+      <div class="fbox"><div class="fi">🫓</div><h4>Bajra Roti</h4><p><span class="en">Pearl millet flatbread — main staple</span><span class="kn">ಸಜ್ಜೆ ರೊಟ್ಟಿ — ಮುಖ್ಯ ಆಹಾರ</span></p></div>
+      <div class="fbox"><div class="fi">🍲</div><h4>Daliya</h4><p><span class="en">Broken wheat or jowar porridge</span><span class="kn">ಗೋಧಿ ಅಥವಾ ಜ್ವಾರ್ ಗಂಜಿ</span></p></div>
+      <div class="fbox"><div class="fi">🍖</div><h4>Saloi</h4><p><span class="en">Slow-cooked goat meat for ceremonies</span><span class="kn">ಸಮಾರಂಭದ ಮಾಂಸಾಹಾರ</span></p></div>
+      <div class="fbox"><div class="fi">🌶️</div><h4><span class="en">Spices</span><span class="kn">ಮಸಾಲೆ</span></h4><p><span class="en">Guntur chilies and garlic — bold flavors</span><span class="kn">ಗಂಟೂರ ಮೆಣಸು ಮತ್ತು ಬೆಳ್ಳುಳ್ಳಿ</span></p></div>
+      <div class="fbox"><div class="fi">🍯</div><h4>Lapsi</h4><p><span class="en">Sacred sweet offering to Saati Sati</span><span class="kn">ಸಾತಿ ಸತಿಗೆ ಪವಿತ್ರ ನೈವೇದ್ಯ</span></p></div>
+      <div class="fbox"><div class="fi">🥣</div><h4>Churma</h4><p><span class="en">Sweet crushed wheat with ghee and jaggery</span><span class="kn">ತುಪ್ಪ ಮತ್ತು ಬೆಲ್ಲದ ಸಿಹಿ ತಿಂಡಿ</span></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LANGUAGE ═══ -->
+<div id="tab-language" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#4B0082,#8e44ad)">
+    <h2>🗣️ <span class="en">Gor Boli — The Banjara Language</span><span class="kn">ಗೋರ್ ಬೋಲಿ — ಬಂಜಾರ ಭಾಷೆ</span></h2>
+    <p><span class="en">An Indo-Aryan language blending Marwari, Gujarati, Hindi and Marathi — kept alive through Geet folk songs.</span><span class="kn">ಮಾರವಾಡಿ, ಗುಜರಾತಿ, ಹಿಂದಿ ಮತ್ತು ಮರಾಠಿ ಮಿಶ್ರಣ — ಗೀತ್ ಹಾಡುಗಳ ಮೂಲಕ ಉಳಿದಿದೆ.</span></p>
+  </div>
+  <div class="icard">
+    <h3>📚 <span class="en">Basic Gor Boli Words</span><span class="kn">ಮೂಲ ಗೋರ್ ಬೋಲಿ ಪದಗಳು</span></h3>
+    <div class="fgrid">
+      <div class="fbox"><div class="fi">👋</div><h4>Jai Sevalal!</h4><p><span class="en">Main greeting — Victory to Sevalal</span><span class="kn">ಮುಖ್ಯ ಶುಭಾಶಯ</span></p></div>
+      <div class="fbox"><div class="fi">🏘️</div><h4>Tanda</h4><p><span class="en">Banjara settlement / village</span><span class="kn">ಬಂಜಾರ ವಸಾಹತು</span></p></div>
+      <div class="fbox"><div class="fi">👑</div><h4>Naik</h4><p><span class="en">Headman / leader of Tanda</span><span class="kn">ತಾಂಡಾ ಮುಖ್ಯಸ್ಥ</span></p></div>
+      <div class="fbox"><div class="fi">🎵</div><h4>Geet</h4><p><span class="en">Traditional folk song</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ಹಾಡು</span></p></div>
+      <div class="fbox"><div class="fi">🌿</div><h4>Gor</h4><p><span class="en">What Banjaras call themselves</span><span class="kn">ಬಂಜಾರರ ಸ್ವಯಂ ಹೆಸರು</span></p></div>
+      <div class="fbox"><div class="fi">🎶</div><h4>Valang</h4><p><span class="en">Sacred oral songs of Seven Satis</span><span class="kn">ಸಾತಿ ಸತಿ ಪವಿತ್ರ ಹಾಡುಗಳು</span></p></div>
+      <div class="fbox"><div class="fi">💒</div><h4>Biyav</h4><p><span class="en">Marriage ceremony</span><span class="kn">ಮದುವೆ ಸಮಾರಂಭ</span></p></div>
+      <div class="fbox"><div class="fi">🏳️</div><h4>Jhanda</h4><p><span class="en">White flag of Sevalal in every Tanda</span><span class="kn">ಪ್ರತಿ ತಾಂಡಾದ ಬಿಳಿ ಧ್ವಜ</span></p></div>
+    </div>
+  </div>
+</div>
+<!-- ═══ KARNATAKA DISTRICTS TAB ═══ -->
+<div id="tab-districts" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#CC0000,#FF9933)">
+    <h2>🗺️ <span class="en">Karnataka — District by District Banjara Culture</span><span class="kn">ಕರ್ನಾಟಕ — ಜಿಲ್ಲೆ ಜಿಲ್ಲೆಯ ಬಂಜಾರ ಸಂಸ್ಕೃತಿ</span></h2>
+    <p><span class="en">Every Karnataka district has unique Lambani traditions, sacred sites and cultural practices.</span><span class="kn">ಕರ್ನಾಟಕದ ಪ್ರತಿ ಜಿಲ್ಲೆ ವಿಶಿಷ್ಟ ಲಂಬಾಣಿ ಸಂಪ್ರದಾಯ, ಪವಿತ್ರ ಸ್ಥಳ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಆಚರಣೆ ಹೊಂದಿದೆ.</span></p>
+  </div>
+  <div class="icard">
+    <h3>🗺️ <span class="en">All Karnataka Districts — Lambani Presence</span><span class="kn">ಕರ್ನಾಟಕ ಎಲ್ಲ ಜಿಲ್ಲೆ — ಲಂಬಾಣಿ ಉಪಸ್ಥಿತಿ</span></h3>
+    <div class="dgrid">
+      <div class="dbox"><div class="di">🔴</div><h4>Bellary (Ballari)</h4><p><span class="en">Largest Lambani pop. GI embroidery center. Sandur is world-famous for Lambani art. Major festivals at local temples.</span><span class="kn-block" style="display:none">ಅತಿ ಹೆಚ್ಚು ಲಂಬಾಣಿ ಜನ. GI ಕಸೂತಿ ಕೇಂದ್ರ ಸಂದೂರ್.</span></p></div>
+      <div class="dbox"><div class="di">🌱</div><h4>Davanagere</h4><p><span class="en">Birthplace of Sant Sevalal Maharaj at Suragondankoppa, Honnali Taluk. Major pilgrimage for Banjara community.</span><span class="kn-block" style="display:none">ಸಂತ ಸೇವಾಲಾಲ್ ಜನ್ಮಸ್ಥಳ ಸೂರಗೊಂಡನಕೊಪ್ಪ, ಹೊನ್ನಾಳಿ ತಾಲ್ಲೂಕು.</span></p></div>
+      <div class="dbox"><div class="di">🌾</div><h4>Koppal</h4><p><span class="en">Strong traditional Tanda settlements. Unique embroidery using yellow and orange colors. Famous for Suggi dance.</span><span class="kn-block" style="display:none">ಬಲಿಷ್ಠ ಸಾಂಪ್ರದಾಯಿಕ ತಾಂಡಾ ನೆಲೆ. ಹಳದಿ ಕಿತ್ತಳೆ ಕಸೂತಿ. ಸುಗ್ಗಿ ನೃತ್ಯ.</span></p></div>
+      <div class="dbox"><div class="di">🌿</div><h4>Raichur</h4><p><span class="en">Rich folk music tradition. Telangana-border culture blend. Banjara language here has Telugu influence.</span><span class="kn-block" style="display:none">ಶ್ರೀಮಂತ ಜಾನಪದ ಸಂಗೀತ. ತೆಲಂಗಾಣ ಗಡಿ ಸಂಸ್ಕೃತಿ. ತೆಲುಗು ಪ್ರಭಾವ.</span></p></div>
+      <div class="dbox"><div class="di">🔱</div><h4>Haveri</h4><p><span class="en">Katenahalli Moolasthala of Sitasati Dakuraj. Annual Jatra Mahotsava draws thousands. Sacred Kuladevata center.</span><span class="kn-block" style="display:none">ಸೀತಾಸತಿ ಡಾಕುರಾಜ ಮೂಲಸ್ಥಳ ಕಾಟೇನಹಳ್ಳಿ. ವಾರ್ಷಿಕ ಜಾತ್ರ ಮಹೋತ್ಸವ.</span></p></div>
+      <div class="dbox"><div class="di">✨</div><h4>Tumakuru</h4><p><span class="en">Dodda Ennegere sacred site of Bhima Sati. Strong Lambani weaving tradition. Navratri celebrations famous.</span><span class="kn-block" style="display:none">ಭೀಮಾಸತಿ ದೊಡ್ಡ ಎಣ್ಣೆಗೆರೆ ಪವಿತ್ರ ಕ್ಷೇತ್ರ. ನೇಯ್ಗೆ ಸಂಪ್ರದಾಯ. ನವರಾತ್ರಿ ಪ್ರಸಿದ್ಧ.</span></p></div>
+      <div class="dbox"><div class="di">🌸</div><h4>Vijayanagara</h4><p><span class="en">Tokari Banaki Devi at Dasarahalli Tanda, Kottur Taluk. Historical Hampi region Lambani heritage.</span><span class="kn-block" style="display:none">ಟೋಕರಿ ಬನಕಿ ದೇವಿ ದಾಸರಹಳ್ಳಿ. ಹಂಪಿ ಪ್ರದೇಶ ಲಂಬಾಣಿ ಪರಂಪರೆ.</span></p></div>
+      <div class="dbox"><div class="di">🌺</div><h4>Uttara Kannada</h4><p><span class="en">Sirsi Marikamba Temple — connected to Sevalal Maharaj's divine power. Grand biennial Rathotsava festival.</span><span class="kn-block" style="display:none">ಸಿರಸಿ ಮಾರಿಕಾಂಬ — ಸೇವಾಲಾಲ್ ದೈವ ಶಕ್ತಿ. ದ್ವೈ ವಾರ್ಷಿಕ ರಥೋತ್ಸವ.</span></p></div>
+      <div class="dbox"><div class="di">🎭</div><h4>Kalaburagi (Gulbarga)</h4><p><span class="en">Hyderabad-Karnataka Lambani culture blend. Strong Marathi influence in language. Famous for colorful Teej festivals.</span><span class="kn-block" style="display:none">ಹೈದರಾಬಾದ್-ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಸಂಸ್ಕೃತಿ. ಮರಾಠಿ ಪ್ರಭಾವ. ತೀಜ್ ಹಬ್ಬ.</span></p></div>
+      <div class="dbox"><div class="di">🏘️</div><h4>Bidar</h4><p><span class="en">Ancient Lambani settlements near Bidar fort. Maharashtra border culture mix. Traditional Tanda governance.</span><span class="kn-block" style="display:none">ಬೀದರ್ ಕೋಟೆ ಸಮೀಪ ಲಂಬಾಣಿ ನೆಲೆ. ಮಹಾರಾಷ್ಟ್ರ ಗಡಿ. ತಾಂಡಾ ಆಡಳಿತ.</span></p></div>
+      <div class="dbox"><div class="di">💐</div><h4>Vijayapura (Bijapur)</h4><p><span class="en">Lambani community here shows Persian-Mughal cultural blend. Unique turban tying style for men. Holi very grand.</span><span class="kn-block" style="display:none">ಪರ್ಷಿಯನ್-ಮೊಘಲ್ ಸಂಸ್ಕೃತಿ ಮಿಶ್ರಣ. ವಿಶಿಷ್ಟ ಪಗಡಿ ಶೈಲಿ. ಭವ್ಯ ಹೋಳಿ.</span></p></div>
+      <div class="dbox"><div class="di">💊</div><h4>Bagalkot</h4><p><span class="en">Kesi Rani Sati shrine — guardian against epidemics. Lambani folk medicine traditions strong here.</span><span class="kn-block" style="display:none">ಕೇಸಿ ರಾಣಿ ಸತಿ ಗುಡಿ. ಲಂಬಾಣಿ ಜಾನಪದ ಔಷಧ ಸಂಪ್ರದಾಯ.</span></p></div>
+      <div class="dbox"><div class="di">💊</div><h4>Belagavi (Belgaum)</h4><p><span class="en">Kesi Rani Sati prominent shrine here. Maharashtra-Goa border influence. Unique Kolata stick dance style.</span><span class="kn-block" style="display:none">ಕೇಸಿ ರಾಣಿ ಗುಡಿ. ಮಹಾರಾಷ್ಟ್ರ-ಗೋವಾ ಗಡಿ ಪ್ರಭಾವ. ವಿಶಿಷ್ಟ ಕೋಲಾಟ ಶೈಲಿ.</span></p></div>
+      <div class="dbox"><div class="di">🎨</div><h4>Dharwad</h4><p><span class="en">Lambani community known for wall art using natural colors. Classical Kannada music influence in Geet songs.</span><span class="kn-block" style="display:none">ನೈಸರ್ಗಿಕ ಬಣ್ಣ ಗೋಡೆ ಕಲೆ. ಶಾಸ್ತ್ರೀಯ ಕನ್ನಡ ಸಂಗೀತ ಪ್ರಭಾವ.</span></p></div>
+      <div class="dbox"><div class="di">🌿</div><h4>Gadag</h4><p><span class="en">Famous for traditional Banjara weaving — Lambani women here create unique cotton textiles alongside embroidery.</span><span class="kn-block" style="display:none">ಸಾಂಪ್ರದಾಯಿಕ ಬಂಜಾರ ನೇಯ್ಗೆ — ಹತ್ತಿ ಬಟ್ಟೆ ತಯಾರಿ.</span></p></div>
+      <div class="dbox"><div class="di">📿</div><h4>Yadgir</h4><p><span class="en">Banjara community here near Andhra Pradesh border — Telugu language strong influence. Unique bead jewelry style.</span><span class="kn-block" style="display:none">ಆಂಧ್ರ ಪ್ರದೇಶ ಗಡಿ. ತೆಲುಗು ಪ್ರಭಾವ. ವಿಶಿಷ್ಟ ಮಣಿ ಆಭರಣ.</span></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BANJARA LANGUAGE TAB ═══ -->
+<div id="tab-goroboli" class="tab-section">
+  <div class="sec-hero" style="background:linear-gradient(135deg,#4B0082,#8e44ad)">
+    <h2>🗣️ <span class="en">Gor Boli Dictionary — Banjara Language Words</span><span class="kn">ಗೋರ್ ಬೋಲಿ ಶಬ್ದಕೋಶ — ಬಂಜಾರ ಭಾಷಾ ಪದಗಳು</span></h2>
+    <p><span class="en">Learn Banjara words with meaning in English and Kannada. Gor Boli is an Indo-Aryan language blending Marwari, Gujarati, Hindi and Marathi.</span><span class="kn">ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಕನ್ನಡದಲ್ಲಿ ಅರ್ಥ ಸಹಿತ ಬಂಜಾರ ಪದಗಳನ್ನು ಕಲಿಯಿರಿ.</span></p>
+  </div>
+
+  <!-- Language Search -->
+  <div style="padding:16px 0;display:flex;justify-content:center">
+    <input type="text" id="lang-search" oninput="filterWords()"
+      style="width:100%;max-width:500px;padding:12px 18px;border:2px solid #8B1A1A;border-radius:30px;font-size:14px;outline:none"
+      placeholder="Search Banjara words...">
+  </div>
+
+  <div class="icard">
+    <h3>📚 <span class="en">Greetings & Daily Words</span><span class="kn">ಶುಭಾಶಯ ಮತ್ತು ದೈನಂದಿನ ಪದಗಳು</span></h3>
+    <div id="word-table">
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      <thead>
+        <tr style="background:#8B1A1A;color:white">
+          <th style="padding:12px;text-align:left;border:1px solid #ddd">🗣️ Gor Boli Word</th>
+          <th style="padding:12px;text-align:left;border:1px solid #ddd">🌐 English Meaning</th>
+          <th style="padding:12px;text-align:left;border:1px solid #ddd">🇮🇳 ಕನ್ನಡ ಅರ್ಥ</th>
+          <th style="padding:12px;text-align:left;border:1px solid #ddd">📝 Usage</th>
+        </tr>
+      </thead>
+      <tbody id="word-tbody">
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="icard">
+    <h3>🔊 <span class="en">Common Phrases in Gor Boli</span><span class="kn">ಗೋರ್ ಬೋಲಿ ಸಾಮಾನ್ಯ ಶಬ್ದಗಳು</span></h3>
+    <div class="fgrid">
+      <div class="fbox"><div class="fi">🙏</div><h4>Jai Sevalal!</h4><p><span class="en">Main Banjara greeting — Victory to Sevalal. Used instead of Hello/Namaste</span><span class="kn-block" style="display:none">ಮುಖ್ಯ ಬಂಜಾರ ಶುಭಾಶಯ — ನಮಸ್ತೆ ಬದಲು ಬಳಸಲಾಗುತ್ತದೆ</span></p></div>
+      <div class="fbox"><div class="fi">🤝</div><h4>Aavo Bhaiyo!</h4><p><span class="en">Come brothers! — Welcome greeting used when guests arrive at Tanda</span><span class="kn-block" style="display:none">ಬನ್ನಿ ಸಹೋದರರೇ! — ಅತಿಥಿಗಳು ಬಂದಾಗ ಸ್ವಾಗತ ಶಬ್ದ</span></p></div>
+      <div class="fbox"><div class="fi">❤️</div><h4>Gor Banjara</h4><p><span class="en">We are Banjara — the community's proud self-introduction phrase</span><span class="kn-block" style="display:none">ನಾವು ಬಂಜಾರ — ಸಮುದಾಯದ ಹೆಮ್ಮೆಯ ಸ್ವ-ಪರಿಚಯ</span></p></div>
+      <div class="fbox"><div class="fi">🙌</div><h4>Dhanyavadh!</h4><p><span class="en">Thank you — used to express gratitude in Gor Boli</span><span class="kn-block" style="display:none">ಧನ್ಯವಾದ — ಕೃತಜ್ಞತೆ ವ್ಯಕ್ತಪಡಿಸಲು</span></p></div>
+      <div class="fbox"><div class="fi">🏠</div><h4>Saath Tharo Tanda</h4><p><span class="en">Stay at our Tanda — traditional Banjara hospitality phrase</span><span class="kn-block" style="display:none">ನಮ್ಮ ತಾಂಡಾದಲ್ಲಿ ಇರಿ — ಸಾಂಪ್ರದಾಯಿಕ ಆತಿಥ್ಯ</span></p></div>
+      <div class="fbox"><div class="fi">💪</div><h4>Gor Shakti!</h4><p><span class="en">Banjara power/strength — rallying call used in community gatherings</span><span class="kn-block" style="display:none">ಬಂಜಾರ ಶಕ್ತಿ — ಸಮುದಾಯ ಸಭೆಗಳಲ್ಲಿ ಘೋಷ</span></p></div>
+    </div>
+  </div>
+</div>
+</div><!-- end content -->
+<footer>🌿 <span class="en">Banjara Cultural Platform</span><span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ವೇದಿಕೆ</span> — <span class="en">Preserving Heritage Through Technology</span><span class="kn">ತಂತ್ರಜ್ಞಾನದ ಮೂಲಕ ಪರಂಪರೆ ಸಂರಕ್ಷಣೆ</span></footer>
+
+<script>
+const SD=[
+  {t:'Karnataka Lambani Culture',d:'Lambani in Karnataka — districts Bellary Koppal Raichur Bidar Kalaburagi',tab:'karnataka'},
+  {t:'Sandur Lambani GI Embroidery',d:'GI status embroidery with Shisha mirror work from Bellary Karnataka',tab:'karnataka'},
+  {t:'Banjara Marriage Biyav',d:'Multi-day ceremony: Sakhi Puja, Haldi, Toran, horse groom, Phera sacred fire',tab:'marriage'},
+  {t:'Banjara History Origins',d:'Mewar Rajasthan Rajput clans Chauhan Rathod Pawar nomadic traders',tab:'history'},
+  {t:'Phetiya Kanchali Dress',d:'Traditional embroidered dress with mirror work Baliya Kolda Bhuria',tab:'dress'},
+  {t:'Sant Sevalal Maharaj',d:'Born 15 Feb 1739 Suragondankoppa Karnataka. Samadhi Poharadevi 4 Dec 1806',tab:'faith'},
+  {t:'Saati Sati Seven Satis',d:'Seven ancestral deities worshipped as stones: Hoona Kesi Sita Bheema Tola Tulaja Roopa',tab:'faith'},
+  {t:'Teej Festival',d:'9-day festival girls sow wheat seeds pray for marriage and rainfall',tab:'festivals'},
+  {t:'Navratri Garba Dance',d:'9 nights Garba dance Tulja Bhavani prayers Dholak Navratri Geet',tab:'festivals'},
+  {t:'Banjara Holi Phag',d:'5-day celebration Langa-Daphl drums circle dances Phag Geet songs',tab:'festivals'},
+  {t:'Bajra Roti Daliya Food',d:'Staple food pearl millet flatbread broken wheat porridge Saloi Lapsi Churma',tab:'food'},
+  {t:'Gor Boli Language',d:'Indo-Aryan language Lambadi blend Marwari Gujarati Hindi Marathi Geet Valang',tab:'language'},
+  {t:'Karnataka Sacred Sites',d:'Suragondankoppa Sirsi Marikamba Katenahalli Dodda Ennegere Dasarahalli Tanda',tab:'karnataka'},
+  {t:'Karnataka Folk Dances',d:'Suggi Phantasi Kolata Garba dances Karnataka Lambani',tab:'karnataka'},
+];
+const tabIdx={history:0,karnataka:1,dress:2,marriage:3,faith:4,festivals:5,food:6,language:7};
+
+function setLang(lang,btn){
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.en').forEach(e=>e.style.display=lang==='en'?'inline':'none');
+  document.querySelectorAll('.kn').forEach(e=>e.style.display=lang==='kn'?'inline':'none');
+  document.querySelectorAll('.en-block').forEach(e=>e.style.display=lang==='en'?'block':'none');
+  document.querySelectorAll('.kn-block').forEach(e=>e.style.display=lang==='kn'?'block':'none');
+  document.getElementById('csearch').placeholder=lang==='en'?'Search culture topics...':'ಸಂಸ್ಕೃತಿ ವಿಷಯ ಹುಡುಕಿ...';
+}
+
+function showTab(name,btn){
+  document.querySelectorAll('.tab-section').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:300,behavior:'smooth'});
+}
+
+function searchCulture(){
+  const q=document.getElementById('csearch').value.toLowerCase().trim();
+  const box=document.getElementById('search-results');
+  box.innerHTML='';
+  if(q.length<2)return;
+  const res=SD.filter(d=>d.t.toLowerCase().includes(q)||d.d.toLowerCase().includes(q)).slice(0,5);
+  if(!res.length){box.innerHTML='<p style="text-align:center;color:#888;padding:14px">No results found.</p>';return;}
+  res.forEach(r=>{
+    const d=document.createElement('div');
+    d.className='src-card show';
+    d.innerHTML=`<strong style="color:#8B1A1A">${r.t}</strong><p style="color:#555;font-size:13px;margin-top:3px">${r.d}</p>
+    <button onclick="showTab('${r.tab}',document.querySelectorAll('.tab-btn')[${tabIdx[r.tab]}])"
+      style="margin-top:7px;background:#8B1A1A;color:white;border:none;padding:4px 14px;border-radius:20px;font-size:12px;cursor:pointer">View →</button>`;
+    box.appendChild(d);
+  });
+}
+// Gor Boli Dictionary
+const words = [
+  ['Tanda','Settlement/Village','ತಾಂಡಾ — ವಸಾಹತು','Every Banjara community settlement'],
+  ['Naik','Headman/Leader','ನಾಯಕ — ಮುಖ್ಯಸ್ಥ','Leader of the Tanda'],
+  ['Gor','People (self-name)','ಗೋರ್ — ಜನರು','What Banjaras call themselves'],
+  ['Geet','Folk Song','ಗೀತ್ — ಜಾನಪದ ಹಾಡು','Oral tradition songs'],
+  ['Valang','Sacred Oral Song','ವಾಲಂಗ್ — ಪವಿತ್ರ ಹಾಡು','Songs preserving Saati Sati stories'],
+  ['Jhanda','White Flag','ಝಂಡಾ — ಬಿಳಿ ಧ್ವಜ','Represents Sevalal Maharaj'],
+  ['Biyav','Marriage','ಬಿಯಾವ್ — ಮದುವೆ','Multi-day wedding ceremony'],
+  ['Phetiya','Skirt (Ghagra)','ಫೆಟಿಯಾ — ಲಂಗ','Traditional high-waist skirt'],
+  ['Kanchali','Blouse (Choli)','ಕಂಚಲಿ — ಚೋಲಿ','Embroidered traditional blouse'],
+  ['Baliya','Ivory Bangles','ಬಾಲಿಯಾ — ದಂತ ಬಳೆ','Marital status bangles'],
+  ['Kolda','Brass Anklets','ಕೋಲ್ಡಾ — ಕಾಲ್ಗೆಜ್ಜೆ','Heavy musical anklets'],
+  ['Bhuria','Nose Ring','ಭೂರಿಯಾ — ಮೂಗುತಿ','Silver nose ring'],
+  ['Odhni','Headscarf','ಓಧನಿ — ತಲೆ ಬಟ್ಟೆ','Embroidered headcover'],
+  ['Lapsi','Sweet Dish','ಲಾಪ್ಸಿ — ಸಿಹಿ ಖಾದ್ಯ','Sacred food for Saati Sati'],
+  ['Churma','Crushed Wheat Sweet','ಚೂರ್ಮ — ಸಿಹಿ','Sacred food offering'],
+  ['Shisha','Mirror Work','ಶೀಶ — ಕನ್ನಡಿ ಕೆಲಸ','Mirror embroidery art'],
+  ['Vadi','Farm/Field','ವಾಡಿ — ಹೊಲ','Agricultural land'],
+  ['Sakhi Puja','Friends Worship','ಸಖಿ ಪೂಜ','Pre-wedding ritual'],
+  ['Phera','Sacred Fire Walk','ಫೇರಾ — ಅಗ್ನಿ ಪ್ರದಕ್ಷಿಣೆ','7 rounds of sacred fire at wedding'],
+  ['Ladhenia','Trading Profession','ಲದೇಣಿಯ — ವ್ಯಾಪಾರ','Traditional Banjara trading job'],
+  ['Gudna','Tattoo','ಗುದ್ನ — ಹಚ್ಚೆ','Traditional body tattoo'],
+  ['Garasia','Horse Name','ಗರಸಿಯಾ — ಕುದುರೆ','Sevalal Maharaj\'s horse'],
+  ['Brahmachari','Celibate','ಬ್ರಹ್ಮಚಾರಿ','Sevalal Maharaj\'s lifestyle'],
+  ['Janmasthal','Birthplace','ಜನ್ಮಸ್ಥಳ','Sacred birth site'],
+  ['Moolasthala','Original Sacred Place','ಮೂಲಸ್ಥಳ','Ancestral sacred site'],
+  ['Kuladevata','Family Deity','ಕುಲದೇವತೆ','Hereditary family god/goddess'],
+  ['Jatra','Festival/Fair','ಜಾತ್ರ','Community festival'],
+  ['Dholak','Drum Instrument','ಢೋಲಕ್','Main percussion instrument'],
+  ['Manjeera','Cymbals','ಮಂಜೀರ','Small brass cymbals'],
+  ['Saloi','Meat Dish','ಸಾಲೋಯಿ','Ceremonial goat meat dish'],
+  ['Toran','Door Decoration','ತೋರಣ','Festival entrance garland'],
+  ['Haldi','Turmeric Ceremony','ಅರಿಸಿನ ಸಮಾರಂಭ','Pre-wedding ritual'],
+  ['Ghodi','Decorated Horse','ಘೋಡಿ','Horse for groom at wedding'],
+  ['Vansh','Lineage/Family Line','ವಂಶ','Family ancestry'],
+  ['Nayak','Same as Naik','ನಾಯಕ','Alternative spelling of Naik'],
+  ['Phag','Holi Festival','ಫಾಗ್ — ಹೋಳಿ','Banjara name for Holi'],
+  ['Garbha','Clay Festival Pot','ಗರ್ಭ ಮಡಕೆ','Navratri decorated pot'],
+  ['Melava','Community Gathering','ಮೇಳ — ಸಭೆ','Community meeting'],
+  ['Antar-gyana','Inner Knowledge','ಅಂತರ್ಜ್ಞಾನ','Spiritual intuition'],
+];
+
+function renderWords(list){
+  const tbody=document.getElementById('word-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  list.forEach(([w,en,kn,use],i)=>{
+    const tr=document.createElement('tr');
+    tr.style.background=i%2===0?'#fef9f0':'white';
+    tr.innerHTML=`
+      <td style="padding:10px 12px;border:1px solid #eee;font-weight:bold;color:#8B1A1A;font-size:15px">${w}</td>
+      <td style="padding:10px 12px;border:1px solid #eee;color:#333">${en}</td>
+      <td style="padding:10px 12px;border:1px solid #eee;color:#555;font-size:13px">${kn}</td>
+      <td style="padding:10px 12px;border:1px solid #eee;color:#888;font-size:12px;font-style:italic">${use}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterWords(){
+  const q=document.getElementById('lang-search').value.toLowerCase();
+  renderWords(q?words.filter(w=>w.join(' ').toLowerCase().includes(q)):words);
+}
+
+// Render on tab open
+const origShowTab=window.showTab;
+window.showTab=function(name,btn){
+  origShowTab&&origShowTab(name,btn);
+  if(name==='goroboli')renderWords(words);
+};
+</script>
+</body>
+</html>

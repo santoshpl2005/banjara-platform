@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Banjara Cultural Platform</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#fef9f0}
+    nav{background:#8B1A1A;padding:14px 30px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+    nav .logo{color:#ffd700;font-size:17px;font-weight:bold;margin-right:auto}
+    nav a{color:white;text-decoration:none;font-size:14px;font-weight:bold}
+    nav a:hover{color:#ffd700}
+
+    /* Language Toggle */
+    .lang-bar{background:#7B0F0F;padding:8px 30px;display:flex;justify-content:flex-end;gap:10px;align-items:center}
+    .lang-bar span{color:rgba(255,255,255,.7);font-size:13px}
+    .lbtn{padding:5px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.5);background:transparent;color:white;font-size:12px;cursor:pointer;font-weight:bold}
+    .lbtn.active{background:#ffd700;color:#8B1A1A;border-color:#ffd700}
+
+    /* Hero */
+    .hero{text-align:center;padding:70px 20px;background:linear-gradient(135deg,#6B0F0F,#8B1A1A,#c0392b);color:white}
+    .hero .subtitle{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#ffd700;margin-bottom:14px}
+    .hero h1{font-size:38px;margin-bottom:14px;line-height:1.3}
+    .hero p{font-size:16px;margin-bottom:30px;opacity:.9;max-width:580px;margin-left:auto;margin-right:auto}
+    .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+    .btn-p{background:#ffd700;color:#8B1A1A;padding:13px 28px;border-radius:30px;text-decoration:none;font-weight:bold;font-size:15px}
+    .btn-s{background:transparent;color:white;padding:13px 28px;border-radius:30px;text-decoration:none;font-weight:bold;font-size:15px;border:2px solid white}
+    .btn-p:hover{background:#e6c200}
+    .btn-s:hover{background:rgba(255,255,255,.1)}
+
+    /* Search Box in Hero */
+    .hero-search{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:16px;padding:24px;max-width:620px;margin:0 auto}
+    .hero-search h3{color:#ffd700;font-size:15px;margin-bottom:14px}
+    .search-row{display:flex;gap:10px}
+    .search-row input{flex:1;padding:13px 18px;border-radius:30px;border:none;font-size:15px;outline:none}
+    .search-row button{background:#ffd700;color:#8B1A1A;border:none;padding:13px 22px;border-radius:30px;font-size:14px;cursor:pointer;font-weight:bold;white-space:nowrap}
+    #hero-results{margin-top:14px}
+    .hresult{background:rgba(255,255,255,.9);border-radius:10px;padding:12px 16px;margin-bottom:8px;text-align:left;cursor:pointer}
+    .hresult h4{color:#8B1A1A;font-size:14px;margin-bottom:3px}
+    .hresult p{color:#555;font-size:12px}
+    .hresult a{color:#8B1A1A;font-size:12px;font-weight:bold;text-decoration:none}
+
+    /* Stats */
+    .stats-bar{background:#7B0F0F;display:flex;justify-content:center;flex-wrap:wrap}
+    .stat{text-align:center;padding:18px 36px;color:white;border-right:1px solid rgba(255,255,255,.15)}
+    .stat:last-child{border-right:none}
+    .stat .num{font-size:26px;font-weight:bold;color:#ffd700}
+    .stat .lbl{font-size:11px;opacity:.8;margin-top:2px}
+
+    /* Features */
+    .section{padding:50px 30px}
+    .sec-title{text-align:center;margin-bottom:36px}
+    .sec-title h2{font-size:26px;color:#8B1A1A;margin-bottom:8px}
+    .sec-title p{color:#888;font-size:14px}
+    .divider{width:50px;height:4px;background:#ffd700;margin:10px auto 0;border-radius:2px}
+    .features{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;max-width:1050px;margin:0 auto}
+    .fcard{background:white;border-radius:16px;padding:28px 22px;width:200px;box-shadow:0 4px 18px rgba(0,0,0,.08);text-align:center;text-decoration:none;color:#333;transition:transform .2s;border-bottom:4px solid #8B1A1A}
+    .fcard:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+    .fcard .icon{font-size:40px;margin-bottom:12px}
+    .fcard h3{color:#8B1A1A;font-size:16px;margin-bottom:6px}
+    .fcard p{font-size:12px;color:#777;line-height:1.6}
+
+    /* About */
+    .about{background:#8B1A1A;color:white;padding:50px 30px;text-align:center}
+    .about h2{font-size:26px;margin-bottom:14px}
+    .about p{max-width:680px;margin:0 auto 26px;font-size:15px;line-height:1.8;opacity:.9}
+
+    /* Quick facts */
+    .quick-facts{padding:40px 30px;background:white}
+    .facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+    .fact-box{background:#fef9f0;border-radius:12px;padding:18px;border-left:4px solid #8B1A1A}
+    .fact-box .fi{font-size:28px;margin-bottom:8px}
+    .fact-box h4{color:#8B1A1A;font-size:14px;margin-bottom:4px}
+    .fact-box p{color:#666;font-size:13px;line-height:1.6}
+
+    footer{background:#4a0f0f;color:white;text-align:center;padding:22px;font-size:14px}
+
+    /* Hide language sections */
+    .en{display:block}.kn{display:none}
+
+    @media(max-width:768px){
+      nav{padding:10px 14px;gap:8px}
+      nav a{font-size:11px}
+      .hero{padding:40px 16px}
+      .hero h1{font-size:24px}
+      .stats-bar{flex-direction:column}
+      .stat{border-right:none;border-bottom:1px solid rgba(255,255,255,.15)}
+      .fcard{width:calc(50% - 10px)}
+      .section{padding:30px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 <span class="en">Home</span><span class="kn">ಮುಖಪುಟ</span></a>
+  <a href="/culture">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></a>
+  <a href="/temples">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></a>
+  <a href="/gallery">🖼️ <span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></a>
+  <a href="/quiz">📝 <span class="en">Quiz</span><span class="kn">ಕ್ವಿಜ್</span></a>
+  <a href="/ai_chat">🤖 AI</a>
+  {% if session.get('user_id') %}
+    <a href="/profile" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px">
+      👤 {{ session.get('user_name','').split()[0] }}
+    </a>
+    <a href="/logout">🚪</a>
+  {% else %}
+    <a href="/login" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px;font-weight:bold">
+      🔑 <span class="en">Login</span><span class="kn">ಲಾಗಿನ್</span>
+    </a>
+    <a href="/register">📝 <span class="en">Register</span><span class="kn">ನೋಂದಣಿ</span></a>
+  {% endif %}
+</nav>
+
+<!-- Language Bar -->
+<div class="lang-bar">
+  <span>🌐 Language:</span>
+  <button class="lbtn active" onclick="setLang('en',this)">English</button>
+  <button class="lbtn" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+</div>
+
+<!-- Hero Section -->
+<div class="hero">
+  <div class="subtitle">✦ <span class="en">Digital Cultural Heritage</span><span class="kn">ಡಿಜಿಟಲ್ ಸಾಂಸ್ಕೃತಿಕ ಪರಂಪರೆ</span> ✦</div>
+  <h1>
+    <span class="en">Welcome to Banjara<br>Cultural Platform</span>
+    <span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ<br>ವೇದಿಕೆಗೆ ಸ್ವಾಗತ</span>
+  </h1>
+  <p>
+    <span class="en">Preserving and promoting the rich heritage, traditions, and spiritual legacy of the Banjara community for future generations.</span>
+    <span class="kn">ಭವಿಷ್ಯದ ಪೀಳಿಗೆಗಾಗಿ ಬಂಜಾರ ಸಮುದಾಯದ ಶ್ರೀಮಂತ ಪರಂಪರೆ, ಸಂಪ್ರದಾಯಗಳು ಮತ್ತು ಆಧ್ಯಾತ್ಮಿಕ ಪರಂಪರೆಯನ್ನು ಸಂರಕ್ಷಿಸುವ ಮತ್ತು ಪ್ರೋತ್ಸಾಹಿಸುವ ವೇದಿಕೆ.</span>
+  </p>
+  <div class="hero-btns">
+    <a href="/culture" class="btn-p">
+      🎭 <span class="en">Explore Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ ಅನ್ವೇಷಿಸಿ</span>
+    </a>
+    <a href="/ai_chat" class="btn-s">
+      🤖 <span class="en">Ask AI Assistant</span><span class="kn">AI ಸಹಾಯಕ</span>
+    </a>
+  </div>
+
+  <!-- Search Box -->
+  <div class="hero-search">
+    <h3>🔍 <span class="en">Search Banjara Knowledge</span><span class="kn">ಬಂಜಾರ ಜ್ಞಾನ ಹುಡುಕಿ</span></h3>
+    <div class="search-row">
+      <input type="text" id="main-search"
+        placeholder="Search festivals, temples, dress, food..."
+        oninput="doSearch()" onkeypress="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()">
+        <span class="en">Search</span><span class="kn">ಹುಡುಕು</span>
+      </button>
+    </div>
+    <div id="hero-results"></div>
+  </div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat"><div class="num">9+</div><div class="lbl"><span class="en">Culture Topics</span><span class="kn">ಸಾಂಸ್ಕೃತಿಕ ವಿಷಯಗಳು</span></div></div>
+  <div class="stat"><div class="num">9</div><div class="lbl"><span class="en">Sacred Temples</span><span class="kn">ಪವಿತ್ರ ದೇವಸ್ಥಾನಗಳು</span></div></div>
+  <div class="stat"><div class="num">7</div><div class="lbl"><span class="en">Seven Satis</span><span class="kn">ಸಾತಿ ಸತಿ</span></div></div>
+  <div class="stat"><div class="num">AI</div><div class="lbl"><span class="en">Smart Assistant</span><span class="kn">ಸ್ಮಾರ್ಟ್ ಸಹಾಯಕ</span></div></div>
+</div>
+
+<!-- Explore Section -->
+<div class="section">
+  <div class="sec-title">
+    <h2><span class="en">Explore Banjara Heritage</span><span class="kn">ಬಂಜಾರ ಪರಂಪರೆ ಅನ್ವೇಷಿಸಿ</span></h2>
+    <p><span class="en">Click any section to learn about the rich Banjara culture</span><span class="kn">ಶ್ರೀಮಂತ ಬಂಜಾರ ಸಂಸ್ಕೃತಿ ತಿಳಿಯಲು ಯಾವುದೇ ವಿಭಾಗ ಕ್ಲಿಕ್ ಮಾಡಿ</span></p>
+    <div class="divider"></div>
+  </div>
+  <!-- Hero Image Banner -->
+<div style="max-width:1050px;margin:0 auto 0;padding:0 30px">
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:30px">
+    <img src="static/static/images/OIP (4).webp" onerror="this.style.display='none'"
+      style="width:180px;height:130px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)">
+    <img src="static/static/images/images.jpg" onerror="this.style.display='none'"
+      style="width:180px;height:130px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)">
+    <img src="static/static/images/OIP (2).webp" onerror="this.style.display='none'"
+      style="width:180px;height:130px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)">
+    <img src="static/static/images/images (7).jpg" onerror="this.style.display='none'"
+      style="width:180px;height:130px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)">
+    <img src="/static/images/temples/poharadevi.jpg" onerror="this.style.display='none'"
+      style="width:180px;height:130px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)">
+  </div>
+</div>
+
+<div class="features">
+    <a href="/culture" class="fcard">
+      <div class="icon">🎭</div>
+      <h3><span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></h3>
+      <p><span class="en">Traditions, customs and lifestyle</span><span class="kn">ಸಂಪ್ರದಾಯ ಮತ್ತು ಜೀವನಶೈಲಿ</span></p>
+    </a>
+    <a href="/temples" class="fcard">
+      <div class="icon">🛕</div>
+      <h3><span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></h3>
+      <p><span class="en">Sacred pilgrimage sites</span><span class="kn">ಪವಿತ್ರ ತೀರ್ಥಕ್ಷೇತ್ರಗಳು</span></p>
+    </a>
+    <a href="/gallery" class="fcard">
+      <div class="icon">🖼️</div>
+      <h3><span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></h3>
+      <p><span class="en">Visual cultural stories</span><span class="kn">ದೃಶ್ಯ ಸಾಂಸ್ಕೃತಿಕ ಕಥೆಗಳು</span></p>
+    </a>
+    <a href="/quiz" class="fcard">
+      <div class="icon">📝</div>
+      <h3><span class="en">Quiz</span><span class="kn">ಕ್ವಿಜ್</span></h3>
+      <p><span class="en">Test your knowledge</span><span class="kn">ನಿಮ್ಮ ಜ್ಞಾನ ಪರೀಕ್ಷಿಸಿ</span></p>
+    </a>
+    <a href="/ai_chat" class="fcard">
+      <div class="icon">🤖</div>
+      <h3>AI <span class="en">Assistant</span><span class="kn">ಸಹಾಯಕ</span></h3>
+      <p><span class="en">Ask anything instantly</span><span class="kn">ತಕ್ಷಣ ಉತ್ತರ ಪಡೆಯಿರಿ</span></p>
+    </a>
+  </div>
+</div>
+
+<!-- Quick Facts -->
+<div class="quick-facts">
+  <div class="sec-title">
+    <h2><span class="en">Quick Facts About Banjara</span><span class="kn">ಬಂಜಾರದ ಬಗ್ಗೆ ತ್ವರಿತ ಮಾಹಿತಿ</span></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="facts-grid">
+    <div class="fact-box">
+      <div class="fi">🏰</div>
+      <h4><span class="en">Origin</span><span class="kn">ಮೂಲ</span></h4>
+      <p><span class="en">Mewar, Rajasthan — descendants of Rajput clans Chauhan, Rathod, Pawar</span><span class="kn">ಮೇವಾರ, ರಾಜಸ್ಥಾನ — ರಾಜಪುತ್ ವಂಶಸ್ಥರು</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">🗣️</div>
+      <h4><span class="en">Language</span><span class="kn">ಭಾಷೆ</span></h4>
+      <p><span class="en">Gor Boli (Lambani) — blend of Marwari, Gujarati, Hindi,Kannada, Marathi</span><span class="kn">ಗೋರ್ ಬೋಲಿ (ಲಂಬಾಡಿ) — ಮಾರವಾಡಿ, ಗುಜರಾತಿ, ಹಿಂದಿ, ಕನ್ನಡ ಮಿಶ್ರಣ</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">🧵</div>
+      <h4><span class="en">GI Status Art</span><span class="kn">GI ಟ್ಯಾಗ್ ಕಲೆ</span></h4>
+      <p><span class="en">Sandur Lambani embroidery has Geographical Indication status</span><span class="kn">ಸಂಡೂರು ಲಂಬಾಣಿ ಕಸೂತಿ ಭೌಗೋಳಿಕ ಸೂಚ್ಯಂಕ ಪಡೆದಿದೆ</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">🙏</div>
+      <h4><span class="en">Saint</span><span class="kn">ಸಂತ</span></h4>
+      <p><span class="en">Sant Sevalal Maharaj — born 15 Feb 1739, preached truth and non-violence</span><span class="kn">ಸಂತ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜ — ಜ. ಫೆ. 15, 1739</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">🐂</div>
+      <h4><span class="en">Occupation</span><span class="kn">ವೃತ್ತಿ</span></h4>
+      <p><span class="en">Nomadic salt and grain traders moving in Tanda caravans on bullocks</span><span class="kn">ಎತ್ತಿನ ಬಂಡಿ ತಾಂಡಾ ಕಾರವಾನ್‌ಗಳಲ್ಲಿ ಉಪ್ಪು ವ್ಯಾಪಾರ</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">⭐</div>
+      <h4><span class="en">Seven Satis</span><span class="kn">ಸಾತಿ ಸತಿ</span></h4>
+      <p><span class="en">7 ancestral female deities worshipped as stones under Jeenzero tree</span><span class="kn">ಜೀಂಜೆರೊ ಮರದಡಿ ಕಲ್ಲು ರೂಪದಲ್ಲಿ ಪೂಜಿಸಲಾಗುವ 7 ದೇವತೆಗಳು</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">🛕</div>
+      <h4><span class="en">Holy Place</span><span class="kn">ಪವಿತ್ರ ಸ್ಥಳ</span></h4>
+      <p><span class="en">• Suragondanakoppa(Bhayagad) - "Birthplace Of Sevalal Maharaj" in Davanagere, Karnataka <br>
+        • Poharadevi — "Kashi of Banjaras" in Washim, Maharashtra</span><span class="kn">• ಸೂರಗೊಂಡನಕೊಪ್ಪ (ಭಾಯಾಗಡ್) - "ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಜನ್ಮಸ್ಥಳ" ದಾವಣಗೆರೆ, ಕರ್ನಾಟಕ <br>
+          • ಪೋಹರದೇವಿ — "ಬಂಜಾರರ ಕಾಶಿ" ವಾಶಿಂ, ಮಹಾರಾಷ್ಟ್ರ</span></p>
+    </div>
+    <div class="fact-box">
+      <div class="fi">🏘️</div>
+      <h4><span class="en">Tanda System</span><span class="kn">ತಾಂಡಾ ವ್ಯವಸ್ಥೆ</span></h4>
+      <p><span class="en">Each settlement led by Naik (headman). White Jhanda flag in every Tanda</span><span class="kn">ನಾಯಕ ನೇತೃತ್ವದ ತಾಂಡಾ. ಪ್ರತಿ ತಾಂಡಾದಲ್ಲಿ ಬಿಳಿ ಝಂಡಾ ಧ್ವಜ</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- About Section -->
+<div class="about">
+  <h2>🌿 <span class="en">About This Platform</span><span class="kn">ಈ ವೇದಿಕೆಯ ಬಗ್ಗೆ</span></h2>
+  <p>
+    <span class="en">The Banjara community is one of India's most vibrant tribal communities with a history spanning centuries. This platform digitally preserves their rich cultural heritage using Artificial Intelligence and modern web technology — making it accessible to students, researchers, and community members worldwide.</span>
+    <span class="kn">ಬಂಜಾರ ಸಮುದಾಯ ಭಾರತದ ಅತ್ಯಂತ ಜೀವಂತ ಬುಡಕಟ್ಟು ಸಮುದಾಯಗಳಲ್ಲಿ ಒಂದು. ಈ ವೇದಿಕೆ ಕೃತ್ರಿಮ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಆಧುನಿಕ ತಂತ್ರಜ್ಞಾನ ಬಳಸಿ ಅವರ ಶ್ರೀಮಂತ ಸಾಂಸ್ಕೃತಿಕ ಪರಂಪರೆಯನ್ನು ಡಿಜಿಟಲ್ ರೂಪದಲ್ಲಿ ಸಂರಕ್ಷಿಸುತ್ತದೆ.</span>
+  </p>
+  <a href="/culture" class="btn-p">
+    <span class="en">Start Exploring →</span><span class="kn">ಅನ್ವೇಷಿಸಲು ಪ್ರಾರಂಭಿಸಿ →</span>
+  </a>
+</div>
+
+<footer>
+  🌿 <span class="en">Banjara Cultural Platform — Preserving Heritage Through Technology</span>
+  <span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ವೇದಿಕೆ — ತಂತ್ರಜ್ಞಾನದ ಮೂಲಕ ಪರಂಪರೆ ಸಂರಕ್ಷಣೆ</span>
+  &nbsp;|&nbsp; <a href="/admin" style="color:#ffd700">Admin</a>
+</footer>
+
+<script>
+// Language
+function setLang(lang, btn) {
+  document.querySelectorAll('.lbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.en').forEach(e => e.style.display = lang==='en' ? 'inline' : 'none');
+  document.querySelectorAll('.kn').forEach(e => e.style.display = lang==='kn' ? 'inline' : 'none');
+  const inp = document.getElementById('main-search');
+  inp.placeholder = lang==='en' ? 'Search festivals, temples, dress, food...' : 'ಹಬ್ಬ, ದೇವಸ್ಥಾನ, ಉಡುಗೆ ಹುಡುಕಿ...';
+}
+
+// Search Data
+const sdata = [
+  {title:'Banjara Origins — Rajasthan', desc:'Descendants of Rajput clans from Mewar, Rajasthan.', url:'/culture', tag:'History'},
+  {title:'Nomadic Tanda Caravans', desc:'Salt and grain merchants moving on bullock caravans.', url:'/culture', tag:'History'},
+  {title:'Phetiya & Kanchali Dress', desc:'Traditional Banjara dress with mirror work and embroidery.', url:'/culture', tag:'Dress'},
+  {title:'Sandur Lambani Embroidery GI', desc:'GI status embroidery with Shisha mirror work.', url:'/culture', tag:'Art'},
+  {title:'Baliya Kolda Bhuria Jewelry', desc:'Ivory bangles, brass anklets, silver nose ring.', url:'/culture', tag:'Dress'},
+  {title:'Sant Sevalal Maharaj', desc:'Born 15 Feb 1739. Most revered saint of Banjara community.', url:'/temples', tag:'Saint'},
+  {title:'Poharadevi — Kashi of Banjaras', desc:'Samadhi of Sevalal Maharaj. Most sacred pilgrimage site.', url:'/temples', tag:'Temple'},
+  {title:'Suragondankoppa Birthplace', desc:'Birthplace of Sevalal Maharaj, Davanagere Karnataka.', url:'/temples', tag:'Temple'},
+  {title:'Sevagad Fort Temple', desc:'Major Banjara spiritual center near Gooty, Andhra Pradesh.', url:'/temples', tag:'Temple'},
+  {title:'Sirsi Marikamba Temple', desc:'Connected to Sevalal Maharaj through divine power of Marikamba.', url:'/temples', tag:'Temple'},
+  {title:'Saati Sati — Seven Satis', desc:'7 ancestral female deities worshipped as stones under Jeenzero tree.', url:'/temples', tag:'Deity'},
+  {title:'Tokari Banaki Devi', desc:'Guardian goddess at Dasarahalli Tanda, Vijayanagara Karnataka.', url:'/temples', tag:'Temple'},
+  {title:'Bhima Sati — Dodda Ennegere', desc:'Banjara goddess at Dodda Ennegere, Tumakuru Karnataka.', url:'/temples', tag:'Temple'},
+  {title:'Sitasati Dakuraj — Katenahalli', desc:'Kuladevata of Banjara community at Katenahalli, Haveri.', url:'/temples', tag:'Temple'},
+  {title:'Gor Boli Language', desc:'Indo-Aryan language blending Marwari, Gujarati, Hindi.', url:'/culture', tag:'Language'},
+  {title:'Teej Festival — 9 Days', desc:'Girls sow wheat seeds and pray for marriage and rainfall.', url:'/culture', tag:'Festival'},
+  {title:'Holi — Langa Daphl Drums', desc:'Holi with traditional drums and circle folk dances.', url:'/culture', tag:'Festival'},
+  {title:'Sevalal Jayanti 15 February', desc:'Lakhs gather at Poharadevi for annual celebrations.', url:'/temples', tag:'Festival'},
+  {title:'Bajra Roti — Banjara Food', desc:'Pearl millet flatbread — main staple food.', url:'/culture', tag:'Food'},
+  {title:'Saloi — Traditional Meat Dish', desc:'Slow-cooked goat meat dish for special ceremonies.', url:'/culture', tag:'Food'},
+  {title:'Lapsi and Churma', desc:'Sacred sweet offerings to Saati Sati deities.', url:'/culture', tag:'Food'},
+  {title:'Dholak Folk Music', desc:'Main percussion instrument of Banjara festivals.', url:'/culture', tag:'Music'},
+  {title:'Tanda — Banjara Village', desc:'Banjara settlement led by Naik headman.', url:'/culture', tag:'Society'},
+  {title:'White Jhanda Flag', desc:'White flag in every Tanda symbolizing Sevalal Maharaj.', url:'/culture', tag:'Symbol'},
+  {title:'Criminal Tribes Act 1871', desc:'British unfairly branded Banjaras — forced from trade.', url:'/culture', tag:'History'},
+  {title:'Banjara Gallery', desc:'Visual stories of dress, temples, festivals and art.', url:'/gallery', tag:'Gallery'},
+  {title:'Cultural Quiz', desc:'Test your knowledge about Banjara traditions.', url:'/quiz', tag:'Quiz'},
+];
+
+function doSearch() {
+  const q = document.getElementById('main-search').value.toLowerCase().trim();
+  const box = document.getElementById('hero-results');
+  box.innerHTML = '';
+  if (q.length < 2) return;
+  const res = sdata.filter(d =>
+    d.title.toLowerCase().includes(q) ||
+    d.desc.toLowerCase().includes(q) ||
+    d.tag.toLowerCase().includes(q)
+  ).slice(0, 5);
+  if (res.length === 0) {
+    box.innerHTML = '<div style="background:rgba(255,255,255,.8);border-radius:8px;padding:10px 14px;color:#555;font-size:13px">No results found. Try: festivals, temples, dress, food, sevalal...</div>';
+    return;
+  }
+  res.forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'hresult';
+    d.innerHTML = `
+      <h4>${r.title} <span style="background:#8B1A1A;color:white;padding:1px 8px;border-radius:10px;font-size:10px">${r.tag}</span></h4>
+      <p>${r.desc} <a href="${r.url}">View →</a></p>`;
+    box.appendChild(d);
+  });
+}
+
+// Close search on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.hero-search')) {
+    document.getElementById('hero-results').innerHTML = '';
+  }
+});
+</script>
+</body>
+</html>

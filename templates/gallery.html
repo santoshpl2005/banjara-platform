@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Banjara Gallery</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#fef9f0}
+    nav{background:#8B1A1A;padding:14px 30px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+    nav .logo{color:#ffd700;font-size:17px;font-weight:bold;margin-right:auto}
+    nav a{color:white;text-decoration:none;font-size:14px;font-weight:bold}
+    nav a:hover{color:#ffd700}
+
+    /* Language Bar */
+    .lang-bar{background:#7B0F0F;padding:8px 30px;display:flex;justify-content:flex-end;gap:10px;align-items:center}
+    .lang-bar span{color:rgba(255,255,255,.7);font-size:13px}
+    .lbtn{padding:5px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.5);background:transparent;color:white;font-size:12px;cursor:pointer;font-weight:bold}
+    .lbtn.active{background:#ffd700;color:#8B1A1A;border-color:#ffd700}
+
+    .page-title{text-align:center;padding:46px 20px;background:linear-gradient(135deg,#6B0F0F,#8B1A1A);color:white}
+    .page-title h1{font-size:28px;margin-bottom:8px}
+    .page-title p{font-size:14px;opacity:.85}
+
+    .en{display:inline}.kn{display:none}
+
+    /* ── Section Tabs ── */
+    .section-tabs{display:flex;justify-content:center;gap:0;padding:0;background:white;border-bottom:3px solid #8B1A1A;flex-wrap:wrap}
+    .stab{padding:16px 28px;font-size:15px;font-weight:bold;color:#888;cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-3px;transition:all .2s;display:flex;align-items:center;gap:8px}
+    .stab:hover{color:#8B1A1A;background:#fef9f0}
+    .stab.active{color:#8B1A1A;border-bottom-color:#ffd700;background:#fef9f0}
+    .stab .count{background:#8B1A1A;color:white;padding:2px 8px;border-radius:20px;font-size:11px}
+    .stab.active .count{background:#ffd700;color:#8B1A1A}
+
+    /* ── Section Content ── */
+    .gsection{display:none;padding:0 0 60px}
+    .gsection.active{display:block}
+
+    /* ── Section Header ── */
+    .sec-banner{background:linear-gradient(135deg,#8B1A1A,#c0392b);color:white;padding:28px 30px;display:flex;align-items:center;gap:20px}
+    .sec-banner .sec-icon{font-size:48px}
+    .sec-banner h2{font-size:22px;margin-bottom:6px}
+    .sec-banner p{font-size:13px;opacity:.88;line-height:1.6}
+
+    /* ── Search & Filter (Photos) ── */
+    .photo-controls{padding:18px 24px;background:white;border-bottom:1px solid #eee;display:flex;flex-direction:column;gap:12px;align-items:center}
+    .search-row{display:flex;gap:10px;width:100%;max-width:560px}
+    .search-row input{flex:1;padding:11px 18px;border:2px solid #8B1A1A;border-radius:30px;font-size:14px;outline:none}
+    .filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .fbtn{padding:7px 16px;border-radius:30px;border:2px solid #8B1A1A;background:white;color:#8B1A1A;font-size:12px;font-weight:bold;cursor:pointer}
+    .fbtn.active,.fbtn:hover{background:#8B1A1A;color:white}
+
+    /* ── Photo Grid ── */
+    .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:24px;max-width:1100px;margin:0 auto}
+    .pcard{background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.09);cursor:pointer;transition:transform .2s;border-top:4px solid #8B1A1A}
+    .pcard:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(0,0,0,.15)}
+    .pcard-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:68px;position:relative;overflow:hidden}
+    .pcard-img img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+    .pcard-img .emoji{position:relative;z-index:1}
+    .pcard-img .catbadge{position:absolute;top:10px;right:10px;background:rgba(139,26,26,.9);color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:bold;z-index:2}
+    .pcard-body{padding:14px}
+    .pcard-body h3{color:#8B1A1A;font-size:15px;margin-bottom:5px}
+    .pcard-body .pdesc{color:#666;font-size:12px;line-height:1.6;margin-bottom:8px}
+    .pfact{background:#fff8e8;border-left:3px solid #ffd700;padding:7px 10px;border-radius:0 6px 6px 0;font-size:11px;color:#666}
+
+    /* ── Songs Grid ── */
+    .songs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;padding:24px;max-width:1100px;margin:0 auto}
+    .song-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.09);border-top:5px solid #8B1A1A}
+    .song-header{background:linear-gradient(135deg,#8B1A1A,#a52020);padding:20px;display:flex;align-items:center;gap:14px}
+    .song-icon{font-size:40px;background:rgba(255,255,255,.15);width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .song-header h3{color:white;font-size:15px;margin-bottom:4px}
+    .song-header p{color:rgba(255,255,255,.8);font-size:12px}
+    .song-body{padding:18px}
+    .song-body p{color:#555;font-size:13px;line-height:1.7;margin-bottom:14px}
+    .song-body audio{width:100%;border-radius:8px}
+    .song-tag{display:inline-block;background:#fdf0d0;color:#8B1A1A;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:bold;margin-top:8px;border:1px solid #f0d9a0}
+
+    /* YouTube Songs */
+    .yt-song{padding:0}
+    .yt-song iframe{width:100%;height:200px;border:none;display:block}
+    .yt-song .yt-info{padding:16px}
+    .yt-song .yt-info h3{color:#8B1A1A;font-size:15px;margin-bottom:4px}
+    .yt-song .yt-info p{color:#666;font-size:12px}
+
+    /* ── Videos Grid ── */
+    .videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px;padding:24px;max-width:1100px;margin:0 auto}
+    .video-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.09);border-top:5px solid #c0392b}
+    .video-card iframe{width:100%;height:220px;border:none;display:block}
+    .video-card video{width:100%;height:220px;background:#000;display:block}
+    .video-info{padding:16px}
+    .video-info h3{color:#8B1A1A;font-size:15px;margin-bottom:5px}
+    .video-info p{color:#666;font-size:12px;line-height:1.6}
+    .video-info .vtags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .vtag{background:#fde8e8;color:#8B1A1A;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:bold;border:1px solid #f5c6c6}
+
+    /* ── YouTube Videos Grid ── */
+    .yt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:22px;padding:24px;max-width:1100px;margin:0 auto}
+    .yt-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.09);border-top:5px solid #FF0000}
+    .yt-card iframe{width:100%;height:220px;border:none;display:block}
+    .yt-info{padding:16px}
+    .yt-info h3{color:#8B1A1A;font-size:15px;margin-bottom:5px}
+    .yt-info p{color:#666;font-size:12px;line-height:1.6}
+    .yt-badge{display:inline-block;background:#FF0000;color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:bold;margin-bottom:8px}
+
+    /* Upload box */
+    .upload-hint{background:#fef9f0;border:2px dashed #f0d9a0;border-radius:12px;padding:24px;text-align:center;margin:16px 24px;max-width:1052px;margin-left:auto;margin-right:auto}
+    .upload-hint p{color:#888;font-size:14px;margin-bottom:8px}
+    .upload-hint a{color:#8B1A1A;font-weight:bold;text-decoration:none}
+
+    /* Modal */
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.78);z-index:1000;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .mbox{background:white;border-radius:18px;padding:30px;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
+    .mclose{position:absolute;top:14px;right:16px;background:#8B1A1A;color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;font-weight:bold}
+    .mimgbox{height:220px;display:flex;align-items:center;justify-content:center;font-size:80px;border-radius:12px;margin-bottom:16px;overflow:hidden;position:relative}
+    .mimgbox img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+    .mbox h2{color:#8B1A1A;font-size:19px;margin-bottom:8px}
+    .mdesc{color:#444;font-size:14px;line-height:1.8;margin-bottom:10px}
+    .mfact{background:#fff8e8;border-left:4px solid #ffd700;padding:12px 14px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin-bottom:10px}
+    .mkan{background:#fef9f0;border:1px dashed #8B1A1A;border-radius:8px;padding:12px;font-size:13px;color:#555;line-height:1.9}
+
+    /* Empty state */
+    .empty{text-align:center;padding:60px 20px;color:#aaa}
+    .empty .ei{font-size:64px;margin-bottom:16px}
+    .empty p{font-size:16px;margin-bottom:8px}
+
+    footer{background:#4a0f0f;color:white;text-align:center;padding:20px;font-size:13px}
+    @media(max-width:768px){
+      nav{padding:10px 14px;gap:8px}
+      nav a{font-size:11px}
+      .stab{padding:12px 14px;font-size:13px}
+      .photo-grid{grid-template-columns:repeat(2,1fr);gap:12px;padding:14px}
+      .pcard-img{height:140px;font-size:48px}
+      .songs-grid,.videos-grid,.yt-grid{grid-template-columns:1fr;padding:14px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 <span class="en">Home</span><span class="kn">ಮುಖಪುಟ</span></a>
+  <a href="/culture">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></a>
+  <a href="/temples">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></a>
+  <a href="/gallery">🖼️ <span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></a>
+  <a href="/quiz">📝 Quiz</a>
+  <a href="/ai_chat">🤖 AI</a>
+  {% if session.get('user_id') %}
+    <a href="/profile" style="background:#ffd700;color:#8B1A1A;padding:6px 14px;border-radius:20px">👤 {{ session.get('user_name','').split()[0] }}</a>
+    <a href="/logout">🚪</a>
+  {% else %}
+    <a href="/login" style="background:#ffd700;color:#8B1A1A;padding:6px 14px;border-radius:20px;font-weight:bold">🔑 <span class="en">Login</span><span class="kn">ಲಾಗಿನ್</span></a>
+    <a href="/register">📝</a>
+  {% endif %}
+</nav>
+
+<!-- Language Bar -->
+<div class="lang-bar">
+  <span>🌐 <span class="en">Language</span><span class="kn">ಭಾಷೆ</span>:</span>
+  <button class="lbtn active" onclick="setLang('en',this)">English</button>
+  <button class="lbtn" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+</div>
+
+<!-- Page Title -->
+<div class="page-title">
+  <h1>🖼️ <span class="en">Banjara Cultural Gallery</span><span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ಗ್ಯಾಲರಿ</span></h1>
+  <p><span class="en">Explore Photos • Listen to Songs • Watch Videos • YouTube Content</span><span class="kn">ಫೋಟೋ • ಹಾಡು • ವಿಡಿಯೋ • ಯೂಟ್ಯೂಬ್</span></p>
+</div>
+
+<!-- ── Section Tabs ── -->
+<div class="section-tabs">
+  <div class="stab active" onclick="showSection('photos',this)">
+    📸 <span class="en">Photos</span><span class="kn">ಫೋಟೋ</span>
+    <span class="count">20</span>
+  </div>
+  <div class="stab" onclick="showSection('songs',this)">
+    🎵 <span class="en">Songs</span><span class="kn">ಹಾಡು</span>
+    <span class="count">6</span>
+  </div>
+  <div class="stab" onclick="showSection('videos',this)">
+    🎬 <span class="en">Videos</span><span class="kn">ವಿಡಿಯೋ</span>
+    <span class="count">4+</span>
+  </div>
+  <div class="stab" onclick="showSection('youtube',this)">
+    ▶️ <span class="en">YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್</span>
+    <span class="count">8</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — PHOTOS
+══════════════════════════════════════════ -->
+<div id="sec-photos" class="gsection active">
+  <div class="sec-banner">
+    <div class="sec-icon">📸</div>
+    <div>
+      <h2><span class="en">Photo Gallery — Visual Cultural Stories</span><span class="kn">ಫೋಟೋ ಗ್ಯಾಲರಿ — ದೃಶ್ಯ ಸಾಂಸ್ಕೃತಿಕ ಕಥೆಗಳು</span></h2>
+      <p><span class="en">Click any photo to see full details, interesting facts, and Kannada description</span><span class="kn">ಪೂರ್ಣ ವಿವರ ಮತ್ತು ಕನ್ನಡ ವಿವರಣೆ ನೋಡಲು ಯಾವುದೇ ಫೋಟೋ ಕ್ಲಿಕ್ ಮಾಡಿ</span></p>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <div class="photo-controls">
+    <div class="search-row">
+      <input type="text" id="psearch" placeholder="🔍 Search photos..." oninput="filterPhotos()">
+    </div>
+    <div class="filter-row">
+      <button class="fbtn active" onclick="filterCat('all',this)">🌟 <span class="en">All</span><span class="kn">ಎಲ್ಲ</span></button>
+      <button class="fbtn" onclick="filterCat('dress',this)">👗 <span class="en">Dress</span><span class="kn">ಉಡುಗೆ</span></button>
+      <button class="fbtn" onclick="filterCat('temple',this)">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></button>
+      <button class="fbtn" onclick="filterCat('festival',this)">🎉 <span class="en">Festivals</span><span class="kn">ಹಬ್ಬ</span></button>
+      <button class="fbtn" onclick="filterCat('art',this)">🧵 <span class="en">Art</span><span class="kn">ಕಲೆ</span></button>
+      <button class="fbtn" onclick="filterCat('food',this)">🍲 <span class="en">Food</span><span class="kn">ಆಹಾರ</span></button>
+      <button class="fbtn" onclick="filterCat('history',this)">📜 <span class="en">History</span><span class="kn">ಇತಿಹಾಸ</span></button>
+      <button class="fbtn" onclick="filterCat('karnataka',this)">🌿 Karnataka</button>
+    </div>
+  </div>
+
+  <!-- Admin uploaded images -->
+  {% if images %}
+  <div style="padding:8px 24px 0;max-width:1100px;margin:0 auto">
+    <p style="color:#8B1A1A;font-weight:bold;font-size:14px">📁 <span class="en">Admin Uploaded Photos</span><span class="kn">ಅಡ್ಮಿನ್ ಅಪ್‌ಲೋಡ್ ಫೋಟೋ</span></p>
+  </div>
+  <div class="photo-grid" style="padding-bottom:0">
+    {% for img in images %}
+    <div class="pcard">
+      <div class="pcard-img" style="background:#fdf0d0">
+        <img src="/static/{{ img[3] }}" alt="{{ img[1] }}">
+        <span class="catbadge">{{ img[4] }}</span>
+      </div>
+      <div class="pcard-body">
+        <h3>{{ img[1] }}</h3>
+        <div class="pdesc">{{ img[5] or '' }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="photo-grid" id="photo-grid"></div>
+
+  <!-- Upload hint -->
+  <div class="upload-hint">
+    <p>📁 <span class="en"><strong>Admin:</strong> Upload real photos via</span><span class="kn"><strong>ಅಡ್ಮಿನ್:</strong> ನೈಜ ಫೋಟೋ ಅಪ್‌ಲೋಡ್</span>
+    <a href="/admin/upload_media"> Admin Panel → Upload Media</a></p>
+    <p style="font-size:12px;color:#aaa"><span class="en">Supported: .jpg .png .webp • Section: gallery</span><span class="kn">ಬೆಂಬಲಿತ: .jpg .png .webp</span></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — SONGS / AUDIO
+══════════════════════════════════════════ -->
+<div id="sec-songs" class="gsection">
+  <div class="sec-banner">
+    <div class="sec-icon">🎵</div>
+    <div>
+      <h2><span class="en">Songs & Audio — Banjara Folk Music</span><span class="kn">ಹಾಡು & ಆಡಿಯೋ — ಬಂಜಾರ ಜಾನಪದ ಸಂಗೀತ</span></h2>
+      <p><span class="en">Listen to traditional Banjara folk songs, bhajans, and devotional music</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ಬಂಜಾರ ಜಾನಪದ ಹಾಡು, ಭಜನ್ ಮತ್ತು ಭಕ್ತಿ ಸಂಗೀತ ಕೇಳಿ</span></p>
+    </div>
+  </div>
+
+  <div class="songs-grid">
+
+    <!-- Song 1 — Sevalal Bhajan -->
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">🙏</div>
+        <div>
+          <h3><span class="en">Sevalal Maharaj Bhajan</span><span class="kn">ಸೇವಾಲಾಲ್ ಮಹಾರಾಜ ಭಜನ್</span></h3>
+          <p><span class="en">Devotional song for the great Banjara saint</span><span class="kn">ಮಹಾನ್ ಬಂಜಾರ ಸಂತರ ಭಕ್ತಿ ಹಾಡು</span></p>
+        </div>
+      </div>
+      <div class="song-body">
+        <p><span class="en">This devotional bhajan is sung at every Sevalal Jayanti celebration and at the Poharadevi temple. It praises the life and teachings of Sant Sevalal Maharaj — born 15 February 1739 at Suragondankoppa, Karnataka.</span><span class="kn">ಈ ಭಕ್ತಿ ಭಜನ್ ಪ್ರತಿ ಸೇವಾಲಾಲ್ ಜಯಂತಿ ಮತ್ತು ಪೋಹರದೇವಿ ದೇವಸ್ಥಾನದಲ್ಲಿ ಹಾಡಲಾಗುತ್ತದೆ.</span></p>
+        {% for a in audios %}{% if 'sevalal' in a[1].lower() or 'bhajan' in a[1].lower() %}
+        <audio controls><source src="/static/{{ a[3] }}" type="audio/mpeg"></audio>
+        {% endif %}{% endfor %}
+        <div style="background:#f5f5f5;border-radius:8px;padding:14px;text-align:center;margin-top:10px">
+          <p style="color:#888;font-size:12px;margin-bottom:8px"><span class="en">▶ Play on YouTube</span><span class="kn">▶ ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ಹಾಡು</span></p>
+          <a href="https://www.youtube.com/results?search_query=Sevalal+Maharaj+Bhajan+Banjara" target="_blank"
+            style="background:#FF0000;color:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:bold">
+            ▶️ <span class="en">Search on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ಹುಡುಕಿ</span>
+          </a>
+        </div>
+        <span class="song-tag">🙏 <span class="en">Devotional</span><span class="kn">ಭಕ್ತಿ</span></span>
+        <span class="song-tag">🛕 Poharadevi</span>
+      </div>
+    </div>
+
+    <!-- Song 2 — Geet Folk Song -->
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">🎵</div>
+        <div>
+          <h3><span class="en">Gor Boli Geet — Folk Song</span><span class="kn">ಗೋರ್ ಬೋಲಿ ಗೀತ್ — ಜಾನಪದ ಹಾಡು</span></h3>
+          <p><span class="en">Traditional oral history songs in Banjara language</span><span class="kn">ಬಂಜಾರ ಭಾಷೆಯ ಮೌಖಿಕ ಇತಿಹಾಸ ಹಾಡು</span></p>
+        </div>
+      </div>
+      <div class="song-body">
+        <p><span class="en">Banjara Geet are oral tradition songs sung in Gor Boli language. They preserve centuries of community history, love stories, and cultural values — passed down generation to generation without any written script.</span><span class="kn">ಬಂಜಾರ ಗೀತ್ ಗೋರ್ ಬೋಲಿ ಭಾಷೆಯ ಮೌಖಿಕ ಸಂಪ್ರದಾಯ ಹಾಡು. ಲಿಖಿತ ಲಿಪಿ ಇಲ್ಲದೆ ತಲೆಮಾರುಗಳ ಇತಿಹಾಸ ಕಾಪಾಡುತ್ತದೆ.</span></p>
+        {% for a in audios %}{% if 'geet' in a[1].lower() or 'folk' in a[1].lower() %}
+        <audio controls><source src="/static/{{ a[3] }}" type="audio/mpeg"></audio>
+        {% endif %}{% endfor %}
+        <div style="background:#f5f5f5;border-radius:8px;padding:14px;text-align:center;margin-top:10px">
+          <a href="https://www.youtube.com/results?search_query=Banjara+Lambani+Geet+folk+song" target="_blank"
+            style="background:#FF0000;color:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:bold">
+            ▶️ <span class="en">Search Banjara Geet on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ಗೀತ್ ಹುಡುಕಿ</span>
+          </a>
+        </div>
+        <span class="song-tag">🎵 <span class="en">Folk Song</span><span class="kn">ಜಾನಪದ</span></span>
+        <span class="song-tag">🗣️ Gor Boli</span>
+      </div>
+    </div>
+
+    <!-- Song 3 — Wedding Song -->
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">💒</div>
+        <div>
+          <h3><span class="en">Vivah Geet — Wedding Songs</span><span class="kn">ವಿವಾಹ ಗೀತ್ — ಮದುವೆ ಹಾಡು</span></h3>
+          <p><span class="en">Traditional songs sung during Banjara Biyav ceremony</span><span class="kn">ಬಂಜಾರ ಬಿಯಾವ್ ಮದುವೆ ಸಮಾರಂಭದ ಹಾಡು</span></p>
+        </div>
+      </div>
+      <div class="song-body">
+        <p><span class="en">Vivah Geet are special wedding songs sung by women during the entire Biyav (marriage) ceremony. From Sakhi Puja to the final feast — different songs are sung for each ritual. The songs bless the couple and celebrate the union.</span><span class="kn">ವಿವಾಹ ಗೀತ್ ಮದುವೆ ಸಮಾರಂಭದ ಪ್ರತಿ ಹಂತದಲ್ಲಿ ಮಹಿಳೆಯರು ಹಾಡುವ ವಿಶೇಷ ಹಾಡು.</span></p>
+        <div style="background:#f5f5f5;border-radius:8px;padding:14px;text-align:center;margin-top:10px">
+          <a href="https://www.youtube.com/results?search_query=Banjara+wedding+song+Vivah+Geet" target="_blank"
+            style="background:#FF0000;color:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:bold">
+            ▶️ <span class="en">Search Wedding Songs</span><span class="kn">ಮದುವೆ ಹಾಡು ಹುಡುಕಿ</span>
+          </a>
+        </div>
+        <span class="song-tag">💒 <span class="en">Wedding</span><span class="kn">ಮದುವೆ</span></span>
+        <span class="song-tag">🎵 Vivah Geet</span>
+      </div>
+    </div>
+
+    <!-- Song 4 — Dholak Music -->
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">🥁</div>
+        <div>
+          <h3><span class="en">Dholak — Festival Drum Music</span><span class="kn">ಢೋಲಕ್ — ಹಬ್ಬದ ಢೋಲ ಸಂಗೀತ</span></h3>
+          <p><span class="en">Traditional drum beats at Banjara celebrations</span><span class="kn">ಬಂಜಾರ ಹಬ್ಬಗಳ ಸಾಂಪ್ರದಾಯಿಕ ಢೋಲ ತಾಳ</span></p>
+        </div>
+      </div>
+      <div class="song-body">
+        <p><span class="en">The Dholak is the heartbeat of every Banjara celebration. Its rhythmic beats accompany festivals, weddings, and religious ceremonies. The Langa-Daphl is a special large drum used during Holi (Phag festival). These beats can be heard from miles away during major events.</span><span class="kn">ಢೋಲಕ್ ಪ್ರತಿ ಬಂಜಾರ ಆಚರಣೆಯ ಹೃದಯ ಬಡಿತ. ಲಂಗಾ-ದಾಫಲ್ ಹೋಳಿ ಹಬ್ಬದ ವಿಶೇಷ ದೊಡ್ಡ ಢೋಲ.</span></p>
+        {% for a in audios %}{% if 'dholak' in a[1].lower() or 'drum' in a[1].lower() %}
+        <audio controls><source src="/static/{{ a[3] }}" type="audio/mpeg"></audio>
+        {% endif %}{% endfor %}
+        <div style="background:#f5f5f5;border-radius:8px;padding:14px;text-align:center;margin-top:10px">
+          <a href="https://www.youtube.com/results?search_query=Banjara+Lambani+Dholak+folk+music" target="_blank"
+            style="background:#FF0000;color:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:bold">
+            ▶️ <span class="en">Search Dholak Music</span><span class="kn">ಢೋಲಕ್ ಸಂಗೀತ ಹುಡುಕಿ</span>
+          </a>
+        </div>
+        <span class="song-tag">🥁 Dholak</span>
+        <span class="song-tag">🎊 <span class="en">Festival Music</span><span class="kn">ಹಬ್ಬದ ಸಂಗೀತ</span></span>
+      </div>
+    </div>
+
+    <!-- Song 5 — Navratri Garba -->
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">💃</div>
+        <div>
+          <h3><span class="en">Navratri Geet — Garba Songs</span><span class="kn">ನವರಾತ್ರಿ ಗೀತ್ — ಗರ್ಬಾ ಹಾಡು</span></h3>
+          <p><span class="en">9 nights of devotional songs for Goddess Bhavani</span><span class="kn">ಭವಾನಿ ದೇವಿಗೆ 9 ರಾತ್ರಿ ಭಕ್ತಿ ಹಾಡು</span></p>
+        </div>
+      </div>
+      <div class="song-body">
+        <p><span class="en">During Navratri, Banjara women sing special Navratri Geet while performing Garba dance around the decorated Garbha pot. These songs praise Goddess Tulja Bhavani (Kuldevi) and bless the community for the coming year.</span><span class="kn">ನವರಾತ್ರಿ ಸಮಯದಲ್ಲಿ ಮಹಿಳೆಯರು ಗರ್ಬಾ ನೃತ್ಯ ಮಾಡುತ್ತಾ ತುಳಜಾ ಭವಾನಿ ಕುಲದೇವಿಯ ಸ್ತೋತ್ರ ಹಾಡುತ್ತಾರೆ.</span></p>
+        <div style="background:#f5f5f5;border-radius:8px;padding:14px;text-align:center;margin-top:10px">
+          <a href="https://www.youtube.com/results?search_query=Banjara+Navratri+Garba+song+Lambani" target="_blank"
+            style="background:#FF0000;color:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:bold">
+            ▶️ <span class="en">Search Navratri Songs</span><span class="kn">ನವರಾತ್ರಿ ಹಾಡು ಹುಡುಕಿ</span>
+          </a>
+        </div>
+        <span class="song-tag">💃 Navratri</span>
+        <span class="song-tag">🙏 <span class="en">Devotional</span><span class="kn">ಭಕ್ತಿ</span></span>
+      </div>
+    </div>
+
+    <!-- Song 6 — Valang Sacred Song -->
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">⭐</div>
+        <div>
+          <h3><span class="en">Valang — Sacred Saati Sati Songs</span><span class="kn">ವಾಲಂಗ್ — ಸಾತಿ ಸತಿ ಪವಿತ್ರ ಹಾಡು</span></h3>
+          <p><span class="en">Ancient oral songs preserving the stories of Seven Satis</span><span class="kn">ಏಳು ಸತಿಗಳ ಕಥೆ ಕಾಪಾಡುವ ಪ್ರಾಚೀನ ಮೌಖಿಕ ಹಾಡು</span></p>
+        </div>
+      </div>
+      <div class="song-body">
+        <p><span class="en">Valang are the most sacred oral songs in Banjara tradition. They preserve the complete theological history of the Seven Satis (Saati Sati) — sung only during religious ceremonies. These songs have been passed down through generations without any written form.</span><span class="kn">ವಾಲಂಗ್ ಬಂಜಾರ ಸಂಪ್ರದಾಯದ ಅತ್ಯಂತ ಪವಿತ್ರ ಮೌಖಿಕ ಹಾಡು. ಸಾತಿ ಸತಿ ಇತಿಹಾಸ ಕಾಪಾಡುತ್ತದೆ. ಲಿಖಿತ ರೂಪ ಇಲ್ಲದೆ ಪೀಳಿಗೆಗಳ ಮೂಲಕ ಹರಡಿದೆ.</span></p>
+        <div style="background:#f5f5f5;border-radius:8px;padding:14px;text-align:center;margin-top:10px">
+          <a href="https://www.youtube.com/results?search_query=Banjara+Valang+Saati+Sati+oral+song" target="_blank"
+            style="background:#FF0000;color:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:bold">
+            ▶️ <span class="en">Search Valang Songs</span><span class="kn">ವಾಲಂಗ್ ಹಾಡು ಹುಡುಕಿ</span>
+          </a>
+        </div>
+        <span class="song-tag">⭐ Valang</span>
+        <span class="song-tag">🪨 Saati Sati</span>
+      </div>
+    </div>
+
+    <!-- Upload Section for Admin Audio -->
+    {% if audios %}
+    {% for a in audios %}
+    {% if 'sevalal' not in a[1].lower() and 'geet' not in a[1].lower() and 'dholak' not in a[1].lower() %}
+    <div class="song-card">
+      <div class="song-header">
+        <div class="song-icon">🎵</div>
+        <div>
+          <h3>{{ a[1] }}</h3>
+          <p>{{ a[5] or '' }}</p>
+        </div>
+      </div>
+      <div class="song-body">
+        <audio controls style="width:100%">
+          <source src="/static/{{ a[3] }}" type="audio/mpeg">
+        </audio>
+        <span class="song-tag">📁 <span class="en">Uploaded</span><span class="kn">ಅಪ್‌ಲೋಡ್</span></span>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+  </div><!-- end songs-grid -->
+
+  <div class="upload-hint">
+    <p>🎵 <span class="en"><strong>Admin:</strong> Upload .mp3 audio files via</span><span class="kn"><strong>ಅಡ್ಮಿನ್:</strong> .mp3 ಫೈಲ್ ಅಪ್‌ಲೋಡ್</span>
+    <a href="/admin/upload_media"> Admin Panel → Upload Media</a></p>
+    <p style="font-size:12px;color:#aaa"><span class="en">Supported: .mp3 .wav .ogg • Section: gallery or culture</span><span class="kn">ಬೆಂಬಲಿತ: .mp3 .wav .ogg</span></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — VIDEOS
+══════════════════════════════════════════ -->
+<div id="sec-videos" class="gsection">
+  <div class="sec-banner">
+    <div class="sec-icon">🎬</div>
+    <div>
+      <h2><span class="en">Videos — Cultural Recordings</span><span class="kn">ವಿಡಿಯೋ — ಸಾಂಸ್ಕೃತಿಕ ರೆಕಾರ್ಡಿಂಗ್</span></h2>
+      <p><span class="en">Uploaded video recordings of Banjara festivals, dances, and cultural programs</span><span class="kn">ಬಂಜಾರ ಹಬ್ಬ, ನೃತ್ಯ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಕಾರ್ಯಕ್ರಮಗಳ ವಿಡಿಯೋ</span></p>
+    </div>
+  </div>
+
+  {% if videos %}
+  <div class="videos-grid">
+    {% for v in videos %}
+    <div class="video-card">
+      <video controls>
+        <source src="/static/{{ v[3] }}" type="video/mp4">
+        <span class="en">Your browser does not support video.</span><span class="kn">ನಿಮ್ಮ ಬ್ರೌಸರ್ ವಿಡಿಯೋ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.</span>
+      </video>
+      <div class="video-info">
+        <h3>🎬 {{ v[1] }}</h3>
+        <p>{{ v[5] or '' }}</p>
+        <div class="vtags">
+          <span class="vtag">📁 <span class="en">Uploaded</span><span class="kn">ಅಪ್‌ಲೋಡ್</span></span>
+          <span class="vtag">{{ v[4] }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="ei">🎬</div>
+    <p><span class="en"><strong>No videos uploaded yet</strong></span><span class="kn"><strong>ಇನ್ನೂ ವಿಡಿಯೋ ಅಪ್‌ಲೋಡ್ ಆಗಿಲ್ಲ</strong></span></p>
+    <p style="font-size:14px"><span class="en">Admin can upload .mp4 video files of Banjara festivals, dances and cultural programs</span><span class="kn">ಅಡ್ಮಿನ್ ಬಂಜಾರ ಹಬ್ಬ, ನೃತ್ಯ ವಿಡಿಯೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಬಹುದು</span></p>
+  </div>
+  {% endif %}
+
+  <div class="upload-hint">
+    <p>🎬 <span class="en"><strong>Admin:</strong> Upload .mp4 video files via</span><span class="kn"><strong>ಅಡ್ಮಿನ್:</strong> .mp4 ವಿಡಿಯೋ ಅಪ್‌ಲೋಡ್</span>
+    <a href="/admin/upload_media"> Admin Panel → Upload Media</a></p>
+    <p style="font-size:12px;color:#aaa"><span class="en">Supported: .mp4 .webm • Max size: depends on server</span><span class="kn">ಬೆಂಬಲಿತ: .mp4 .webm</span></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — YOUTUBE VIDEOS
+══════════════════════════════════════════ -->
+<div id="sec-youtube" class="gsection">
+  <div class="sec-banner" style="background:linear-gradient(135deg,#CC0000,#FF0000)">
+    <div class="sec-icon">▶️</div>
+    <div>
+      <h2><span class="en">YouTube — Banjara Cultural Videos</span><span class="kn">ಯೂಟ್ಯೂಬ್ — ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ವಿಡಿಯೋ</span></h2>
+      <p><span class="en">Curated YouTube videos about Banjara community — culture, festivals, temples and music</span><span class="kn">ಬಂಜಾರ ಸಮುದಾಯದ ಸಂಸ್ಕೃತಿ, ಹಬ್ಬ, ದೇವಸ್ಥಾನ ಮತ್ತು ಸಂಗೀತ ಯೂಟ್ಯೂಬ್ ವಿಡಿಯೋ</span></p>
+    </div>
+  </div>
+
+  <div class="yt-grid">
+
+    <!-- YT 1 — Lambani Culture Karnataka -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Lambani+culture+Karnataka+Banjara"
+        title="Lambani Culture Karnataka" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>🌿 <span class="en">Lambani Culture — Karnataka</span><span class="kn">ಲಂಬಾಣಿ ಸಂಸ್ಕೃತಿ — ಕರ್ನಾಟಕ</span></h3>
+        <p><span class="en">Banjara Lambani community culture, traditions and lifestyle of Karnataka</span><span class="kn">ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಸಮುದಾಯ ಸಂಸ್ಕೃತಿ ಮತ್ತು ಜೀವನಶೈಲಿ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Lambani+culture+Karnataka+Banjara" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 2 — Sevalal Jayanti -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Sevalal+Maharaj+Jayanti+Poharadevi"
+        title="Sevalal Jayanti" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>🙏 <span class="en">Sevalal Jayanti — Poharadevi</span><span class="kn">ಸೇವಾಲಾಲ್ ಜಯಂತಿ — ಪೋಹರದೇವಿ</span></h3>
+        <p><span class="en">Annual Sevalal Maharaj Jayanti celebrations at Poharadevi — "Kashi of Banjaras"</span><span class="kn">ಪೋಹರದೇವಿ "ಬಂಜಾರರ ಕಾಶಿ" ಸೇವಾಲಾಲ್ ಜಯಂತಿ ಆಚರಣೆ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Sevalal+Maharaj+Jayanti+Poharadevi+celebration" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 3 — Banjara Wedding -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Banjara+Lambani+wedding+dance+tradition"
+        title="Banjara Wedding" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>💒 <span class="en">Banjara Wedding (Biyav)</span><span class="kn">ಬಂಜಾರ ಮದುವೆ (ಬಿಯಾವ್)</span></h3>
+        <p><span class="en">Traditional Banjara marriage rituals — Sakhi Puja, Haldi, Phera and community feast</span><span class="kn">ಸಾಂಪ್ರದಾಯಿಕ ಬಂಜಾರ ವಿವಾಹ ಆಚರಣೆ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Banjara+Lambani+wedding+dance+rituals" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 4 — Sandur Embroidery -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Sandur+Lambani+embroidery+GI+Karnataka"
+        title="Sandur Lambani Embroidery" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>🧵 <span class="en">Sandur Lambani Embroidery — GI Art</span><span class="kn">ಸಂದೂರ್ ಲಂಬಾಣಿ ಕಸೂತಿ — GI ಕಲೆ</span></h3>
+        <p><span class="en">World-famous GI status embroidery art of Karnataka Lambani women — Shisha mirror work</span><span class="kn">ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಮಹಿಳೆಯರ ಜಗತ್ಪ್ರಸಿದ್ಧ GI ಕಸೂತಿ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Sandur+Lambani+embroidery+GI+Karnataka+art" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 5 — Banjara Holi -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Banjara+Lambani+Holi+Phag+festival+dance"
+        title="Banjara Holi" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>🎊 <span class="en">Banjara Holi — Phag Festival</span><span class="kn">ಬಂಜಾರ ಹೋಳಿ — ಫಾಗ್ ಹಬ್ಬ</span></h3>
+        <p><span class="en">Colorful 5-day Banjara Holi with Langa-Daphl drums and circle folk dances</span><span class="kn">ಲಂಗಾ-ದಾಫಲ್ ಢೋಲ ಮತ್ತು ವೃತ್ತಾಕಾರ ನೃತ್ಯ ಬಣ್ಣದ 5 ದಿನ ಹೋಳಿ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Banjara+Lambani+Holi+Phag+festival" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 6 — Suggi Dance -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Lambani+Suggi+dance+Karnataka+harvest"
+        title="Suggi Dance" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>🌾 <span class="en">Suggi Dance — Karnataka Harvest</span><span class="kn">ಸುಗ್ಗಿ ನೃತ್ಯ — ಕರ್ನಾಟಕ ಕೊಯ್ಲು</span></h3>
+        <p><span class="en">Karnataka Lambani harvest festival dance celebrating good crops and thanking Mother Earth</span><span class="kn">ಕರ್ನಾಟಕ ಲಂಬಾಣಿ ಕೊಯ್ಲು ಹಬ್ಬ ಭೂಮಿ ತಾಯಿಗೆ ಕೃತಜ್ಞತೆ ನೃತ್ಯ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Lambani+Suggi+dance+Karnataka+harvest+festival" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 7 — Suragondankoppa Birthplace -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Suragondankoppa+Sevalal+birthplace+Davanagere"
+        title="Suragondankoppa" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>🌱 <span class="en">Suragondankoppa — Sevalal's Birthplace</span><span class="kn">ಸೂರಗೊಂಡನಕೊಪ್ಪ — ಸೇವಾಲಾಲ್ ಜನ್ಮಸ್ಥಳ</span></h3>
+        <p><span class="en">The sacred birthplace of Sant Sevalal Maharaj in Honnali Taluk, Davanagere, Karnataka</span><span class="kn">ಸಂತ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಪವಿತ್ರ ಜನ್ಮಸ್ಥಳ — ಹೊನ್ನಾಳಿ ತಾಲ್ಲೂಕು, ದಾವಣಗೆರೆ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Suragondankoppa+Sevalal+Maharaj+birthplace+Karnataka" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- YT 8 — Saati Sati Worship -->
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed?listType=search&list=Banjara+Saati+Sati+seven+satis+worship"
+        title="Saati Sati" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>⭐ <span class="en">Saati Sati — Seven Sacred Goddesses</span><span class="kn">ಸಾತಿ ಸತಿ — ಏಳು ಪವಿತ್ರ ದೇವತೆಗಳು</span></h3>
+        <p><span class="en">The Seven Satis worship, Valang songs, and sacred traditions of the Banjara community</span><span class="kn">ಸಾತಿ ಸತಿ ಪೂಜೆ, ವಾಲಂಗ್ ಹಾಡು ಮತ್ತು ಬಂಜಾರ ಪವಿತ್ರ ಸಂಪ್ರದಾಯ</span></p>
+        <a href="https://www.youtube.com/results?search_query=Banjara+Saati+Sati+seven+satis+Valang+song" target="_blank"
+          style="display:inline-block;margin-top:10px;background:#FF0000;color:white;padding:6px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+
+  </div><!-- end yt-grid -->
+</div>
+
+<!-- ── Modal ── -->
+<div class="modal" id="modal" onclick="closeModal(event)">
+  <div class="mbox">
+    <button class="mclose" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="mimgbox" id="m-imgbox"></div>
+    <h2 id="m-title"></h2>
+    <div class="mdesc" id="m-desc"></div>
+    <div class="mfact" id="m-fact"></div>
+    <div class="mkan" id="m-kan"></div>
+  </div>
+</div>
+
+<footer>🌿 <span class="en">Banjara Cultural Platform — Preserving Heritage Through Technology</span><span class="kn">ಬಂಜಾರ ಸಾಂಸ್ಕೃತಿಕ ವೇದಿಕೆ — ತಂತ್ರಜ್ಞಾನದ ಮೂಲಕ ಪರಂಪರೆ ಸಂರಕ್ಷಣೆ</span></footer>
+
+<script>
+// ── Photo Data ──
+const photos=[
+  {icon:'👗',bg:'#fdf0d0',cat:'dress',img:'',t:'Phetiya — Traditional Ghagra Skirt',
+   en:'The Phetiya is the high-waist skirt worn by Banjara women in vibrant red, yellow and blue. Heavily embroidered with Shisha mirror work.',
+   fact:'🌟 A single Phetiya can have hundreds of hand-sewn mirrors.',
+   kan:'🇮🇳 ಫೆಟಿಯಾ ಕೆಂಪು, ಹಳದಿ, ನೀಲಿ ಬಣ್ಣ. ಕನ್ನಡಿ ಕಸೂತಿ.'},
+  {icon:'👚',bg:'#fde8e8',cat:'dress',img:'',t:'Kanchali — Embroidered Blouse',
+   en:'Traditional blouse with Shisha mirrors, beads and cowrie shells. Takes 2-4 weeks to hand-embroider.',
+   fact:'⏰ Each Kanchali is a unique work of art — no two are identical.',
+   kan:'🇮🇳 ಕಂಚಲಿ ಶೀಶ ಕನ್ನಡಿ, ಮಣಿ, ಚಿಪ್ಪು. 2-4 ವಾರ ಹೊಲಿಯಲು ಬೇಕು.'},
+  {icon:'💎',bg:'#fff0f8',cat:'dress',img:'',t:'Baliya — Ivory Bangles',
+   en:'Ivory bangles worn from wrist to shoulder. Up to 40 bangles per arm — symbol of marital status.',
+   fact:'💍 More Baliya bangles = more blessings for the marriage.',
+   kan:'🇮🇳 ಬಾಲಿಯಾ ದಂತ ಬಳೆ. 40 ಬಳೆ ತೊಡಬಹುದು. ಮದುವೆ ಸಂಕೇತ.'},
+  {icon:'🦶',bg:'#e8f0ff',cat:'dress',img:'',t:'Kolda — Brass Anklets',
+   en:'Heavy brass anklets creating musical sound while dancing. Engraved with Banjara geometric patterns.',
+   fact:'🎵 The sound of Kolda is believed to call the goddess to bless the dance.',
+   kan:'🇮🇳 ಕೋಲ್ಡಾ ಹಿತ್ತಾಳೆ ಕಾಲ್ಗೆಜ್ಜೆ. ನೃತ್ಯದಲ್ಲಿ ಸಂಗೀತ ಶಬ್ದ.'},
+  {icon:'👃',bg:'#fff8e8',cat:'dress',img:'',t:'Bhuria — Silver Nose Ring',
+   en:'Large silver nose ring — most recognizable Banjara jewelry. Sometimes connected to ear with a chain.',
+   fact:'👃 Bhuria is passed down as a family heirloom from mother to daughter.',
+   kan:'🇮🇳 ಭೂರಿಯಾ ಬೆಳ್ಳಿ ಮೂಗುತಿ. ತಲೆಮಾರಿನ ಆಭರಣ.'},
+  {icon:'🔵',bg:'#e8f5e8',cat:'dress',img:'',t:'Gudna — Traditional Tattoo',
+   en:'Traditional Banjara tattoos identify family clan and Tanda lineage. Geometric and floral patterns on hands, arms, neck and face.',
+   fact:'🖋️ Each tattoo pattern identifies exactly which Tanda and family clan the woman belongs to.',
+   kan:'🇮🇳 ಗುದ್ನ ಹಚ್ಚೆ ಕುಟುಂಬ ಕುಲ ಗುರುತಿಸುತ್ತದೆ.'},
+  {icon:'🌱',bg:'#e8f5e8',cat:'temple',img:'',t:'Suragondankoppa — Sevalal Birthplace',
+   en:'Sacred birthplace of Sant Sevalal Maharaj in Honnali Taluk, Davanagere, Karnataka. Born 15 February 1739.',
+   fact:'🌱 The exact spot of Sevalal\'s birth is marked by a temple — pilgrims visit throughout the year.',
+   kan:'🇮🇳 ಸೇವಾಲಾಲ್ ಜನ್ಮಸ್ಥಳ ಸೂರಗೊಂಡನಕೊಪ್ಪ, ದಾವಣಗೆರೆ.'},
+  {icon:'🛕',bg:'#fde8e8',cat:'temple',img:'',t:'Poharadevi — Kashi of Banjaras',
+   en:'Samadhi of Sevalal Maharaj (4 Dec 1806). Known as "Kashi of Banjaras." Visited by Narendra Modi.',
+   fact:'🛕 What Varanasi is to Hindus — Poharadevi is to the Banjara community.',
+   kan:'🇮🇳 "ಬಂಜಾರರ ಕಾಶಿ" ಪೋಹರದೇವಿ — ಸೇವಾಲಾಲ್ ಸಮಾಧಿ.'},
+  {icon:'⭐',bg:'#f5e8ff',cat:'temple',img:'',t:'Saati Sati — Seven Sacred Stones',
+   en:'Seven ancestral female deities worshipped as stones under Jeenzero or Neem tree.',
+   fact:'🪨 Only vegetarian Lapsi and Churma offered to Seven Satis — never meat.',
+   kan:'🇮🇳 ಸಾತಿ ಸತಿ 7 ಕಲ್ಲಿನ ರೂಪ. ಜೀಂಝೆರೋ ಮರದಡಿ ಪೂಜೆ.'},
+  {icon:'🎉',bg:'#fff0e8',cat:'festival',img:'',t:'Sevalal Jayanti — 15 February',
+   en:'Most important Banjara festival. Lakhs gather at Poharadevi. Every Tanda hoists white Jhanda flag.',
+   fact:'📅 On Jayanti every Banjara home lights 108 lamps at sunrise.',
+   kan:'🇮🇳 ಫೆ. 15 ಸೇವಾಲಾಲ್ ಜಯಂತಿ. ಪ್ರತಿ ಮನೆ 108 ದೀಪ.'},
+  {icon:'💒',bg:'#f8e8ff',cat:'festival',img:'',t:'Banjara Biyav — Marriage',
+   en:'Multi-day wedding: Sakhi Puja, Haldi, Toran, horse groom, Phera 7 rounds of sacred fire, community feast.',
+   fact:'🐴 Groom must arrive on decorated horse (Ghodi) — otherwise inauspicious.',
+   kan:'🇮🇳 ಬಿಯಾವ್ — ಕುದುರೆ ವರ, ಫೇರಾ 7 ಅಗ್ನಿ ಪ್ರದಕ್ಷಿಣೆ.'},
+  {icon:'🌾',bg:'#e8ffe8',cat:'festival',img:'',t:'Teej — 9-Day Wheat Festival',
+   en:'Girls sow wheat seeds in baskets and pray 9 days for good marriage and rainfall.',
+   fact:'🌾 First time young girls display full traditional Banjara dress during Teej.',
+   kan:'🇮🇳 9 ದಿನ ಗೋಧಿ ಬಿತ್ತಿ ಮದುವೆ ಮತ್ತು ಮಳೆಗೆ ಪ್ರಾರ್ಥನೆ.'},
+  {icon:'🎊',bg:'#fff0e8',cat:'festival',img:'',t:'Banjara Holi — Phag',
+   en:'5-day Holi with Langa-Daphl drums and circle dances. Natural colors made from flowers.',
+   fact:'🌺 Banjara Holi uses only flower-made natural colors — no synthetic chemicals!',
+   kan:'🇮🇳 5 ದಿನ ಫಾಗ್ — ಹೂ ಬಣ್ಣ, ಲಂಗಾ-ದಾಫಲ್ ಢೋಲ.'},
+  {icon:'🧵',bg:'#e8ffe8',cat:'art',img:'',t:'Sandur Lambani Embroidery — GI',
+   en:'World-famous Lambani embroidery with Shisha mirrors. GI status. Exported to Japan, USA, Europe.',
+   fact:'🏆 Displayed at Paris, Milan and New York fashion shows!',
+   kan:'🇮🇳 ಸಂದೂರ್ GI ಕಸೂತಿ ಪ್ಯಾರಿಸ್, ನ್ಯೂಯಾರ್ಕ್‌ನಲ್ಲಿ ಪ್ರದರ್ಶನ.'},
+  {icon:'🎨',bg:'#fff0f8',cat:'art',img:'',t:'Mirror Work (Shisha)',
+   en:'Art of embedding tiny mirrors into embroidery. 30x30cm piece can have over 500 individual mirrors.',
+   fact:'✨ Each mirror is hand-cut and individually sewn — pure handcraft artistry.',
+   kan:'🇮🇳 ಶೀಶ ಕಸೂತಿ 500 ಕನ್ನಡಿ. ಪ್ರತಿ ಕನ್ನಡಿ ಕೈಯಿಂದ ಕತ್ತರಿಸಿ ಹೊಲಿಯಲಾಗುತ್ತದೆ.'},
+  {icon:'💼',bg:'#fdf0d0',cat:'art',img:'',t:'Banjara Beaded Bags & Handicrafts',
+   en:'Colorful beaded bags, purses and wall hangings. Supports 50,000+ artisan families in Karnataka.',
+   fact:'💰 Karnataka has the largest Lambani artisan community in India.',
+   kan:'🇮🇳 ಕರ್ನಾಟಕ 50,000+ ಲಂಬಾಣಿ ಕಲಾವಿದ ಕುಟುಂಬ.'},
+  {icon:'🫓',bg:'#fff8e8',cat:'food',img:'',t:'Bajra Roti — Pearl Millet Bread',
+   en:'Gluten-free pearl millet flatbread. Main staple food. Stays fresh without refrigeration — perfect for nomads.',
+   fact:'🌾 Bajra is high in protein, fiber and iron — the perfect nomadic food.',
+   kan:'🇮🇳 ಬಜ್ರಾ ರೊಟ್ಟಿ ಗ್ಲೂಟೆನ್ ಮುಕ್ತ. ಅಲೆಮಾರಿ ಜೀವನಕ್ಕೆ ಸೂಕ್ತ.'},
+  {icon:'🍖',bg:'#fde8e8',cat:'food',img:'',t:'Saloi — Ceremonial Goat Meat',
+   en:'Slow-cooked goat meat with Guntur chilies. Made only for weddings and major festivals.',
+   fact:'🌶️ Guntur chilies used in Saloi are among India\'s hottest — legendary Banjara spice!',
+   kan:'🇮🇳 ಸಾಲೋಯಿ ಗಂಟೂರ ಮೆಣಸು — ಭಾರತದ ಅತ್ಯಂತ ಖಾರ.'},
+  {icon:'🍯',bg:'#fff0d0',cat:'food',img:'',t:'Lapsi — Sacred Sweet',
+   en:'Broken wheat with ghee and jaggery. Must be offered to Saati Sati before any religious ceremony.',
+   fact:'⭐ No Banjara ceremony can begin without first offering Lapsi to the Seven Satis.',
+   kan:'🇮🇳 ಲಾಪ್ಸಿ ಸಾತಿ ಸತಿ ಪ್ರಥಮ ನೈವೇದ್ಯ.'},
+  {icon:'🌿',bg:'#e8ffe8',cat:'karnataka',img:'',t:'Karnataka Lambani — 50 Lakh Community',
+   en:'Karnataka has the largest Lambani population in India — over 50 lakh. Bellary, Koppal, Raichur, Davanagere, Haveri are major districts.',
+   fact:'🗺️ Karnataka is the heartland of Banjara culture in South India.',
+   kan:'🇮🇳 ಕರ್ನಾಟಕ 50 ಲಕ್ಷ ಲಂಬಾಣಿ — ದಕ್ಷಿಣ ಭಾರತದ ಬಂಜಾರ ಕೇಂದ್ರ.'},
+];
+
+let currentCat='all';
+
+function renderPhotos(){
+  const grid=document.getElementById('photo-grid');
+  const q=document.getElementById('psearch')?.value.toLowerCase()||'';
+  const filtered=photos.filter(p=>(currentCat==='all'||p.cat===currentCat)&&(q===''||p.t.toLowerCase().includes(q)||p.en.toLowerCase().includes(q)));
+  grid.innerHTML='';
+  if(!filtered.length){grid.innerHTML='<p style="text-align:center;color:#888;padding:40px;grid-column:1/-1">No photos found.</p>';return;}
+  filtered.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='pcard';
+    d.innerHTML=`
+      <div class="pcard-img" style="background:${p.bg}">
+        ${p.img?`<img src="${p.img}" alt="${p.t}" onerror="this.style.display='none'">`:''}
+        <span class="emoji">${p.icon}</span>
+        <span class="catbadge">${p.cat}</span>
+      </div>
+      <div class="pcard-body">
+        <h3>${p.t}</h3>
+        <div class="pdesc">${p.en.substring(0,85)}...</div>
+        <div class="pfact">${p.fact.substring(0,75)}...</div>
+      </div>`;
+    d.onclick=()=>openModal(p);
+    grid.appendChild(d);
+  });
+}
+
+function filterCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPhotos();
+}
+
+function filterPhotos(){renderPhotos();}
+
+function openModal(p){
+  const ib=document.getElementById('m-imgbox');
+  ib.style.background=p.bg;
+  ib.innerHTML=p.img?`<img src="${p.img}" alt="${p.t}" onerror="this.style.display='none'"><span style="position:relative;z-index:1;font-size:70px">${p.icon}</span>`:`<span style="font-size:80px">${p.icon}</span>`;
+  document.getElementById('m-title').textContent=p.t;
+  document.getElementById('m-desc').textContent=p.en;
+  document.getElementById('m-fact').textContent=p.fact;
+  document.getElementById('m-kan').textContent=p.kan;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e){if(e.target.id==='modal')document.getElementById('modal').classList.remove('open');}
+
+// ── Section Switching ──
+function showSection(name,tab){
+  document.querySelectorAll('.gsection').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  tab.classList.add('active');
+  window.scrollTo({top:300,behavior:'smooth'});
+}
+
+// ── Language Toggle ──
+function setLang(lang,btn){
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.en').forEach(e=>e.style.display=lang==='en'?'inline':'none');
+  document.querySelectorAll('.kn').forEach(e=>e.style.display=lang==='kn'?'inline':'none');
+  document.querySelectorAll('.kn-block').forEach(e=>e.style.display=lang==='kn'?'block':'none');
+}
+
+renderPhotos();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# VS Code
+.vscode/
+
+# Database passwords — keep secret!
+config.py
+
+# Uploaded files (too large for GitHub)
+static/images/
+static/audio/
+static/videos/
+
+# Other
+*.zip
+*.log
+.DS_Store

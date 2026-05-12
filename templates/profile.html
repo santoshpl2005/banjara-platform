@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#fef9f0}
+    nav{background:#8B1A1A;padding:14px 30px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+    nav .logo{color:#ffd700;font-size:17px;font-weight:bold;margin-right:auto}
+    nav a{color:white;text-decoration:none;font-size:14px;font-weight:bold}
+    nav a:hover{color:#ffd700}
+    .container{max-width:700px;margin:40px auto;padding:0 20px}
+    .profile-card{background:white;border-radius:20px;padding:40px;box-shadow:0 6px 24px rgba(0,0,0,.1);text-align:center}
+    .avatar{width:90px;height:90px;background:linear-gradient(135deg,#8B1A1A,#c0392b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px}
+    .profile-card h2{color:#8B1A1A;font-size:22px;margin-bottom:6px}
+    .profile-card .email{color:#888;font-size:14px;margin-bottom:24px}
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;text-align:left}
+    .info-box{background:#fef9f0;border-radius:10px;padding:14px;border:1px solid #f0d9a0}
+    .info-box label{display:block;color:#888;font-size:11px;margin-bottom:4px}
+    .info-box span{color:#333;font-size:15px;font-weight:bold}
+    .btn-row{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+    .btn{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none;border:none}
+    .btn-primary{background:#8B1A1A;color:white}
+    .btn-secondary{background:white;color:#8B1A1A;border:2px solid #8B1A1A}
+    .btn-danger{background:#dc3545;color:white}
+    .badge{display:inline-block;background:#fdf0d0;color:#8B1A1A;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:bold;margin-top:8px}
+  </style>
+</head>
+<body>
+<nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 Home</a>
+  <a href="/culture">🎭 Culture</a>
+  <a href="/temples">🛕 Temples</a>
+  <a href="/gallery">🖼️ Gallery</a>
+  <a href="/quiz">📝 Quiz</a>
+  <a href="/ai_chat">🤖 AI</a>
+</nav>
+<div class="container">
+  <div class="profile-card">
+    <div class="avatar">👤</div>
+    <h2>{{ user[1] }}</h2>
+    <div class="email">{{ user[2] }}</div>
+    <span class="badge">🌿 Banjara Platform Member</span>
+    <div class="info-grid">
+      <div class="info-box"><label>👤 Full Name</label><span>{{ user[1] }}</span></div>
+      <div class="info-box"><label>📧 Email</label><span>{{ user[2] }}</span></div>
+      <div class="info-box"><label>📅 Member Since</label><span>{{ user[4].strftime('%d %b %Y') if user[4] else 'N/A' }}</span></div>
+      <div class="info-box"><label>🏅 Status</label><span>Active Member</span></div>
+    </div>
+    <div class="btn-row">
+      <a href="/" class="btn btn-primary">🏠 Go to Home</a>
+      <a href="/ai_chat" class="btn btn-secondary">🤖 Ask AI</a>
+      <a href="/logout" class="btn btn-danger">🚪 Logout</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

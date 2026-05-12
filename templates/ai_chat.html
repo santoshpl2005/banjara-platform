@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Assistant</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background-color: #fef9f0; }
+    nav { background-color: #8B1A1A; padding: 14px 30px; display: flex; gap: 24px; }
+    nav a { color: white; text-decoration: none; font-size: 16px; font-weight: bold; }
+    nav a:hover { color: #ffd700; }
+    .page-title {
+      text-align: center; padding: 40px;
+      background-color: #8B1A1A; color: white;
+    }
+    .page-title h1 { font-size: 32px; }
+    .page-title p { font-size: 16px; margin-top: 8px; opacity: 0.9; }
+    .chat-container {
+      max-width: 700px; margin: 40px auto; padding: 0 20px;
+    }
+    .chat-box {
+      background: white; border-radius: 12px;
+      padding: 20px; min-height: 350px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px; overflow-y: auto;
+      max-height: 400px;
+    }
+    .message { margin-bottom: 16px; }
+    .message.user { text-align: right; }
+    .message.bot { text-align: left; }
+    .bubble {
+      display: inline-block; padding: 12px 18px;
+      border-radius: 18px; max-width: 80%;
+      font-size: 15px; line-height: 1.5;
+    }
+    .user .bubble { background: #8B1A1A; color: white; }
+    .bot .bubble { background: #f0f0f0; color: #333; }
+    .input-row {
+      display: flex; gap: 12px;
+    }
+    .input-row input {
+      flex: 1; padding: 14px 18px;
+      border: 2px solid #8B1A1A; border-radius: 30px;
+      font-size: 15px; outline: none;
+    }
+    .input-row button {
+      background: #8B1A1A; color: white;
+      border: none; padding: 14px 28px;
+      border-radius: 30px; font-size: 15px;
+      cursor: pointer; font-weight: bold;
+    }
+    .input-row button:hover { background: #a52020; }
+    .suggestions {
+      display: flex; flex-wrap: wrap;
+      gap: 10px; margin-bottom: 16px;
+    }
+    .suggestions button {
+      background: white; border: 2px solid #8B1A1A;
+      color: #8B1A1A; padding: 8px 16px;
+      border-radius: 20px; font-size: 13px;
+      cursor: pointer;
+    }
+    .suggestions button:hover { background: #8B1A1A; color: white; }
+  </style>
+</head>
+<body>
+
+ <nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 <span class="en">Home</span><span class="kn">ಮುಖಪುಟ</span></a>
+  <a href="/culture">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></a>
+  <a href="/temples">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></a>
+  <a href="/gallery">🖼️ <span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></a>
+  <a href="/quiz">📝 <span class="en">Quiz</span><span class="kn">ಕ್ವಿಜ್</span></a>
+  <a href="/ai_chat">🤖 AI</a>
+  {% if session.get('user_id') %}
+    <a href="/profile" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px">
+      👤 {{ session.get('user_name','').split()[0] }}
+    </a>
+    <a href="/logout">🚪</a>
+  {% else %}
+    <a href="/login" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px;font-weight:bold">
+      🔑 <span class="en">Login</span><span class="kn">ಲಾಗಿನ್</span>
+    </a>
+    <a href="/register">📝 <span class="en">Register</span><span class="kn">ನೋಂದಣಿ</span></a>
+  {% endif %}
+</nav>
+
+  <div class="page-title">
+    <h1>🤖 Banjara AI Assistant</h1>
+    <p>Ask me anything about Banjara culture, temples, and traditions</p>
+  </div>
+
+  <div class="chat-container">
+
+    <div class="suggestions">
+      <button onclick="ask('Tell me about Sevalal Maharaj')">🙏 Sevalal Maharaj</button>
+      <button onclick="ask('What are Banjara festivals?')">🎉 Festivals</button>
+      <button onclick="ask('Tell me about Banjara dress')">👗 Traditional Dress</button>
+      <button onclick="ask('What language do Banjara speak?')">🗣️ Language</button>
+      <button onclick="ask('Tell me about Banjara food')">🍲 Food</button>
+      <button onclick="ask('What is Banjara history?')">📜 History</button>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+      <div class="message bot">
+        <div class="bubble">👋 Jai Sevalal! I am your Banjara Cultural Assistant. Ask me about festivals, temples, dress, music, language, food, or history!</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="user-input"
+        placeholder="Ask about Banjara culture..."
+        onkeypress="if(event.key==='Enter') sendQuery()">
+      <button onclick="sendQuery()">Ask →</button>
+    </div>
+
+  </div>
+
+  <script>
+    async function sendQuery() {
+      const input = document.getElementById('user-input');
+      const query = input.value.trim();
+      if (!query) return;
+      addMessage(query, 'user');
+      input.value = '';
+      addMessage('Thinking...', 'bot', 'thinking');
+      try {
+        const res = await fetch('/ai_search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        document.getElementById('thinking')?.remove();
+        addMessage(data.answer, 'bot');
+      } catch (e) {
+        document.getElementById('thinking')?.remove();
+        addMessage('Sorry, something went wrong. Please try again.', 'bot');
+      }
+    }
+
+    function ask(text) {
+      document.getElementById('user-input').value = text;
+      sendQuery();
+    }
+
+    function addMessage(text, sender, id = '') {
+      const box = document.getElementById('chat-box');
+      const div = document.createElement('div');
+      div.className = 'message ' + sender;
+      if (id) div.id = id;
+      div.innerHTML = `<div class="bubble">${text}</div>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>

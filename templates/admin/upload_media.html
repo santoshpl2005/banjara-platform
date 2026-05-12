@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — Upload & Manage Media</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#f5f5f5}
+    .topbar{background:#8B1A1A;padding:16px 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .topbar h1{color:white;font-size:20px}
+    .topbar-links{display:flex;gap:12px}
+    .topbar-links a{color:#ffd700;text-decoration:none;font-size:14px;font-weight:bold}
+
+    .container{max-width:1100px;margin:30px auto;padding:0 20px}
+
+    /* Section Tabs */
+    .sec-tabs{display:flex;gap:0;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:28px;flex-wrap:wrap}
+    .sectab{flex:1;min-width:120px;padding:14px 8px;text-align:center;cursor:pointer;font-size:13px;font-weight:bold;color:#888;border-bottom:4px solid transparent;transition:all .2s}
+    .sectab:hover{background:#fef9f0;color:#8B1A1A}
+    .sectab.active{color:#8B1A1A;border-bottom-color:#ffd700;background:#fef9f0}
+    .sectab .si{font-size:22px;display:block;margin-bottom:4px}
+
+    /* Section Panels */
+    .sec-panel{display:none}
+    .sec-panel.active{display:block}
+
+    /* Cards */
+    .card{background:white;border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:0 4px 14px rgba(0,0,0,.07);border-top:4px solid #8B1A1A}
+    .card h2{color:#8B1A1A;font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+    .card p{color:#888;font-size:14px;margin-bottom:20px}
+
+    /* Form */
+    .fg{margin-bottom:18px}
+    .fg label{display:block;font-weight:bold;color:#555;font-size:13px;margin-bottom:6px}
+    .fg input,.fg select,.fg textarea{width:100%;padding:11px 16px;border:2px solid #ddd;border-radius:8px;font-size:14px;outline:none;transition:border .2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#8B1A1A}
+    .fg textarea{height:80px;resize:vertical}
+    .fg .hint{font-size:12px;color:#aaa;margin-top:4px}
+
+    /* Upload Area */
+    .upload-area{border:3px dashed #8B1A1A;border-radius:12px;padding:28px;text-align:center;background:#fef9f0;cursor:pointer;margin-bottom:18px;transition:background .2s}
+    .upload-area:hover{background:#fdf0d0}
+    .upload-area .ui{font-size:48px;margin-bottom:10px}
+    .upload-area p{color:#888;font-size:13px;margin-top:4px}
+    .upload-area .fname{color:#8B1A1A;font-weight:bold;font-size:14px;margin-top:8px}
+    .upload-area input{display:none}
+
+    /* Buttons */
+    .btn{padding:12px 28px;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer}
+    .btn-primary{background:#8B1A1A;color:white}
+    .btn-primary:hover{background:#a52020}
+    .btn-danger{background:#dc3545;color:white}
+    .btn-danger:hover{background:#c0392b}
+    .btn-sm{padding:6px 14px;font-size:12px;border-radius:6px}
+
+    /* Alerts */
+    .success{background:#d4edda;color:#155724;padding:14px 18px;border-radius:8px;margin-bottom:20px;font-size:14px;border-left:4px solid #28a745}
+    .error{background:#f8d7da;color:#721c24;padding:14px 18px;border-radius:8px;margin-bottom:20px;font-size:14px;border-left:4px solid #dc3545}
+    .info{background:#fff8e8;border-left:4px solid #ffd700;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin-bottom:18px}
+
+    /* Media Table */
+    .media-table{width:100%;border-collapse:collapse;font-size:13px}
+    .media-table th{background:#8B1A1A;color:white;padding:12px 14px;text-align:left}
+    .media-table td{padding:11px 14px;border-bottom:1px solid #eee;vertical-align:middle}
+    .media-table tr:hover td{background:#fef9f0}
+    .media-table .preview{width:60px;height:50px;object-fit:cover;border-radius:6px;border:1px solid #eee}
+    .media-table .preview-icon{font-size:28px;width:60px;text-align:center;display:inline-block}
+    .del-btn{background:#dc3545;color:white;border:none;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:bold}
+    .del-btn:hover{background:#c0392b}
+    .badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:bold}
+    .badge-image{background:#e8f5e8;color:#1a6b1a}
+    .badge-audio{background:#e8e8ff;color:#1a1a8b}
+    .badge-video{background:#fde8e8;color:#8B1A1A}
+
+    /* Stats Row */
+    .stats-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px}
+    .stat-mini{background:white;border-radius:10px;padding:16px 20px;flex:1;min-width:120px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);border-top:3px solid #8B1A1A}
+    .stat-mini .sm-num{font-size:28px;font-weight:bold;color:#8B1A1A}
+    .stat-mini .sm-lbl{font-size:12px;color:#888;margin-top:3px}
+
+    /* Two column layout */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr}.sec-tabs{overflow-x:auto}.sectab{min-width:90px}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>📁 Upload & Manage Media</h1>
+  <div class="topbar-links">
+    <a href="/admin/dashboard">← Dashboard</a>
+    <a href="/" target="_blank">🌐 View Site</a>
+    <a href="/admin/logout">🚪 Logout</a>
+  </div>
+</div>
+
+<div class="container">
+
+  {% if success %}<div class="success">✅ {{ success }}</div>{% endif %}
+  {% if error %}<div class="error">❌ {{ error }}</div>{% endif %}
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-mini"><div class="sm-num">{{ stats.total }}</div><div class="sm-lbl">Total Files</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ stats.images }}</div><div class="sm-lbl">📸 Images</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ stats.audios }}</div><div class="sm-lbl">🎵 Audio</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ stats.videos }}</div><div class="sm-lbl">🎬 Videos</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ stats.temples }}</div><div class="sm-lbl">🛕 Temples</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ stats.culture }}</div><div class="sm-lbl">🎭 Culture</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ stats.gallery }}</div><div class="sm-lbl">🖼️ Gallery</div></div>
+  </div>
+
+  <!-- Section Tabs -->
+  <div class="sec-tabs">
+    <div class="sectab active" onclick="showSec('all',this)"><span class="si">🌟</span>All Media</div>
+    <div class="sectab" onclick="showSec('temples',this)"><span class="si">🛕</span>Temples</div>
+    <div class="sectab" onclick="showSec('culture',this)"><span class="si">🎭</span>Culture</div>
+    <div class="sectab" onclick="showSec('gallery',this)"><span class="si">🖼️</span>Gallery</div>
+    <div class="sectab" onclick="showSec('festival',this)"><span class="si">🎉</span>Festival</div>
+    <div class="sectab" onclick="showSec('karnataka',this)"><span class="si">🌿</span>Karnataka</div>
+    <div class="sectab" onclick="showSec('upload',this)"><span class="si">⬆️</span>Upload New</div>
+  </div>
+
+  <!-- ══════ ALL MEDIA ══════ -->
+  <div id="sec-all" class="sec-panel active">
+    <div class="card">
+      <h2>🌟 All Uploaded Media</h2>
+      <p>All images, audio and video files across all sections.</p>
+      {% if all_media %}
+      <table class="media-table">
+       <thead><tr>
+  <th>Preview</th><th>Title</th><th>Type</th>
+  <th>Section</th><th>Uploaded</th><th>Edit</th><th>Delete</th>
+</tr></thead>
+        <tbody>
+          {% for m in all_media %}
+          <tr>
+            <td>
+              {% if m[2] == 'image' %}
+                <img src="/static/{{ m[3] }}" class="preview" alt="{{ m[1] }}" onerror="this.style.display='none'">
+              {% elif m[2] == 'audio' %}
+                <span class="preview-icon">🎵</span>
+              {% else %}
+                <span class="preview-icon">🎬</span>
+              {% endif %}
+            </td>
+            <td><strong>{{ m[1] }}</strong><br><small style="color:#888">{{ m[3] }}</small></td>
+            <td><span class="badge badge-{{ m[2] }}">{{ m[2] }}</span></td>
+            <td>{{ m[4] }}</td>
+            <td style="color:#888;font-size:12px">{{ m[6].strftime('%d %b %Y') if m[6] else '' }}</td>
+            <td>
+  <a href="/admin/edit_media/{{ m[0] }}"
+    style="background:#2980b9;color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+    ✏️ Edit
+  </a>
+</td>
+<td>
+  <form method="POST" action="/admin/delete_media/{{ m[0] }}"
+    onsubmit="return confirm('Delete {{ m[1] }}?')">
+    <button type="submit" class="del-btn">🗑️ Delete</button>
+  </form>
+</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div style="text-align:center;padding:40px;color:#aaa">
+        <div style="font-size:48px">📁</div>
+        <p>No media uploaded yet. Use the Upload tab to add files.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ══════ TEMPLES MEDIA ══════ -->
+  <div id="sec-temples" class="sec-panel">
+    <div class="two-col">
+      <div class="card">
+        <h2>🛕 Upload Temple Media</h2>
+        <p>Add images for temple sections — Sevalal, Poharadevi, Birthplace, Sevagad, Marikamba, etc.</p>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="section" value="temples">
+          <div class="fg">
+            <label>📝 Title</label>
+            <input type="text" name="title" placeholder="e.g. Sevalal Maharaj at Poharadevi" required>
+          </div>
+          <div class="fg">
+            <label>🗂️ Temple Sub-Category</label>
+            <select name="sub_category">
+              <option value="sevalal">🙏 Sevalal Maharaj</option>
+              <option value="birthplace">🌱 Suragondankoppa Birthplace</option>
+              <option value="poharadevi">🛕 Poharadevi Samadhi</option>
+              <option value="sevagad">🏰 Sevagad Temple</option>
+              <option value="marikamba">🌺 Sirsi Marikamba</option>
+              <option value="tokari">🌸 Tokari Banaki Devi</option>
+              <option value="bhimasati">✨ Bhima Sati Temple</option>
+              <option value="sitasati">🔱 Sitasati Dakuraj</option>
+              <option value="saatisati">⭐ Saati Sati Shrine</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>📄 Description</label>
+            <textarea name="description" placeholder="Brief description of this temple image..."></textarea>
+          </div>
+          <div class="fg">
+            <label>📁 File Type</label>
+            <select name="file_type_hint">
+              <option value="image">📸 Image (jpg, png, webp)</option>
+              <option value="video">🎬 Video (mp4)</option>
+            </select>
+          </div>
+          <div class="upload-area" onclick="document.getElementById('t-file').click()">
+            <div class="ui">🛕</div>
+            <p><strong>Click to select temple image or video</strong></p>
+            <p>.jpg .png .webp .mp4 supported</p>
+            <div class="fname" id="t-fname"></div>
+            <input type="file" id="t-file" name="file" required
+              accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm"
+              onchange="document.getElementById('t-fname').textContent='Selected: '+this.files[0].name">
+          </div>
+          <button type="submit" class="btn btn-primary">⬆️ Upload to Temples</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>🗑️ Manage Temple Media</h2>
+        <p>View and delete temple section files.</p>
+        {% set temple_media = all_media | selectattr(4,'eq','temples') | list %}
+        {% if temple_media %}
+        <table class="media-table">
+    <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>Edit</th><th>Del</th></tr></thead>
+          <tbody>
+            {% for m in temple_media %}
+            <tr>
+              <td>{% if m[2]=='image' %}<img src="/static/{{ m[3] }}" class="preview" alt="{{ m[1] }}" onerror="this.style.display='none'">{% else %}<span class="preview-icon">🎬</span>{% endif %}</td>
+              <td><strong>{{ m[1] }}</strong></td>
+              <td><span class="badge badge-{{ m[2] }}">{{ m[2] }}</span></td>
+            <td>
+  <a href="/admin/edit_media/{{ m[0] }}"
+    style="background:#2980b9;color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+    ✏️ Edit
+  </a>
+</td>
+<td>
+  <form method="POST" action="/admin/delete_media/{{ m[0] }}"
+    onsubmit="return confirm('Delete {{ m[1] }}?')">
+    <button type="submit" class="del-btn">🗑️ Delete</button>
+  </form>
+</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:#aaa"><div style="font-size:36px">🛕</div><p>No temple media yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ CULTURE MEDIA ══════ -->
+  <div id="sec-culture" class="sec-panel">
+    <div class="two-col">
+      <div class="card">
+        <h2>🎭 Upload Culture Media</h2>
+        <p>Add images and audio for culture sections — dress, history, marriage, festivals, language, etc.</p>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="section" value="culture">
+          <div class="fg">
+            <label>📝 Title</label>
+            <input type="text" name="title" placeholder="e.g. Traditional Banjara Dress" required>
+          </div>
+          <div class="fg">
+            <label>🗂️ Culture Sub-Category</label>
+            <select name="sub_category">
+              <option value="dress">👗 Traditional Dress & Jewelry</option>
+              <option value="marriage">💒 Marriage (Biyav) Ceremony</option>
+              <option value="history">📜 History & Origins</option>
+              <option value="handicraft">🧵 Handicrafts & Embroidery</option>
+              <option value="language">🗣️ Gor Boli Language</option>
+              <option value="faith">🕉️ Faith & Saati Sati</option>
+              <option value="karnataka">🌿 Karnataka Lambani</option>
+              <option value="tanda">🏘️ Tanda & Community</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>📄 Description</label>
+            <textarea name="description" placeholder="Describe this culture item..."></textarea>
+          </div>
+          <div class="fg">
+            <label>📁 File Type</label>
+            <select name="file_type_hint">
+              <option value="image">📸 Image (jpg, png, webp)</option>
+              <option value="audio">🎵 Audio (mp3, wav)</option>
+            </select>
+          </div>
+          <div class="upload-area" onclick="document.getElementById('c-file').click()">
+            <div class="ui">🎭</div>
+            <p><strong>Click to select culture image or audio</strong></p>
+            <p>.jpg .png .webp .mp3 .wav supported</p>
+            <div class="fname" id="c-fname"></div>
+            <input type="file" id="c-file" name="file" required
+              accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg"
+              onchange="document.getElementById('c-fname').textContent='Selected: '+this.files[0].name">
+          </div>
+          <button type="submit" class="btn btn-primary">⬆️ Upload to Culture</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>🗑️ Manage Culture Media</h2>
+        <p>View and delete culture section files.</p>
+        {% set culture_media = all_media | selectattr(4,'eq','culture') | list %}
+        {% if culture_media %}
+        <table class="media-table">
+         <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>Edit</th><th>Del</th></tr></thead>
+          <tbody>
+            {% for m in culture_media %}
+            <tr>
+              <td>{% if m[2]=='image' %}<img src="/static/{{ m[3] }}" class="preview" alt="{{ m[1] }}" onerror="this.style.display='none'">{% elif m[2]=='audio' %}<span class="preview-icon">🎵</span>{% else %}<span class="preview-icon">🎬</span>{% endif %}</td>
+              <td><strong>{{ m[1] }}</strong></td>
+              <td><span class="badge badge-{{ m[2] }}">{{ m[2] }}</span></td>
+              <td>
+  <a href="/admin/edit_media/{{ m[0] }}"
+    style="background:#2980b9;color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+    ✏️ Edit
+  </a>
+</td>
+<td>
+  <form method="POST" action="/admin/delete_media/{{ m[0] }}"
+    onsubmit="return confirm('Delete {{ m[1] }}?')">
+    <button type="submit" class="del-btn">🗑️ Delete</button>
+  </form>
+</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:#aaa"><div style="font-size:36px">🎭</div><p>No culture media yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ GALLERY MEDIA ══════ -->
+  <div id="sec-gallery" class="sec-panel">
+    <div class="two-col">
+      <div class="card">
+        <h2>🖼️ Upload Gallery Media</h2>
+        <p>Add photos, audio and videos for the main gallery section.</p>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="section" value="gallery">
+          <div class="fg">
+            <label>📝 Title</label>
+            <input type="text" name="title" placeholder="e.g. Banjara Festival Dance" required>
+          </div>
+          <div class="fg">
+            <label>🗂️ Gallery Category</label>
+            <select name="sub_category">
+              <option value="dress">👗 Dress & Jewelry</option>
+              <option value="temple">🛕 Temples & Sacred Places</option>
+              <option value="festival">🎉 Festivals & Celebrations</option>
+              <option value="art">🧵 Art & Handicrafts</option>
+              <option value="food">🍲 Traditional Food</option>
+              <option value="history">📜 History & Heritage</option>
+              <option value="karnataka">🌿 Karnataka Lambani</option>
+              <option value="music">🎵 Music & Dance</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>📄 Description</label>
+            <textarea name="description" placeholder="Describe this gallery item..."></textarea>
+          </div>
+          <div class="fg">
+            <label>📁 Media Type</label>
+            <select id="gallery-type" name="file_type_hint" onchange="updateGalleryAccept()">
+              <option value="image">📸 Photo / Image</option>
+              <option value="audio">🎵 Audio / Song</option>
+              <option value="video">🎬 Video</option>
+            </select>
+          </div>
+          <div class="upload-area" onclick="document.getElementById('g-file').click()">
+            <div class="ui">🖼️</div>
+            <p><strong>Click to select photo, audio or video</strong></p>
+            <p id="g-accept-hint">.jpg .png .webp .mp3 .mp4 supported</p>
+            <div class="fname" id="g-fname"></div>
+            <input type="file" id="g-file" name="file" required
+              accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.mp4,.webm"
+              onchange="document.getElementById('g-fname').textContent='Selected: '+this.files[0].name">
+          </div>
+          <button type="submit" class="btn btn-primary">⬆️ Upload to Gallery</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>🗑️ Manage Gallery Media</h2>
+        <p>View and delete gallery files.</p>
+        {% set gallery_media = all_media | selectattr(4,'eq','gallery') | list %}
+        {% if gallery_media %}
+        <div style="max-height:500px;overflow-y:auto">
+        <table class="media-table">
+          <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>Edit</th><th>Del</th></tr></thead>
+          <tbody>
+            {% for m in gallery_media %}
+            <tr>
+              <td>
+                {% if m[2]=='image' %}<img src="/static/{{ m[3] }}" class="preview" alt="{{ m[1] }}" onerror="this.style.display='none'">
+                {% elif m[2]=='audio' %}<span class="preview-icon">🎵</span>
+                {% else %}<span class="preview-icon">🎬</span>{% endif %}
+              </td>
+              <td><strong>{{ m[1] }}</strong><br><small style="color:#aaa">{{ m[2] }}</small></td>
+              <td><span class="badge badge-{{ m[2] }}">{{ m[2] }}</span></td>
+              <td>
+  <a href="/admin/edit_media/{{ m[0] }}"
+    style="background:#2980b9;color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+    ✏️ Edit
+  </a>
+</td>
+<td>
+  <form method="POST" action="/admin/delete_media/{{ m[0] }}"
+    onsubmit="return confirm('Delete {{ m[1] }}?')">
+    <button type="submit" class="del-btn">🗑️ Delete</button>
+  </form>
+</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:#aaa"><div style="font-size:36px">🖼️</div><p>No gallery media yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ FESTIVAL MEDIA ══════ -->
+  <div id="sec-festival" class="sec-panel">
+    <div class="two-col">
+      <div class="card">
+        <h2>🎉 Upload Festival Media</h2>
+        <p>Add images, audio and videos for Banjara festivals and celebrations.</p>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="section" value="festival">
+          <div class="fg">
+            <label>📝 Title</label>
+            <input type="text" name="title" placeholder="e.g. Sevalal Jayanti at Poharadevi" required>
+          </div>
+          <div class="fg">
+            <label>🎉 Festival Name</label>
+            <select name="sub_category">
+              <option value="jayanti">🙏 Sevalal Jayanti (15 Feb)</option>
+              <option value="holi">🎊 Holi — Phag Festival</option>
+              <option value="navratri">💃 Navratri — Garba</option>
+              <option value="teej">🌾 Teej Festival</option>
+              <option value="diwali">🪔 Deepawali</option>
+              <option value="nagpanchami">🐍 Nagpanchami</option>
+              <option value="ugadi">🌸 Ugadi</option>
+              <option value="biyav">💒 Banjara Wedding (Biyav)</option>
+              <option value="jatra">🎊 Jatra Mahotsava</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>📄 Description</label>
+            <textarea name="description" placeholder="Describe this festival image or video..."></textarea>
+          </div>
+          <div class="fg">
+            <label>📁 Media Type</label>
+            <select name="file_type_hint">
+              <option value="image">📸 Image</option>
+              <option value="audio">🎵 Audio (festival song)</option>
+              <option value="video">🎬 Video</option>
+            </select>
+          </div>
+          <div class="upload-area" onclick="document.getElementById('f-file').click()">
+            <div class="ui">🎉</div>
+            <p><strong>Click to select festival photo, audio or video</strong></p>
+            <p>.jpg .png .mp3 .mp4 supported</p>
+            <div class="fname" id="f-fname"></div>
+            <input type="file" id="f-file" name="file" required
+              accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.mp4,.webm"
+              onchange="document.getElementById('f-fname').textContent='Selected: '+this.files[0].name">
+          </div>
+          <button type="submit" class="btn btn-primary">⬆️ Upload to Festival</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>🗑️ Manage Festival Media</h2>
+        <p>View and delete festival section files.</p>
+        {% set festival_media = all_media | selectattr(4,'eq','festival') | list %}
+        {% if festival_media %}
+        <table class="media-table">
+         <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>Edit</th><th>Del</th></tr></thead>
+          <tbody>
+            {% for m in festival_media %}
+            <tr>
+              <td>{% if m[2]=='image' %}<img src="/static/{{ m[3] }}" class="preview" alt="{{ m[1] }}" onerror="this.style.display='none'">{% elif m[2]=='audio' %}<span class="preview-icon">🎵</span>{% else %}<span class="preview-icon">🎬</span>{% endif %}</td>
+              <td><strong>{{ m[1] }}</strong></td>
+              <td><span class="badge badge-{{ m[2] }}">{{ m[2] }}</span></td>
+              <td>
+  <a href="/admin/edit_media/{{ m[0] }}"
+    style="background:#2980b9;color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+    ✏️ Edit
+  </a>
+</td>
+<td>
+  <form method="POST" action="/admin/delete_media/{{ m[0] }}"
+    onsubmit="return confirm('Delete {{ m[1] }}?')">
+    <button type="submit" class="del-btn">🗑️ Delete</button>
+  </form>
+</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:#aaa"><div style="font-size:36px">🎉</div><p>No festival media yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ KARNATAKA MEDIA ══════ -->
+  <div id="sec-karnataka" class="sec-panel">
+    <div class="two-col">
+      <div class="card">
+        <h2>🌿 Upload Karnataka Media</h2>
+        <p>Add images and videos specific to Karnataka Lambani culture, districts, and GI embroidery.</p>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="section" value="karnataka">
+          <div class="fg">
+            <label>📝 Title</label>
+            <input type="text" name="title" placeholder="e.g. Sandur Lambani Embroidery" required>
+          </div>
+          <div class="fg">
+            <label>🌿 Karnataka Sub-Category</label>
+            <select name="sub_category">
+              <option value="embroidery">🧵 Sandur GI Embroidery</option>
+              <option value="dance">💃 Suggi / Phantasi / Kolata Dance</option>
+              <option value="bellary">🏛️ Bellary District</option>
+              <option value="davanagere">🌱 Davanagere (Birthplace District)</option>
+              <option value="koppal">🌾 Koppal District</option>
+              <option value="raichur">🌿 Raichur District</option>
+              <option value="haveri">🔱 Haveri District</option>
+              <option value="tumakuru">✨ Tumakuru District</option>
+              <option value="vijayanagara">🌸 Vijayanagara District</option>
+              <option value="other_district">📍 Other Karnataka District</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>📄 Description</label>
+            <textarea name="description" placeholder="Describe this Karnataka Lambani item..."></textarea>
+          </div>
+          <div class="fg">
+            <label>📁 Media Type</label>
+            <select name="file_type_hint">
+              <option value="image">📸 Image</option>
+              <option value="video">🎬 Video</option>
+              <option value="audio">🎵 Audio</option>
+            </select>
+          </div>
+          <div class="upload-area" onclick="document.getElementById('k-file').click()">
+            <div class="ui">🌿</div>
+            <p><strong>Click to select Karnataka Lambani media</strong></p>
+            <p>.jpg .png .webp .mp4 .mp3 supported</p>
+            <div class="fname" id="k-fname"></div>
+            <input type="file" id="k-file" name="file" required
+              accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.mp4,.webm"
+              onchange="document.getElementById('k-fname').textContent='Selected: '+this.files[0].name">
+          </div>
+          <button type="submit" class="btn btn-primary">⬆️ Upload to Karnataka</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>🗑️ Manage Karnataka Media</h2>
+        <p>View and delete Karnataka section files.</p>
+        {% set karnataka_media = all_media | selectattr(4,'eq','karnataka') | list %}
+        {% if karnataka_media %}
+        <table class="media-table">
+          <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>Edit</th><th>Del</th></tr></thead>
+          <tbody>
+            {% for m in karnataka_media %}
+            <tr>
+              <td>{% if m[2]=='image' %}<img src="/static/{{ m[3] }}" class="preview" alt="{{ m[1] }}" onerror="this.style.display='none'">{% elif m[2]=='audio' %}<span class="preview-icon">🎵</span>{% else %}<span class="preview-icon">🎬</span>{% endif %}</td>
+              <td><strong>{{ m[1] }}</strong></td>
+              <td><span class="badge badge-{{ m[2] }}">{{ m[2] }}</span></td>
+              <td>
+  <a href="/admin/edit_media/{{ m[0] }}"
+    style="background:#2980b9;color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+    ✏️ Edit
+  </a>
+</td>
+<td>
+  <form method="POST" action="/admin/delete_media/{{ m[0] }}"
+    onsubmit="return confirm('Delete {{ m[1] }}?')">
+    <button type="submit" class="del-btn">🗑️ Delete</button>
+  </form>
+</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:#aaa"><div style="font-size:36px">🌿</div><p>No Karnataka media yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ UPLOAD NEW (Quick Upload) ══════ -->
+  <div id="sec-upload" class="sec-panel">
+    <div class="card">
+      <h2>⬆️ Quick Upload — Any Section</h2>
+      <p>Upload any media file quickly — choose section and type below.</p>
+      <div class="info">
+        📋 <strong>Supported formats:</strong>
+        📸 Images: .jpg .jpeg .png .gif .webp &nbsp;|&nbsp;
+        🎵 Audio: .mp3 .wav .ogg &nbsp;|&nbsp;
+        🎬 Video: .mp4 .webm
+      </div>
+      <form method="POST" enctype="multipart/form-data">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="fg">
+            <label>📝 Title *</label>
+            <input type="text" name="title" placeholder="Enter media title" required>
+          </div>
+          <div class="fg">
+            <label>📂 Section *</label>
+            <select name="section" required>
+              <option value="">-- Select Section --</option>
+              <option value="temples">🛕 Temples</option>
+              <option value="culture">🎭 Culture</option>
+              <option value="gallery">🖼️ Gallery</option>
+              <option value="festival">🎉 Festival</option>
+              <option value="karnataka">🌿 Karnataka</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label>📄 Description (optional)</label>
+          <textarea name="description" placeholder="Brief description..."></textarea>
+        </div>
+        <div class="upload-area" onclick="document.getElementById('q-file').click()">
+          <div class="ui">📁</div>
+          <p><strong>Click to select any file</strong></p>
+          <p>Images • Audio • Video — all supported</p>
+          <div class="fname" id="q-fname"></div>
+          <input type="file" id="q-file" name="file" required
+            accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.mp4,.webm"
+            onchange="document.getElementById('q-fname').textContent='✅ Selected: '+this.files[0].name">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:14px">⬆️ Upload File</button>
+      </form>
+    </div>
+
+    <!-- File format guide -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+      <div style="background:white;border-radius:10px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);border-top:3px solid #28a745">
+        <div style="font-size:36px;margin-bottom:8px">📸</div>
+        <strong style="color:#28a745">Images</strong>
+        <p style="color:#888;font-size:12px;margin-top:6px">.jpg .jpeg .png<br>.gif .webp<br>Temples, Culture, Gallery</p>
+      </div>
+      <div style="background:white;border-radius:10px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);border-top:3px solid #007bff">
+        <div style="font-size:36px;margin-bottom:8px">🎵</div>
+        <strong style="color:#007bff">Audio Songs</strong>
+        <p style="color:#888;font-size:12px;margin-top:6px">.mp3 .wav .ogg<br>Folk songs, Bhajans<br>Culture, Gallery</p>
+      </div>
+      <div style="background:white;border-radius:10px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);border-top:3px solid #dc3545">
+        <div style="font-size:36px;margin-bottom:8px">🎬</div>
+        <strong style="color:#dc3545">Videos</strong>
+        <p style="color:#888;font-size:12px;margin-top:6px">.mp4 .webm<br>Festivals, Dances<br>All sections</p>
+      </div>
+      <div style="background:white;border-radius:10px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);border-top:3px solid #ffd700">
+        <div style="font-size:36px;margin-bottom:8px">📍</div>
+        <strong style="color:#8B1A1A">Sections</strong>
+        <p style="color:#888;font-size:12px;margin-top:6px">Temples • Culture<br>Gallery • Festival<br>Karnataka</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end container -->
+
+<script>
+function showSec(name, tab) {
+  document.querySelectorAll('.sec-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sectab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  tab.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateGalleryAccept() {
+  const type = document.getElementById('gallery-type').value;
+  const hints = {
+    image: '.jpg .png .webp .gif — Photo files',
+    audio: '.mp3 .wav .ogg — Audio/Song files',
+    video: '.mp4 .webm — Video files'
+  };
+  document.getElementById('g-accept-hint').textContent = hints[type];
+}
+</script>
+</body>
+</html>

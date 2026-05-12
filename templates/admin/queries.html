@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Queries</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #f5f5f5; }
+    .topbar { background: #8B1A1A; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .topbar h1 { color: white; font-size: 20px; }
+    .topbar a { color: #ffd700; text-decoration: none; }
+    .container { padding: 30px; max-width: 900px; margin: 0 auto; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    th { background: #8B1A1A; color: white; padding: 14px 16px; text-align: left; font-size: 14px; }
+    td { padding: 14px 16px; border-bottom: 1px solid #eee; font-size: 14px; color: #555; }
+    tr:hover td { background: #fef9f0; }
+    .empty { text-align: center; padding: 40px; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>🤖 User AI Queries</h1>
+    <a href="/admin/dashboard">← Back to Dashboard</a>
+  </div>
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User Question</th>
+          <th>AI Answer</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for q in queries %}
+        <tr>
+          <td>{{ q[0] }}</td>
+          <td>{{ q[1] }}</td>
+          <td>{{ q[2][:100] }}...</td>
+          <td>{{ q[3] }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="empty">No queries yet. Users will appear here when they use the AI chat.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

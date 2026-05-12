@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Banjara Temples & Sacred Places</title>
+  <style>
+    .image-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.image-center img {
+    width: 50%;
+    border-radius: 12px;
+}
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background-color: #fef9f0; }
+    nav {
+      background-color: #8B1A1A; padding: 14px 30px;
+      display: flex; gap: 24px; flex-wrap: wrap; align-items: center;
+    }
+    nav .logo { color: #ffd700; font-size: 18px; font-weight: bold; margin-right: auto; }
+    nav a { color: white; text-decoration: none; font-size: 14px; font-weight: bold; }
+    nav a:hover { color: #ffd700; }
+
+    .page-title {
+      text-align: center; padding: 50px 20px;
+      background: linear-gradient(135deg, #6B0F0F, #8B1A1A); color: white;
+    }
+    .page-title h1 { font-size: 30px; margin-bottom: 8px; }
+    .page-title p { font-size: 15px; opacity: 0.85; }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      display: flex; justify-content: center;
+      gap: 8px; padding: 20px 16px 0; flex-wrap: wrap;
+      background: #fdf0d0;
+    }
+    .tab-btn {
+      padding: 8px 16px; border-radius: 30px;
+      border: 2px solid #8B1A1A;
+      background: white; color: #8B1A1A;
+      font-size: 12px; font-weight: bold; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover { background: #8B1A1A; color: white; }
+
+    .content { padding: 24px 28px 60px; max-width: 1050px; margin: 0 auto; }
+
+    /* ── Temple Card ── */
+    .temple-card {
+      background: white; border-radius: 16px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+      overflow: hidden; border-top: 5px solid #8B1A1A;
+    }
+    .card-top { display: flex; flex-wrap: wrap; }
+    .card-media {
+      width: 300px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+    }
+    .img-placeholder {
+      width: 100%; height: 190px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #fdf0d0, #fef9f0);
+      font-size: 60px;
+    }
+    .img-placeholder span { font-size: 12px; color: #888; margin-top: 6px; }
+    .map-label { background: #8B1A1A; color: white; text-align: center; padding: 5px; font-size: 11px; }
+    .map-box { width: 100%; height: 190px; border: none; }
+
+    .card-info { flex: 1; padding: 22px 24px; }
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd700, #f0a500);
+      color: #8B1A1A; padding: 4px 14px;
+      border-radius: 20px; font-size: 11px;
+      font-weight: bold; margin-bottom: 10px;
+    }
+    .card-info h2 { color: #8B1A1A; font-size: 19px; margin-bottom: 5px; line-height: 1.4; }
+    .loc-line { color: #888; font-size: 13px; margin-bottom: 12px; }
+    .loc-line span { color: #c0392b; font-weight: bold; }
+
+    .mini-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .mini-box {
+      background: #fef9f0; border-radius: 8px;
+      padding: 8px 12px; border: 1px solid #f0d9a0;
+      font-size: 12px; color: #555;
+    }
+    .mini-box strong { color: #8B1A1A; display: block; font-size: 12px; }
+
+    .desc-section { margin: 12px 0; }
+    .desc-section h3 {
+      color: #8B1A1A; font-size: 14px;
+      margin-bottom: 8px; padding-bottom: 5px;
+      border-bottom: 2px solid #ffd700;
+    }
+    .desc-section p { color: #555; font-size: 13px; line-height: 1.8; }
+
+    .hl {
+      background: #fff8e8; border-left: 4px solid #ffd700;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px; margin: 10px 0;
+      font-size: 13px; color: #555; line-height: 1.7;
+    }
+    .hl strong { color: #8B1A1A; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .tag {
+      background: #fde8e8; color: #8B1A1A;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: bold;
+      border: 1px solid #f5c6c6;
+    }
+    .gtag {
+      background: #e8f5e8; color: #1a6b1a;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: bold;
+      border: 1px solid #b8dcb8;
+    }
+    .btag {
+      background: #e8e8ff; color: #1a1a8b;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: bold;
+      border: 1px solid #b8b8dc;
+    }
+
+    .kannada-box {
+      background: #fef9f0; border-radius: 10px;
+      padding: 16px; margin-top: 12px;
+      border: 1px dashed #8B1A1A;
+    }
+    .kannada-box h4 { color: #8B1A1A; font-size: 13px; margin-bottom: 8px; }
+    .kannada-box p { color: #555; font-size: 12px; line-height: 2; }
+
+    /* ── Saati Sati special styles ── */
+    .sati-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px; margin-top: 16px;
+    }
+    .sati-card {
+      background: white; border-radius: 12px;
+      padding: 18px; border-left: 4px solid #8B1A1A;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+    .sati-card .sati-num {
+      background: #8B1A1A; color: white;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: bold; margin-bottom: 10px;
+    }
+    .sati-card h3 { color: #8B1A1A; font-size: 15px; margin-bottom: 4px; }
+    .sati-card .role { color: #ffd700; background: #8B1A1A; display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; margin-bottom: 8px; }
+    .sati-card p { color: #555; font-size: 13px; line-height: 1.7; }
+    .sati-card .loc { color: #c0392b; font-size: 12px; margin-top: 6px; }
+
+    /* ── Tab sections ── */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* ── Hero banner ── */
+    .hero-banner {
+      background: linear-gradient(135deg, #8B1A1A, #c0392b);
+      border-radius: 14px; padding: 24px; color: white; margin-bottom: 24px;
+    }
+    .hero-banner h2 { font-size: 20px; margin-bottom: 8px; }
+    .hero-banner p { font-size: 13px; opacity: 0.9; line-height: 1.7; }
+
+    footer { background: #4a0f0f; color: white; text-align: center; padding: 20px; font-size: 13px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 10px 12px; gap: 8px; }
+      nav a { font-size: 11px; }
+      .page-title h1 { font-size: 20px; }
+      .content { padding: 14px 10px 40px; }
+      .card-media { width: 100%; }
+      .card-info { padding: 16px 14px; }
+      .sati-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🌿 Banjara Platform</span>
+  <a href="/">🏠 <span class="en">Home</span><span class="kn">ಮುಖಪುಟ</span></a>
+  <a href="/culture">🎭 <span class="en">Culture</span><span class="kn">ಸಂಸ್ಕೃತಿ</span></a>
+  <a href="/temples">🛕 <span class="en">Temples</span><span class="kn">ದೇವಸ್ಥಾನ</span></a>
+  <a href="/gallery">🖼️ <span class="en">Gallery</span><span class="kn">ಗ್ಯಾಲರಿ</span></a>
+  <a href="/quiz">📝 <span class="en">Quiz</span><span class="kn">ಕ್ವಿಜ್</span></a>
+  <a href="/ai_chat">🤖 AI</a>
+  {% if session.get('user_id') %}
+    <a href="/profile" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px">
+      👤 {{ session.get('user_name','').split()[0] }}
+    </a>
+    <a href="/logout">🚪</a>
+  {% else %}
+    <a href="/login" style="background:#ffd700;color:#8B1A1A;padding:6px 16px;border-radius:20px;font-weight:bold">
+      🔑 <span class="en">Login</span><span class="kn">ಲಾಗಿನ್</span>
+    </a>
+    <a href="/register">📝 <span class="en">Register</span><span class="kn">ನೋಂದಣಿ</span></a>
+  {% endif %}
+</nav>
+
+<div class="page-title">
+  <h1>🛕 Banjara Temples & Sacred Sites</h1>
+  <p>Complete spiritual guide to Banjara pilgrimage places — in English & ಕನ್ನಡ</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('sevalal',this)">🙏 Sevalal Overview</button>
+  <button class="tab-btn" onclick="showTab('birthplace',this)">🌱 Birthplace</button>
+  <button class="tab-btn" onclick="showTab('poharadevi',this)">🕊️ Poharadevi</button>
+  <button class="tab-btn" onclick="showTab('sevagadh',this)">🏰 Sevagadh</button>
+  <button class="tab-btn" onclick="showTab('marikamba',this)">🌺 Marikamba</button>
+  <button class="tab-btn" onclick="showTab('tokari',this)">🌸 Tokari Banaki</button>
+  <button class="tab-btn" onclick="showTab('bhimasati',this)">✨ Bhima Sati</button>
+  <button class="tab-btn" onclick="showTab('sitasati',this)">🔱 Sitasati Dakuraj</button>
+  <button class="tab-btn" onclick="showTab('saatisati',this)">🔮 Saati Sati (7 Satis)</button>
+</div>
+
+<div class="content">
+
+  <!-- ══════ TAB 1 — SEVALAL OVERVIEW ══════ -->
+  <div id="tab-sevalal" class="tab-section active">
+    <div class="hero-banner">
+      <div class="image-center">
+        <img src="static/static/images/481218028_943653894643438_8343374748759784064_n.jpg"
+     alt="Sevalal Maharaj"
+     style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+      </div>
+      <h2>🙏 Shri Sant Sevalal Maharaj — Complete Overview</h2>
+      <p>Great saint and social reformer of the Banjara (Lambani) community.
+      Born <strong>15 Feb 1739</strong> at Suragondankoppa, Karnataka.
+      Samadhi at Poharadevi, Maharashtra — <strong>4 Dec 1806</strong>.
+      Rode horse <strong>Garasia</strong>. Remained Brahmachari throughout life.</p>
+    </div>
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">🙏<span>Sevalal Maharaj</span></div>
+          <div class="map-label">📍 Suragondankoppa, Karnataka</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Suragondankoppa+Davanagere+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+          <span class="badge">📊 Quick Facts</span>
+          <h2>Shri Sant Sevalal Maharaj</h2>
+          <div class="loc-line">📍 <span>Born: Suragondankoppa, Davanagere, Karnataka</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>📅 Born</strong>15 Feb 1739</div>
+            <div class="mini-box"><strong>👪 Father</strong>Bheemanayak</div>
+            <div class="mini-box"><strong>👩 Mother</strong>Dharmini</div>
+            <div class="mini-box"><strong>🐴 Horse</strong>Garasia</div>
+            <div class="mini-box"><strong>🕊️ Samadhi</strong>4 Dec 1806</div>
+            <div class="mini-box"><strong>🎉 Jayanti</strong>15 February</div>
+            <div class="mini-box"><strong>🛕 Samadhi Place</strong>Poharadevi, MH</div>
+            <div class="mini-box"><strong>🌺 Goddess</strong>Marikamba Power</div>
+          </div>
+          <div class="desc-section">
+            <h3>🌟 Life Summary</h3>
+            <p>He inspired nomadic communities to settle permanently. Travelled across
+            Karnataka, AP, Telangana, Maharashtra, MP, Gujarat, Rajasthan to Delhi.
+            Served at Hathiram Bavaji Mutt, Tirupati as <strong>Sevadas</strong>.
+            Impressed the Nizam of Hyderabad and earned royal recognition.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">🙏 Brahmachari</span>
+            <span class="tag">🐴 Horse Garasia</span>
+            <span class="tag">📜 Social Reformer</span>
+            <span class="tag">🌺 Marikamba Shakti</span>
+            <span class="tag">🇮🇳 Banjara Saint</span>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ</h4>
+            <p>ಶ್ರೀ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜ ಬಂಜಾರಾ ಸಮುದಾಯದ ಮಹಾನ್ ಸಂತ.
+            <strong>ಫೆಬ್ರವರಿ 15, 1739</strong>ರಂದು ಸೂರಗೊಂಡನಕೊಪ್ಪದಲ್ಲಿ ಜನಿಸಿದರು.
+            <strong>ಗರಸಿಯಾ</strong> ಕುದುರೆಯಲ್ಲಿ ಭಾರತ ಪರ್ಯಟನ. ಬ್ರಹ್ಮಚಾರಿಯಾಗಿ ಜೀವನ ನಡೆಸಿದರು.
+            <strong>ಡಿಸೆಂಬರ್ 4, 1806</strong>ರಂದು ಪೋಹರದೇವಿಯಲ್ಲಿ ಸಮಾಧಿ. 🙏</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 2 — BIRTHPLACE ══════ -->
+  <div id="tab-birthplace" class="tab-section">
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          
+          <div class="img-placeholder">🌱<span>Suragondankoppa</span></div>
+          <div class="map-label">📍 Honnali Taluk, Davanagere, Karnataka</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Suragondankoppa+Honnali+Davanagere+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+        <div class="image-center">
+          <img src="static/static/images/481447386_943647651310729_5986755481721416930_n.jpg" 
+          alt="Sevalal Maharaj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+           <img src="static/static/images/download (4).jpg" 
+          alt="Sevalal Maharaj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+        </div>  
+      </div>
+      </div>
+          <span class="badge">🌱 Janmasthal — Birthplace</span>
+          <h2>Suragondankoppa — Birthplace of Sevalal Maharaj</h2>
+          <div class="loc-line">📍 <span>Honnali Taluk, Davanagere District, Karnataka</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>📅 Birth</strong>15 Feb 1739</div>
+            <div class="mini-box"><strong>👪 Father</strong>Bheemanayak</div>
+            <div class="mini-box"><strong>👩 Mother</strong>Dharmini</div>
+            <div class="mini-box"><strong>📍 Taluk</strong>Honnali</div>
+          </div>
+          <div class="desc-section">
+            <h3>📖 Birth Story</h3>
+            <p>Born on <strong>15 Feb 1739</strong> to Mata Dharmini and Bheemanayak.
+            The couple had no children for 12 years. They prayed to <strong>Mariyamma</strong>
+            and were blessed with three sons. The area has sacred geographic spots —
+            Dudiya Talav (Nagamani Lake), Kalokundo (Blue pond), Chandan Kholi
+            (Sandalwood hill), Bhuripatar (Cool flat land).</p>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ ಆವೃತ್ತಿ</h4>
+            <p>ಸಂತ ಸೇವಾಲಾಲ್ <strong>ಫೆಬ್ರವರಿ 15, 1739</strong>ರಂದು ಹೊನ್ನಾಳಿ ತಾಲ್ಲೂಕಿನ
+            ಸೂರಗೊಂಡನಕೊಪ್ಪದಲ್ಲಿ ಜನಿಸಿದರು. ಭೀಮನಾಯಕ ಮತ್ತು ಧರ್ಮಿಣಿ ದಂಪತಿ 12 ವರ್ಷ
+            <strong>ಮರಿಯಮ್ಮ</strong>ನನ್ನು ಧ್ಯಾನಿಸಿ ಮೂರು ಮಕ್ಕಳನ್ನು ಪಡೆದರು. 🌱</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 3 — POHARADEVI ══════ -->
+  <div id="tab-poharadevi" class="tab-section">
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">🛕<span>Poharadevi Temple</span></div>
+          <div class="map-label">📍 Washim District, Maharashtra</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Poharadevi+Temple+Washim+Maharashtra&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+          <div class="image-center">
+          <img src="static/static/images/download.jpg" 
+          alt="Sevalal Maharaj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+           <img src="static/static/images/image-42.png" 
+          alt="Sevalal Maharaj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+        </div>  
+         </div>   
+      </div>
+      <span class="badge">⭐ Kashi of Banjaras</span>
+          <h2>Poharadevi (Poharagad) — Samadhi of Sevalal Maharaj</h2>
+          <div class="loc-line">📍 <span>Washim District, Maharashtra</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>📅 Samadhi</strong>4 Dec 1806</div>
+            <div class="mini-box"><strong>🕌 Known As</strong>Kashi of Banjaras</div>
+            <div class="mini-box"><strong>🎉 Jayanti</strong>15 February</div>
+            <div class="mini-box"><strong>👥 Visitors</strong>Lakhs yearly</div>
+          </div>
+          <div class="desc-section">
+            <h3>🛕 About Poharadevi</h3>
+            <p>The <strong>Samadhi sthal</strong> of Sevalal Maharaj dated 4 Dec 1806.
+            Known as <strong>"Kashi of Banjaras."</strong> Sevalal Maharaj Nagar Bhavan,
+            pilgrim amenities, and community spaces built here. Gained national attention
+            with visit by <strong>Narendra Modi</strong>.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">🙏 Special Prayers</span>
+            <span class="tag">🎵 Bhajans</span>
+            <span class="tag">🎭 Cultural Programs</span>
+            <span class="tag">💃 Traditional Dances</span>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ</h4>
+            <p>ಪೋಹರದೇವಿ ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರ ಸಮಾಧಿ ಸ್ಥಳ — <strong>ಡಿಸೆಂಬರ್ 4, 1806</strong>.
+            <strong>"ಬಂಜಾರರ ಕಾಶಿ"</strong> ಎಂದು ಪ್ರಸಿದ್ಧ. ಪ್ರತಿ ವರ್ಷ <strong>ಫೆಬ್ರವರಿ 15</strong>ರಂದು
+            ಲಕ್ಷಾಂತರ ಭಕ್ತರು ಸೇರಿ ಜಯಂತಿ ಆಚರಿಸುತ್ತಾರೆ. 🛕</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 4 — SEVAGADH ══════ -->
+  <div id="tab-sevagadh" class="tab-section">
+    <div class="hl"><strong>⚠️ Important Clarification:</strong> Sevagadh is
+    <strong>NOT</strong> the birthplace of Sevalal Maharaj. The confirmed birthplace is
+    Suragondankoppa, Davanagere, Karnataka. Sevagadh is a major spiritual and
+    community center connected to Sevalal Maharaj.</div>
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">🏰<span>Sevagadh Temple</span></div>
+          <div class="map-label">📍 Near Gooty, Anantapur, Andhra Pradesh</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Gooty+Anantapur+Andhra+Pradesh&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+          <div class="image-center">
+          <img src="static/static/images/ab4.png" 
+          alt="Sevalal Maharaj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+           <img src="static/static/images/download (5).jpg" 
+          alt="Sevalal Maharaj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+        </div>  
+         </div>   
+      </div>
+          <span class="badge">🏰 Major Spiritual Center</span>
+          <h2>Sevagadh (Gollaladoddi) Temple</h2>
+          <div class="loc-line">📍 <span>Near Gooty, Anantapur District, Andhra Pradesh</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>📅 Trust</strong>2001</div>
+            <div class="mini-box"><strong>🏗️ Foundation</strong>2002</div>
+            <div class="mini-box"><strong>✅ Completed</strong>2004</div>
+            <div class="mini-box"><strong>📐 Area</strong>~40 Acres</div>
+            <div class="mini-box"><strong>🛕 Dedicated To</strong>Sevalal + Jagadamba</div>
+            <div class="mini-box"><strong>🎉 Festival</strong>15 February</div>
+          </div>
+          <div class="desc-section">
+            <h3>🏰 About Sevagadh</h3>
+            <p>Sevagadh is a Banjara settlement (Tanda) near Gooty in Anantapur district, AP.
+            It developed as a spiritual center due to community belief. The temple complex
+            spans <strong>40 acres</strong> with main shrine (pagoda style), Kalyana Mandap,
+            guest houses for pilgrims, school, community facilities, and water resources.</p>
+          </div>
+          <div class="desc-section">
+            <h3>🏛️ Temple Facilities</h3>
+            <div class="tag-row">
+              <span class="gtag">🕌 Main Shrine (Pagoda)</span>
+              <span class="gtag">🏛️ Kalyana Mandap</span>
+              <span class="gtag">🏠 Pilgrim Guest Houses</span>
+              <span class="gtag">🏫 School</span>
+              <span class="gtag">💧 Water Resources</span>
+              <span class="gtag">👥 Community Facilities</span>
+            </div>
+          </div>
+          <div class="desc-section">
+            <h3>🎉 Sevalal Jayanti — 15 February</h3>
+            <div class="tag-row">
+              <span class="tag">🙏 Bhajans & Puja</span>
+              <span class="tag">🍲 Community Feast</span>
+              <span class="tag">🎭 Cultural Programs</span>
+              <span class="tag">👥 Thousands of Devotees</span>
+            </div>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ ಆವೃತ್ತಿ</h4>
+            <p><strong>⚠️ ಮುಖ್ಯ:</strong> ಸೇವಗಡ ಸೇವಾಲಾಲ್ ಜನ್ಮಸ್ಥಳವಲ್ಲ.
+            ಜನ್ಮಸ್ಥಳ: ಸೂರಗೊಂಡನಕೊಪ್ಪ, ದಾವಣಗೆರೆ, ಕರ್ನಾಟಕ.<br><br>
+            ಸೇವಗಡ (ಗೊಲ್ಲಲದೊಡ್ಡಿ) ಗುತ್ತಿ ಸಮೀಪ, ಅನಂತಪುರ ಜಿಲ್ಲೆ, ಆಂಧ್ರ ಪ್ರದೇಶ.
+            ಸೇವಾಲಾಲ್ ಮಹಾರಾಜ ಮತ್ತು ಜಗದಾಂಬ ದೇವಿಗೆ ಸಮರ್ಪಿತ ದೇವಾಲಯ.
+            <strong>2001</strong> ಟ್ರಸ್ಟ್, <strong>2002</strong> ಶಿಲಾನ್ಯಾಸ,
+            <strong>2004</strong> ಪೂರ್ಣ. ~40 ಎಕರೆ ಸಂಕೀರ್ಣ. 🏰</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 5 — MARIKAMBA ══════ -->
+  <div id="tab-marikamba" class="tab-section">
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">🌺<span>Marikamba Temple</span></div>
+          <div class="map-label">📍 Sirsi, Uttara Kannada, Karnataka</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Marikamba+Temple+Sirsi+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+           <div class="image-center">
+          <img src="static/static/images/marikamba-1.webp"  
+          alt="Sirsi Marikamba" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+        </div>  
+         </div>   
+      </div>
+          <span class="badge">🌺 Connected to Sevalal Maharaj</span>
+          <h2>Sirsi Marikamba Temple</h2>
+          <div class="loc-line">📍 <span>Sirsi, Uttara Kannada District, Karnataka</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>🌺 Goddess</strong>Marikamba</div>
+            <div class="mini-box"><strong>📍 District</strong>Uttara Kannada</div>
+            <div class="mini-box"><strong>🗺️ State</strong>Karnataka</div>
+            <div class="mini-box"><strong>🎉 Jatra</strong>Every 2 years</div>
+          </div>
+          <div class="desc-section">
+            <h3>🌺 Connection to Sevalal Maharaj</h3>
+            <p>Sant Sevalal Maharaj is believed to have possessed the divine power of
+            <strong>Goddess Marikamba</strong>. He used this power only for the
+            welfare of people throughout his travels. The Banjara community holds
+            deep reverence for Goddess Marikamba as a result of this sacred connection.</p>
+          </div>
+          <div class="desc-section">
+            <h3>🛕 About the Temple</h3>
+            <p>Sirsi Marikamba Temple is one of the most famous temples in Karnataka.
+            The <strong>Marikamba Jatra</strong>, held every two years, is one of the
+            biggest festivals in Karnataka attracting <strong>lakhs of devotees</strong>
+            from across India. The Banjara community actively participates in this
+            grand celebration.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">🙏 Sevalal's Shakti</span>
+            <span class="tag">🌺 Goddess Marikamba</span>
+            <span class="tag">🎊 Biennial Jatra</span>
+            <span class="tag">👥 Lakhs of Devotees</span>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ ಆವೃತ್ತಿ</h4>
+            <p>ಸೇವಾಲಾಲ್ ಮಹಾರಾಜರು <strong>ಮಾರಿಕಾಂಬೆ ದೇವಿ</strong> ಶಕ್ತಿಯನ್ನು
+            ಹೊಂದಿದ್ದರು ಎಂದು ನಂಬಲಾಗುತ್ತದೆ. ಅವರು ಈ ಶಕ್ತಿಯನ್ನು ಜನರ ಒಳಿತಿಗಾಗಿ
+            ಮಾತ್ರ ಬಳಸಿದರು. ಸಿರ್ಸಿ ಮಾರಿಕಾಂಬೆ ದೇವಸ್ಥಾನ ಕರ್ನಾಟಕದ ಪ್ರಸಿದ್ಧ ಕ್ಷೇತ್ರ.
+            ಪ್ರತಿ ಎರಡು ವರ್ಷಕ್ಕೊಮ್ಮೆ ಭವ್ಯ ಜಾತ್ರೆ ನಡೆಯುತ್ತದೆ. 🌺</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 6 — TOKARI BANAKI DEVI ══════ -->
+  <div id="tab-tokari" class="tab-section">
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">🌸<span>Tokari Banaki Devi</span></div>
+          <div class="map-label">📍 Dasarahalli Tanda, Vijayanagara, Karnataka</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Kottur+Vijayanagara+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+          <span class="badge">🌸 Guardian Goddess</span>
+          <h2>Tokari Banaki Devi Temple</h2>
+          <div class="loc-line">📍 <span>Dasarahalli Tanda, Kottur Taluk, Vijayanagara District, Karnataka</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>🏘️ Tanda</strong>Dasarahalli</div>
+            <div class="mini-box"><strong>📍 Taluk</strong>Kottur</div>
+            <div class="mini-box"><strong>🗺️ District</strong>Vijayanagara</div>
+            <div class="mini-box"><strong>🌸 Community</strong>Tokari (Koli)</div>
+          </div>
+          <div class="desc-section">
+            <h3>🌸 About the Goddess</h3>
+            <p>Tokari Banaki Devi is a well-known local goddess at Dasarahalli Tanda,
+            central to the spiritual belief of the Tokari (Koli) community. She
+            <strong>protects from dangers</strong>, brings prosperity and happiness,
+            and blesses agricultural activities. She is regarded as the
+            <strong>Guardian Goddess</strong> of the community.</p>
+          </div>
+          <div class="desc-section">
+            <h3>📈 Social Context</h3>
+            <p>The Tokari Koli community is actively working for social recognition
+            and rights. They are engaged in preserving traditions and passing cultural
+            heritage to future generations. Active participation in
+            <strong>Maharshi Valmiki Jayanti</strong> events.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">🎊 Jatra Mahotsava</span>
+            <span class="tag">🥁 Dollu Performance</span>
+            <span class="tag">🤸 Kolata Dance</span>
+            <span class="tag">🎵 Bhajans</span>
+            <span class="tag">🎭 Cultural Programs</span>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ ಆವೃತ್ತಿ</h4>
+            <p>ಟೋಕರಿ ಬನಕಿ ದೇವಿ ವಿಜಯನಗರ ಜಿಲ್ಲೆ ಕೊಟ್ಟೂರು ತಾಲ್ಲೂಕಿನ
+            <strong>Dasarahalli Tanda</strong>ದಲ್ಲಿ ಪ್ರಸಿದ್ಧ ದೇವತೆ.
+            ದೇವಿ ಅಪಾಯಗಳಿಂದ ರಕ್ಷಿಸಿ ಸುಖ-ಸಮೃದ್ಧಿ ನೀಡುತ್ತಾರೆ.
+            ಕೃಷಿಯಲ್ಲಿ ಉತ್ತಮ ಫಲ ನೀಡುವ ರಕ್ಷಕ ದೇವತೆ.
+            ಜಾತ್ರ ಮಹೋತ್ಸವ, ಭಜನೆ, ಡೊಳ್ಳು ಕುಣಿತ, ಕೋಲಾಟ ಆಚರಣೆ. 🌸</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 7 — BHIMA SATI ══════ -->
+  <div id="tab-bhimasati" class="tab-section">
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">✨<span>Bhima Sati Temple</span></div>
+          <div class="map-label">📍 Dodda Ennegere, Tumakuru, Karnataka</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Chikkanayakanhalli+Tumakuru+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+          <span class="badge">✨ Banjara Warrior Goddess</span>
+          <h2>Shri Bhima Sati Temple — Dodda Ennegere</h2>
+          <div class="loc-line">📍 <span>Dodda Ennegere, Chikkanayakanhalli Taluk, Tumakuru District, Karnataka</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>🌸 Birthplace</strong>Tengali Tanda</div>
+            <div class="mini-box"><strong>🤝 Sister Of</strong>Sitasati Devi</div>
+            <div class="mini-box"><strong>🏛️ Also Sacred</strong>Teetharaj Swami</div>
+            <div class="mini-box"><strong>📍 Teetharaj Born</strong>Gollarahalli</div>
+          </div>
+          <div class="desc-section">
+            <h3>✨ Historical Background</h3>
+            <p>According to elders, the Banjara people once stayed near Dodda Ennegere
+            at <strong>Halumalladevara Kaavalu</strong>. That area was once a large
+            grove of mango and tamarind trees. Bhima Sati showed deep affection
+            toward this place and often spoke about it with her relatives.
+            That sacred place became the temple.</p>
+          </div>
+          <div class="hl"><strong>🔱 She is Saati Sati #4 (Bheema Satti)</strong> —
+          The Warrior Goddess representing Courage, Strength and Resilience.
+          Guardian of the Tanda's boundaries.</div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ ಆವೃತ್ತಿ</h4>
+            <p>ಶ್ರೀ ಭೀಮಾಸತಿ ದೇವಿ ಬಂಜಾರಾ ಸಮುದಾಯದ ಶಕ್ತಿ, ರಕ್ಷಣೆ ಮತ್ತು ಭಕ್ತಿಯ ಪ್ರತೀಕ.
+            <strong>ಸೀತಾಸತಿ ದೇವಿಯ ಸಹೋದರಿ</strong>. ಜನ್ಮಸ್ಥಳ: <strong>ತೆಂಗಳಿ ತಾಂಡ</strong>.
+            ದೊಡ್ಡ ಎಣ್ಣೆಗೆರೆ ಪ್ರದೇಶ ಮಾವು ಮತ್ತು ಹುಣಸೆ ಮರಗಳ ತೋಪಾಗಿತ್ತು.
+            ಅಲ್ಲಿ ದೇವಿಯ ಪ್ರೀತಿಯಿಂದ ಪವಿತ್ರ ಕ್ಷೇತ್ರ ಸ್ಥಾಪಿತ. ✨</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 8 — SITASATI DAKURAJ ══════ -->
+  <div id="tab-sitasati" class="tab-section">
+    <div class="temple-card">
+      <div class="card-top">
+        <div class="card-media">
+          <div class="img-placeholder">🔱<span>Sitasati Dakuraj</span></div>
+          <div class="map-label">📍 Katenahalli, Haveri District, Karnataka</div>
+          <iframe class="map-box" src="https://maps.google.com/maps?q=Byadagi+Haveri+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-info">
+          <div class="image-center">
+          <img src="static/static/images/"  
+          alt="Shri Sitasati Dakuraj" 
+          style="width:50%; border-radius:12px; max-height:400px; object-fit:cover;">
+        </div>  
+         </div>   
+      </div>
+          <span class="badge">🔱 Kuladevata — Family Deity</span>
+          <h2>Shri Sitasati Dakuraj — Katenahalli Moolasthala</h2>
+          <div class="loc-line">📍 <span>Katenahalli Village, Byadagi Taluk, Haveri District, Karnataka</span></div>
+          <div class="mini-grid">
+            <div class="mini-box"><strong>📍 Moolasthala</strong>Katenahalli</div>
+            <div class="mini-box"><strong>📍 Taluk</strong>Byadagi</div>
+            <div class="mini-box"><strong>🗺️ District</strong>Haveri</div>
+            <div class="mini-box"><strong>🙏 Type</strong>Kuladevata</div>
+          </div>
+          <div class="desc-section">
+            <h3>🔱 Divine Representation</h3>
+            <p><strong>Sitasati Devi</strong> — represents purity, devotion and
+            divine motherly power. <strong>Dakuraj</strong> — guardian deity
+            protecting the community. Together they are the
+            <strong>Kuladevata (family deities)</strong> of the Banjara community.
+            The Nayak (Headman) used her temple to settle disputes — an oath taken
+            in her name is considered unbreakable.</p>
+          </div>
+          <div class="hl"><strong>🔱 She is Saati Sati #3 (Sita Satti)</strong> —
+          The Judge. Goddess of Truth and Justice. Patron of moral integrity.</div>
+          <div class="tag-row">
+            <span class="tag">🎊 Annual Jatra</span>
+            <span class="tag">🙏 Religious Rituals</span>
+            <span class="tag">🎵 Bhajans</span>
+            <span class="tag">🤸 Folk Culture</span>
+            <span class="tag">💃 Traditional Dances</span>
+          </div>
+          <div class="kannada-box">
+            <h4>🇮🇳 ಕನ್ನಡ ಆವೃತ್ತಿ</h4>
+            <p>ಶ್ರೀ ಸೀತಾಸತಿ ಡಾಕುರಾಜ ಬಂಜಾರಾ ಸಮುದಾಯದ <strong>ಕುಲದೇವತೆಗಳು</strong>.
+            ಮೂಲಸ್ಥಳ: <strong>ಕಾಟೇನಹಳ್ಳಿ</strong>, ಬೈದಗಿ ತಾಲ್ಲೂಕು, ಹಾವೇರಿ ಜಿಲ್ಲೆ.
+            ಸೀತಾಸತಿ — ಪವಿತ್ರತೆ ಮತ್ತು ತಾಯಿ ಸ್ವರೂಪ.
+            ಡಾಕುರಾಜ — ರಕ್ಷಕ ದೇವರು.
+            ಕಾಟೇನಹಳ್ಳಿಯಲ್ಲಿ ವಾರ್ಷಿಕ ಜಾತ್ರ ಮಹೋತ್ಸವ. 🔱</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TAB 9 — SAATI SATI (7 SATIS) ══════ -->
+  <div id="tab-saatisati" class="tab-section">
+
+    <div class="hero-banner">
+      <h2>🔮 The Saati Sati — Seven Sacred Ancestral Goddesses</h2>
+      <p>The Saati Sati are the ancestral female deities of the Banjara (Gor) people.
+      Unlike "Bhavanis" (forms of Shakti), the Seven Satis are revered as
+      <strong>benevolent ancestors</strong>. They represent the moral, physical, and
+      spiritual pillars of the Tanda (settlement).</p>
+    </div>
+
+    <!-- Core worship features -->
+    <div class="temple-card" style="padding: 0;">
+      <div class="card-info" style="padding: 24px;">
+        <span class="badge">🛠️ Core Worship Features</span>
+        <div class="mini-grid" style="margin-top: 14px;">
+          <div class="mini-box"><strong>🪨 Physical Form</strong>7 natural pebbles in a row</div>
+          <div class="mini-box"><strong>🥣 Sacred Food</strong>Lapsi (broken wheat) & Churma</div>
+          <div class="mini-box"><strong>🌳 Sacred Tree</strong>Jeenzero (Bauhinia) or Neem</div>
+          <div class="mini-box"><strong>🎵 Sacred Songs</strong>Valang in Gor-Boli language</div>
+          <div class="mini-box"><strong>🥗 Diet</strong>Strictly Vegetarian offerings</div>
+          <div class="mini-box"><strong>👥 Community</strong>Banjara (Gor) People</div>
+        </div>
+        <div class="kannada-box" style="margin-top: 16px;">
+          <h4>🇮🇳 ಕನ್ನಡ — ಸಾತಿ ಸತಿ ಪರಿಚಯ</h4>
+          <p>ಸಾತಿ ಸತಿ (ಏಳು ಸತಿ) ಬಂಜಾರಾ (ಗೋರ್) ಜನರ ಪೂರ್ವಜ ಮಹಿಳಾ ದೇವತೆಗಳು.
+          ಅವರನ್ನು <strong>7 ನೈಸರ್ಗಿಕ ಕಲ್ಲುಗಳ</strong> ರೂಪದಲ್ಲಿ ಪೂಜಿಸಲಾಗುತ್ತದೆ.
+          <strong>ಜೀಂಝೆರೋ (ಬಾಹಿನಿಯಾ) ಅಥವಾ ಬೇವಿನ ಮರ</strong>ದ ಕೆಳಗೆ ಗುಡಿ ಸ್ಥಾಪನೆ.
+          <strong>ವಾಲಂಗ್</strong> (ಪವಿತ್ರ ಗೀತೆಗಳು) ಮೂಲಕ ಮೌಖಿಕ ಪರಂಪರೆ. 🔮</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 Satis Grid -->
+    <div class="sati-grid">
+
+      <!-- 1. Hoona Satti -->
+      <div class="sati-card">
+        <div class="sati-num">1</div>
+        <h3>ಹೂಣ ಸತ್ತಿ — Hoona Satti</h3>
+        <span class="role">👑 The Matriarch — Root of Family</span>
+        <p><strong>Partner:</strong> Ram ji Raja<br>
+        <strong>Role:</strong> She is the eldest and the "Root" of the family.
+        Governs lineage (Vansh) and family unity. She is the
+        <strong>first deity invoked</strong> in every Banjara ritual.<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Foundational shrines in every traditional Tanda
+        across North Karnataka and Maharashtra</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ಹೂಣ ಸತ್ತಿ ಕುಟುಂಬದ ಹಿರಿಯ ಮಾತೃ ದೇವತೆ. ಪ್ರತಿ ಬಂಜಾರ ಆಚರಣೆಯಲ್ಲಿ
+          ಮೊದಲು ಇವರನ್ನೇ ಸ್ಮರಿಸಲಾಗುತ್ತದೆ. ವಂಶ ಮತ್ತು ಕುಟುಂಬ ಏಕತೆ ನಿಯಂತ್ರಕ. 👑</p>
+        </div>
+      </div>
+
+      <!-- 2. Kesi Rani -->
+      <div class="sati-card">
+        <div class="sati-num">2</div>
+        <h3>ಕೇಸಿ ರಾಣಿ — Kesi Rani</h3>
+        <span class="role">💊 The Healer — Guardian of Health</span>
+        <p><strong>Partner:</strong> Kaana ji Raja<br>
+        <strong>Role:</strong> Guardian against village epidemics.
+        Worshipped to protect children and livestock from
+        <strong>cholera, smallpox, and plague</strong>.
+        Represents health and well-being of the community.<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Prominent shrines in Bagalkot and Belagavi
+        districts, Karnataka</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ಕೇಸಿ ರಾಣಿ ರೋಗ ಮತ್ತು ಸಾಂಕ್ರಾಮಿಕ ರೋಗಗಳಿಂದ ರಕ್ಷಿಸುವ ದೇವತೆ.
+          ಮಕ್ಕಳು ಮತ್ತು ಪ್ರಾಣಿಗಳ ಆರೋಗ್ಯ ಕಾಪಾಡುತ್ತಾರೆ.
+          ಬಾಗಲಕೋಟ ಮತ್ತು ಬೆಳಗಾವಿ ಜಿಲ್ಲೆಗಳಲ್ಲಿ ಪ್ರಮುಖ ಗುಡಿಗಳು. 💊</p>
+        </div>
+      </div>
+
+      <!-- 3. Sita Satti -->
+      <div class="sati-card">
+        <div class="sati-num">3</div>
+        <h3>ಸೀತಾ ಸತ್ತಿ — Sita Satti</h3>
+        <span class="role">⚖️ The Judge — Goddess of Truth & Justice</span>
+        <p><strong>Partner:</strong> Dakhu Raja<br>
+        <strong>Role:</strong> Patron of moral integrity. The Nayak (Headman)
+        uses her temple to settle disputes. An oath taken in her name is
+        considered <strong>unbreakable</strong>.<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Katenahalli, Byadagi Taluk, Haveri District, Karnataka</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ಸೀತಾ ಸತ್ತಿ ಸತ್ಯ ಮತ್ತು ನ್ಯಾಯದ ದೇವತೆ. ನಾಯಕ (ಮುಖ್ಯಸ್ಥ) ವಿವಾದ
+          ಇತ್ಯರ್ಥಕ್ಕೆ ಇವರ ಗುಡಿ ಬಳಸುತ್ತಾರೆ. ಇವರ ಹೆಸರಿನ ಪ್ರಮಾಣ ಅಭಂಗ.
+          📍 ಕಾಟೇನಹಳ್ಳಿ, ಬೈದಗಿ, ಹಾವೇರಿ. ⚖️</p>
+        </div>
+      </div>
+
+      <!-- 4. Bheema Satti -->
+      <div class="sati-card">
+        <div class="sati-num">4</div>
+        <h3>ಭೀಮಾ ಸತ್ತಿ — Bheema Satti</h3>
+        <span class="role">⚔️ The Warrior — Courage & Strength</span>
+        <p><strong>Partner:</strong> Teeta Raja<br>
+        <strong>Role:</strong> Guardian of the Tanda's boundaries.
+        Worshipped for <strong>physical and mental strength</strong>
+        to face external hardships and protect from danger.<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Doddannegere, Chikkanayakanahalli Taluk,
+        Tumakuru District, Karnataka</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ಭೀಮಾ ಸತ್ತಿ ತಾಂಡಾ ಗಡಿಯ ರಕ್ಷಕ ದೇವತೆ. ದೈಹಿಕ ಮತ್ತು ಮಾನಸಿಕ
+          ಶಕ್ತಿ ನೀಡುತ್ತಾರೆ. 📍 ದೊಡ್ಡಣ್ಣೆಗೆರೆ, ಚಿಕ್ಕನಾಯಕನಹಳ್ಳಿ, ತುಮಕೂರು. ⚔️</p>
+        </div>
+      </div>
+
+      <!-- 5. Tola Satti -->
+      <div class="sati-card">
+        <div class="sati-num">5</div>
+        <h3>ತೋಲಾ ಸತ್ತಿ — Tola Satti</h3>
+        <span class="role">💰 The Provider — Wealth & Trade</span>
+        <p><strong>Partner:</strong> Madhu Raja<br>
+        <strong>Role:</strong> Goddess of Wealth, Trade and Bounty.
+        "Tola" means weight/measurement. Since Banjaras were historically
+        traders, she ensures <strong>prosperity in business</strong>
+        and a fertile harvest in the Vadi (farm).<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Agricultural lands of families throughout
+        Andhra Pradesh and South Karnataka</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ತೋಲಾ ಸತ್ತಿ ಸಂಪತ್ತು, ವ್ಯಾಪಾರ ಮತ್ತು ಕೃಷಿ ಫಲದ ದೇವತೆ.
+          "ತೋಲ" = ತೂಕ/ಅಳತೆ. ಬಂಜಾರ ವ್ಯಾಪಾರಿಗಳ ರಕ್ಷಕ.
+          ಆಂಧ್ರ ಪ್ರದೇಶ ಮತ್ತು ದಕ್ಷಿಣ ಕರ್ನಾಟಕದಲ್ಲಿ ಪೂಜೆ. 💰</p>
+        </div>
+      </div>
+
+      <!-- 6. Tulaja Satti -->
+      <div class="sati-card">
+        <div class="sati-num">6</div>
+        <h3>ತುಳಜಾ ಸತ್ತಿ — Tulaja Satti</h3>
+        <span class="role">🧠 The Visionary — Wisdom & Intuition</span>
+        <p><strong>Partner:</strong> Sekha Raja<br>
+        <strong>Role:</strong> Goddess of Wisdom and Intuition.
+        Represents <strong>"Antar-gyana"</strong> (Inner Knowledge).
+        Guides elders and community leaders to make wise decisions
+        for the welfare of people.<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Linked to Tuljapur (Maharashtra) and revered
+        in clan shrines across the Deccan Plateau</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ತುಳಜಾ ಸತ್ತಿ ಜ್ಞಾನ ಮತ್ತು ಅಂತರ್ಜ್ಞಾನದ ದೇವತೆ.
+          ಸಮುದಾಯ ನಾಯಕರಿಗೆ ಸರಿಯಾದ ನಿರ್ಧಾರ ತೆಗೆದುಕೊಳ್ಳಲು ಮಾರ್ಗದರ್ಶನ.
+          ತುಳಜಾಪುರ (ಮಹಾರಾಷ್ಟ್ರ) ಮತ್ತು ದೆಕ್ಕನ್ ಪ್ರಸ್ಥಭೂಮಿಯಲ್ಲಿ ಪೂಜೆ. 🧠</p>
+        </div>
+      </div>
+
+      <!-- 7. Roopa Satti -->
+      <div class="sati-card">
+        <div class="sati-num">7</div>
+        <h3>ರೂಪಾ ಸತ್ತಿ — Roopa Satti</h3>
+        <span class="role">🎨 Guardian of Identity — Culture & Arts</span>
+        <p><strong>Partner:</strong> Kaanaa Raja<br>
+        <strong>Role:</strong> Protector of Banjara identity — the language,
+        the unique dress <strong>(Phetiya-Kanchalli)</strong>, and the intricate
+        embroidery. "Roopa" means form/beauty.<br>
+        <strong>Offering:</strong> Lapsi, Churma (Vegetarian)</p>
+        <div class="loc">📍 Frequently worshipped in Rajasthan and Gujarat,
+        preserving the historical roots of the Gor people</div>
+        <div class="kannada-box" style="margin-top:10px;">
+          <p>ರೂಪಾ ಸತ್ತಿ ಬಂಜಾರ ಗುರುತಿನ ರಕ್ಷಕ ದೇವತೆ — ಭಾಷೆ,
+          <strong>ಫೇಟಿಯಾ-ಕಂಚಲ್ಲಿ</strong> ಉಡುಗೆ, ಕಸೂತಿ ಕಲೆ.
+          ರಾಜಸ್ಥಾನ ಮತ್ತು ಗುಜರಾತ್‌ನಲ್ಲಿ ಪ್ರಮುಖ ಪೂಜೆ. 🎨</p>
+        </div>
+      </div>
+
+    </div><!-- end sati-grid -->
+
+    <!-- Map for Saati Sati -->
+    <div class="temple-card" style="margin-top: 20px;">
+      <div class="card-info">
+        <span class="badge">🗺️ Sacred Locations Map</span>
+        <h2>Sita Satti & Bheema Satti — Confirmed Sacred Locations</h2>
+        <div class="loc-line">📍 <span>Karnataka — Primary Sacred Places</span></div>
+        <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:14px;">
+          <div style="flex:1; min-width:250px;">
+            <div class="map-label">📍 Sita Satti — Katenahalli, Haveri, Karnataka</div>
+            <iframe style="width:100%;height:200px;border:none;" src="https://maps.google.com/maps?q=Byadagi+Haveri+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div style="flex:1; min-width:250px;">
+            <div class="map-label">📍 Bheema Satti — Tumakuru, Karnataka</div>
+            <iframe style="width:100%;height:200px;border:none;" src="https://maps.google.com/maps?q=Chikkanayakanhalli+Tumakuru+Karnataka&output=embed" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>
+        <div class="tag-row" style="margin-top:14px;">
+          <span class="btag">👑 Hoona Satti — N.Karnataka & Maharashtra</span>
+          <span class="btag">💊 Kesi Rani — Bagalkot & Belagavi</span>
+          <span class="btag">⚖️ Sita Satti — Katenahalli, Haveri</span>
+          <span class="btag">⚔️ Bheema Satti — Tumakuru</span>
+          <span class="btag">💰 Tola Satti — AP & S.Karnataka</span>
+          <span class="btag">🧠 Tulaja Satti — Tuljapur, Maharashtra</span>
+          <span class="btag">🎨 Roopa Satti — Rajasthan & Gujarat</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end saatisati tab -->
+
+</div><!-- end .content -->
+
+<footer>🌿 Banjara Cultural Platform — Preserving Heritage Through Technology</footer>
+
+<script>
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 180, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

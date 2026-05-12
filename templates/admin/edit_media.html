@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Media — Admin</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#f5f5f5}
+    .topbar{background:#8B1A1A;padding:16px 30px;display:flex;justify-content:space-between;align-items:center}
+    .topbar h1{color:white;font-size:18px}
+    .topbar a{color:#ffd700;text-decoration:none;font-size:14px;font-weight:bold}
+    .container{max-width:800px;margin:30px auto;padding:0 20px}
+    .card{background:white;border-radius:14px;padding:32px;box-shadow:0 4px 14px rgba(0,0,0,.08);border-top:4px solid #8B1A1A}
+    .card h2{color:#8B1A1A;font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+    .card p{color:#888;font-size:14px;margin-bottom:24px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .fg{margin-bottom:18px}
+    .fg label{display:block;font-weight:bold;color:#555;font-size:13px;margin-bottom:6px}
+    .fg input,.fg select,.fg textarea{width:100%;padding:11px 16px;border:2px solid #ddd;border-radius:8px;font-size:14px;outline:none;transition:border .2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#8B1A1A}
+    .fg textarea{height:80px;resize:vertical}
+    .fg .hint{font-size:12px;color:#aaa;margin-top:4px}
+
+    /* Current media preview */
+    .current-media{background:#fef9f0;border-radius:12px;padding:20px;margin-bottom:24px;border:1px solid #f0d9a0;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .cm-preview{width:120px;height:100px;border-radius:8px;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0}
+    .cm-preview img{width:100%;height:100%;object-fit:cover}
+    .cm-info h3{color:#8B1A1A;font-size:15px;margin-bottom:6px}
+    .cm-info p{color:#666;font-size:13px;margin-bottom:4px}
+    .cm-info .file-path{font-size:11px;color:#aaa;word-break:break-all;background:#f5f5f5;padding:4px 8px;border-radius:4px;margin-top:6px}
+    .cm-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:bold;margin-top:6px}
+    .badge-image{background:#e8f5e8;color:#1a6b1a}
+    .badge-audio{background:#e8e8ff;color:#1a1a8b}
+    .badge-video{background:#fde8e8;color:#8B1A1A}
+
+    /* Audio player */
+    .cm-preview audio{width:120px}
+
+    /* Upload new file */
+    .upload-new{border:2px dashed #ddd;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:18px;background:#fafafa}
+    .upload-new:hover{border-color:#8B1A1A;background:#fef9f0}
+    .upload-new .ui{font-size:36px;margin-bottom:8px}
+    .upload-new p{color:#888;font-size:13px}
+    .upload-new .fname{color:#8B1A1A;font-weight:bold;font-size:13px;margin-top:6px}
+    .upload-new input{display:none}
+    .optional-tag{background:#ffd700;color:#8B1A1A;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;margin-left:6px}
+
+    /* Buttons */
+    .btn-row{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+    .btn{padding:12px 24px;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+    .btn-primary{background:#8B1A1A;color:white}
+    .btn-primary:hover{background:#a52020}
+    .btn-secondary{background:white;color:#8B1A1A;border:2px solid #8B1A1A}
+    .btn-secondary:hover{background:#fef9f0}
+    .btn-danger{background:#dc3545;color:white}
+
+    /* Alerts */
+    .success{background:#d4edda;color:#155724;padding:14px 18px;border-radius:8px;margin-bottom:20px;font-size:14px;border-left:4px solid #28a745}
+    .error{background:#f8d7da;color:#721c24;padding:14px 18px;border-radius:8px;margin-bottom:20px;font-size:14px;border-left:4px solid #dc3545}
+    .info{background:#fff8e8;border-left:4px solid #ffd700;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#666;margin-bottom:18px}
+
+    @media(max-width:600px){.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>✏️ Edit Media — ID #{{ media[0] }}</h1>
+  <div style="display:flex;gap:14px">
+    <a href="/admin/upload_media">← Back to Media</a>
+    <a href="/admin/dashboard">Dashboard</a>
+  </div>
+</div>
+
+<div class="container">
+
+  {% if success %}<div class="success">{{ success }}</div>{% endif %}
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+  <!-- Current Media Preview -->
+  <div class="current-media">
+    <div class="cm-preview">
+      {% if media[2] == 'image' %}
+        <img src="/static/{{ media[3] }}" alt="{{ media[1] }}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+        <div style="display:none;font-size:48px">📷</div>
+      {% elif media[2] == 'audio' %}
+        🎵
+      {% else %}
+        🎬
+      {% endif %}
+    </div>
+    <div class="cm-info">
+      <h3>{{ media[1] }}</h3>
+      <p>📂 Section: <strong>{{ media[4] }}</strong></p>
+      <p>📄 Description: {{ media[5] or 'None' }}</p>
+      <p>📅 Uploaded: {{ media[6].strftime('%d %b %Y at %H:%M') if media[6] else 'Unknown' }}</p>
+      <span class="cm-badge badge-{{ media[2] }}">{{ media[2] }}</span>
+      <div class="file-path">📁 {{ media[3] }}</div>
+    </div>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="card">
+    <h2>✏️ Edit Media Details</h2>
+    <p>Update title, section, description, or replace the file with a new one.</p>
+
+    <div class="info">
+      💡 <strong>Tip:</strong> Updating title and description does NOT replace the file. Only upload a new file if you want to replace it.
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <div class="two-col">
+        <div class="fg">
+          <label>📝 Title *</label>
+          <input type="text" name="title" value="{{ media[1] }}" required>
+        </div>
+        <div class="fg">
+          <label>📂 Section *</label>
+          <select name="section" required>
+            <option value="temples" {% if media[4]=='temples' %}selected{% endif %}>🛕 Temples</option>
+            <option value="culture" {% if media[4]=='culture' %}selected{% endif %}>🎭 Culture</option>
+            <option value="gallery" {% if media[4]=='gallery' %}selected{% endif %}>🖼️ Gallery</option>
+            <option value="festival" {% if media[4]=='festival' %}selected{% endif %}>🎉 Festival</option>
+            <option value="karnataka" {% if media[4]=='karnataka' %}selected{% endif %}>🌿 Karnataka</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>📄 Description</label>
+        <textarea name="description" placeholder="Brief description...">{{ media[5] or '' }}</textarea>
+      </div>
+
+      <!-- Replace File (Optional) -->
+      <div class="fg">
+        <label>
+          📁 Replace File
+          <span class="optional-tag">OPTIONAL</span>
+        </label>
+        <div class="hint" style="margin-bottom:8px">Leave empty to keep the current file. Upload a new file to replace it.</div>
+        <div class="upload-new" onclick="document.getElementById('new-file').click()">
+          <div class="ui">
+            {% if media[2] == 'image' %}📸
+            {% elif media[2] == 'audio' %}🎵
+            {% else %}🎬{% endif %}
+          </div>
+          <p><strong>Click to select replacement file</strong> (optional)</p>
+          <p>
+            {% if media[2] == 'image' %}.jpg .png .webp supported
+            {% elif media[2] == 'audio' %}.mp3 .wav .ogg supported
+            {% else %}.mp4 .webm supported{% endif %}
+          </p>
+          <div class="fname" id="new-fname">No file selected — current file will be kept</div>
+          <input type="file" id="new-file" name="new_file"
+            accept="{% if media[2] == 'image' %}.jpg,.jpeg,.png,.gif,.webp{% elif media[2] == 'audio' %}.mp3,.wav,.ogg{% else %}.mp4,.webm{% endif %}"
+            onchange="document.getElementById('new-fname').textContent='✅ New file: '+this.files[0].name">
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">💾 Save Changes →</button>
+        <a href="/admin/upload_media" class="btn btn-secondary">✕ Cancel</a>
+        <form method="POST" action="/admin/delete_media/{{ media[0] }}" style="margin:0"
+          onsubmit="return confirm('Are you sure you want to DELETE this media? This cannot be undone!')">
+          <button type="submit" class="btn btn-danger">🗑️ Delete This Media</button>
+        </form>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Preview if image -->
+  {% if media[2] == 'image' %}
+  <div class="card" style="margin-top:20px">
+    <h2>👁️ Current Image Preview</h2>
+    <p>This is how the image currently looks.</p>
+    <img src="/static/{{ media[3] }}" alt="{{ media[1] }}"
+      style="max-width:100%;border-radius:10px;border:1px solid #eee;margin-top:8px"
+      onerror="this.style.display='none'">
+  </div>
+  {% elif media[2] == 'audio' %}
+  <div class="card" style="margin-top:20px">
+    <h2>🎵 Current Audio</h2>
+    <p>Play the current audio file.</p>
+    <audio controls style="width:100%;margin-top:8px;border-radius:8px">
+      <source src="/static/{{ media[3] }}" type="audio/mpeg">
+      Your browser does not support audio.
+    </audio>
+  </div>
+  {% elif media[2] == 'video' %}
+  <div class="card" style="margin-top:20px">
+    <h2>🎬 Current Video</h2>
+    <p>Play the current video file.</p>
+    <video controls style="width:100%;border-radius:10px;margin-top:8px;background:#000">
+      <source src="/static/{{ media[3] }}" type="video/mp4">
+      Your browser does not support video.
+    </video>
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>

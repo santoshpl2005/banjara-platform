@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard — Banjara Platform</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#f0ebe3}
+
+    /* ── Topbar ── */
+    .topbar{background:#8B1A1A;padding:0 30px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+    .topbar .brand{color:#ffd700;font-size:20px;font-weight:bold;display:flex;align-items:center;gap:10px}
+    .topbar-right{display:flex;align-items:center;gap:16px}
+    .topbar-right a{color:rgba(255,255,255,.85);text-decoration:none;font-size:13px;font-weight:bold;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3)}
+    .topbar-right a:hover{background:rgba(255,255,255,.15)}
+    .topbar-right .view-site{background:#ffd700;color:#8B1A1A;border-color:#ffd700}
+
+    /* ── Layout ── */
+    .layout{display:flex;min-height:calc(100vh - 60px)}
+
+    /* ── Sidebar ── */
+    .sidebar{width:230px;background:#6B0F0F;padding:24px 0;flex-shrink:0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+    .sidebar .admin-info{text-align:center;padding:0 16px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:16px}
+    .sidebar .admin-avatar{width:56px;height:56px;background:rgba(255,215,0,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 10px}
+    .sidebar .admin-name{color:white;font-size:14px;font-weight:bold}
+    .sidebar .admin-role{color:rgba(255,255,255,.6);font-size:12px;margin-top:3px}
+    .sidebar .nav-label{color:rgba(255,255,255,.4);font-size:11px;font-weight:bold;letter-spacing:1px;padding:8px 20px 4px;text-transform:uppercase}
+    .nav-link{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;font-weight:bold;transition:all .2s;border-left:3px solid transparent}
+    .nav-link:hover,.nav-link.active{background:rgba(255,255,255,.1);color:white;border-left-color:#ffd700}
+    .nav-link .ni{font-size:18px;width:24px;text-align:center}
+
+    /* ── Main ── */
+    .main{flex:1;padding:28px;overflow-x:hidden}
+
+    /* ── Page Header ── */
+    .page-header{margin-bottom:24px}
+    .page-header h1{color:#8B1A1A;font-size:24px;margin-bottom:4px}
+    .page-header p{color:#888;font-size:14px}
+    .breadcrumb{font-size:12px;color:#aaa;margin-bottom:8px}
+    .breadcrumb span{color:#8B1A1A}
+
+    /* ── Stats Grid ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+    .stat-card{background:white;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.07);position:relative;overflow:hidden;transition:transform .2s}
+    .stat-card:hover{transform:translateY(-3px)}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px}
+    .stat-card.red::before{background:#8B1A1A}
+    .stat-card.gold::before{background:#ffd700}
+    .stat-card.green::before{background:#27ae60}
+    .stat-card.blue::before{background:#2980b9}
+    .stat-card.purple::before{background:#8e44ad}
+    .stat-card.orange::before{background:#e67e22}
+    .stat-card.teal::before{background:#16a085}
+    .stat-card.pink::before{background:#e91e63}
+    .stat-icon{font-size:32px;margin-bottom:10px}
+    .stat-num{font-size:36px;font-weight:bold;color:#2c2c2c;line-height:1}
+    .stat-label{color:#888;font-size:12px;margin-top:6px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px}
+    .stat-sub{color:#aaa;font-size:11px;margin-top:3px}
+
+    /* ── Section Title ── */
+    .sec-title{font-size:16px;font-weight:bold;color:#8B1A1A;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #ffd700;display:flex;align-items:center;gap:8px}
+
+    /* ── Two Column ── */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+
+    /* ── Card ── */
+    .dash-card{background:white;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+
+    /* ── Quick Actions ── */
+    .action-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:24px}
+    .action-btn{background:white;border-radius:12px;padding:20px 14px;text-align:center;text-decoration:none;color:#333;box-shadow:0 2px 10px rgba(0,0,0,.07);transition:all .2s;border-top:3px solid #8B1A1A;display:block}
+    .action-btn:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+    .action-btn .ai{font-size:32px;margin-bottom:8px}
+    .action-btn h3{font-size:13px;font-weight:bold;color:#8B1A1A;margin-bottom:3px}
+    .action-btn p{font-size:11px;color:#aaa;line-height:1.4}
+
+    /* ── Recent Queries Table ── */
+    .rtable{width:100%;border-collapse:collapse;font-size:13px}
+    .rtable th{background:#8B1A1A;color:white;padding:10px 12px;text-align:left;font-size:12px}
+    .rtable td{padding:10px 12px;border-bottom:1px solid #eee;vertical-align:top}
+    .rtable tr:hover td{background:#fef9f0}
+    .rtable .query-text{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#333}
+    .rtable .ans-text{max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#666;font-size:12px}
+    .rtable .time{color:#aaa;font-size:11px;white-space:nowrap}
+
+    /* ── Activity Feed ── */
+    .activity-list{list-style:none}
+    .activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #f5f5f5}
+    .activity-item:last-child{border-bottom:none}
+    .act-icon{width:36px;height:36px;border-radius:50%;background:#fdf0d0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .act-text{font-size:13px;color:#444;line-height:1.5}
+    .act-time{font-size:11px;color:#aaa;margin-top:2px}
+
+    /* ── Progress Bar ── */
+    .progress-row{margin-bottom:14px}
+    .progress-label{display:flex;justify-content:space-between;font-size:13px;color:#555;margin-bottom:5px}
+    .progress-bar{background:#eee;border-radius:10px;height:8px}
+    .progress-fill{height:8px;border-radius:10px;transition:width .5s}
+
+    /* ── Platform Summary ── */
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+    .summary-item{background:white;border-radius:10px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+    .summary-item .si-icon{font-size:24px;width:40px;text-align:center}
+    .summary-item .si-info h4{font-size:13px;color:#8B1A1A;font-weight:bold}
+    .summary-item .si-info p{font-size:12px;color:#888;margin-top:2px}
+
+    /* ── Welcome Banner ── */
+    .welcome-banner{background:linear-gradient(135deg,#8B1A1A,#c0392b);border-radius:16px;padding:24px 28px;color:white;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .welcome-banner h2{font-size:20px;margin-bottom:4px}
+    .welcome-banner p{font-size:13px;opacity:.88;line-height:1.6}
+    .welcome-banner .wb-stats{display:flex;gap:24px;flex-wrap:wrap}
+    .wb-stat{text-align:center}
+    .wb-stat .wn{font-size:28px;font-weight:bold;color:#ffd700}
+    .wb-stat .wl{font-size:11px;opacity:.8;margin-top:2px}
+
+    /* ── Alerts ── */
+    .alert{padding:14px 18px;border-radius:8px;font-size:14px;margin-bottom:16px;border-left:4px solid}
+    .alert-info{background:#fff8e8;border-color:#ffd700;color:#7a6000}
+    .alert-success{background:#d4edda;border-color:#28a745;color:#155724}
+
+    footer{background:#4a0f0f;color:rgba(255,255,255,.7);text-align:center;padding:16px;font-size:12px}
+
+    @media(max-width:900px){
+      .sidebar{display:none}
+      .two-col,.three-col{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Topbar ── -->
+<div class="topbar">
+  <div class="brand">🌿 Banjara Admin Panel</div>
+  <div class="topbar-right">
+    <a href="/" class="view-site" target="_blank">🌐 View Website</a>
+    <a href="/admin/logout">🚪 Logout</a>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+    <div class="admin-info">
+      <div class="admin-avatar">🛡️</div>
+      <div class="admin-name">Admin</div>
+      <div class="admin-role">Banjara Platform Manager</div>
+    </div>
+
+    <div class="nav-label">Main</div>
+    <a href="/admin/dashboard" class="nav-link active"><span class="ni">📊</span> Dashboard</a>
+    <a href="/" target="_blank" class="nav-link"><span class="ni">🌐</span> View Website</a>
+
+    <div class="nav-label">Content</div>
+    <a href="/admin/add_culture" class="nav-link"><span class="ni">🎭</span> Add Culture</a>
+    <a href="/admin/add_temple" class="nav-link"><span class="ni">🛕</span> Add Temple</a>
+    <a href="/admin/upload_media" class="nav-link"><span class="ni">📁</span> Manage Media</a>
+
+    <div class="nav-label">Reports</div>
+    <a href="/admin/queries" class="nav-link"><span class="ni">🤖</span> AI Queries</a>
+    <a href="/admin/users" class="nav-link"><span class="ni">👥</span> Users</a>
+
+    <div class="nav-label">Pages</div>
+    <a href="/culture" target="_blank" class="nav-link"><span class="ni">🎭</span> Culture Page</a>
+    <a href="/temples" target="_blank" class="nav-link"><span class="ni">🛕</span> Temples Page</a>
+    <a href="/gallery" target="_blank" class="nav-link"><span class="ni">🖼️</span> Gallery Page</a>
+    <a href="/quiz" target="_blank" class="nav-link"><span class="ni">📝</span> Quiz Page</a>
+    <a href="/ai_chat" target="_blank" class="nav-link"><span class="ni">🤖</span> AI Chat</a>
+  </div>
+
+  <!-- ── Main Content ── -->
+  <div class="main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">Admin / <span>Dashboard</span></div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>📊 Dashboard Overview</h1>
+      <p>Welcome back! Here is a complete overview of the Banjara Cultural Platform.</p>
+    </div>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div>
+        <h2>🌿 Banjara Cultural Platform</h2>
+        <p>AI-Powered Cultural Knowledge Platform for the Banjara Community<br>
+        Built with Python Flask • MySQL • HTML CSS JS • NLP AI Search</p>
+      </div>
+      <div class="wb-stats">
+        <div class="wb-stat"><div class="wn">{{ culture_count }}</div><div class="wl">Culture Articles</div></div>
+        <div class="wb-stat"><div class="wn">{{ temple_count }}</div><div class="wl">Sacred Temples</div></div>
+        <div class="wb-stat"><div class="wn">{{ user_count }}</div><div class="wl">Registered Users</div></div>
+        <div class="wb-stat"><div class="wn">{{ query_count }}</div><div class="wl">AI Queries</div></div>
+      </div>
+    </div>
+
+    <!-- ── Stats Grid ── -->
+    <div class="sec-title">📈 Platform Statistics</div>
+    <div class="stats-grid">
+      <div class="stat-card red">
+        <div class="stat-icon">🎭</div>
+        <div class="stat-num">{{ culture_count }}</div>
+        <div class="stat-label">Culture Articles</div>
+        <div class="stat-sub">Festivals, dress, food, history</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">🛕</div>
+        <div class="stat-num">{{ temple_count }}</div>
+        <div class="stat-label">Sacred Temples</div>
+        <div class="stat-sub">Pilgrimage sites documented</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">👥</div>
+        <div class="stat-num">{{ user_count }}</div>
+        <div class="stat-label">Registered Users</div>
+        <div class="stat-sub">Community members</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-num">{{ query_count }}</div>
+        <div class="stat-label">AI Queries Asked</div>
+        <div class="stat-sub">User questions answered</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">📁</div>
+        <div class="stat-num">{{ media_count }}</div>
+        <div class="stat-label">Media Files</div>
+        <div class="stat-sub">Images, audio, videos</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">📸</div>
+        <div class="stat-num">{{ img_count }}</div>
+        <div class="stat-label">Images Uploaded</div>
+        <div class="stat-sub">Cultural photos</div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-icon">🎵</div>
+        <div class="stat-num">{{ audio_count }}</div>
+        <div class="stat-label">Audio Files</div>
+        <div class="stat-sub">Folk songs, bhajans</div>
+      </div>
+      <div class="stat-card pink">
+        <div class="stat-icon">🎬</div>
+        <div class="stat-num">{{ video_count }}</div>
+        <div class="stat-label">Video Files</div>
+        <div class="stat-sub">Cultural videos</div>
+      </div>
+    </div>
+
+    <!-- ── Platform Summary ── -->
+    <div class="sec-title">🌿 Platform Features Overview</div>
+    <div class="summary-grid">
+      <div class="summary-item"><div class="si-icon">🏠</div><div class="si-info"><h4>Homepage</h4><p>Search + EN/KN Language</p></div></div>
+      <div class="summary-item"><div class="si-icon">🎭</div><div class="si-info"><h4>Culture — 8 Tabs</h4><p>History, Karnataka, Dress, Marriage...</p></div></div>
+      <div class="summary-item"><div class="si-icon">🛕</div><div class="si-info"><h4>Temples — 9 Tabs</h4><p>All Banjara sacred sites</p></div></div>
+      <div class="summary-item"><div class="si-icon">🖼️</div><div class="si-info"><h4>Gallery — 4 Sections</h4><p>Photos, Songs, Videos, YouTube</p></div></div>
+      <div class="summary-item"><div class="si-icon">📝</div><div class="si-info"><h4>Quiz — 5 Categories</h4><p>25 questions with EN/KN</p></div></div>
+      <div class="summary-item"><div class="si-icon">🤖</div><div class="si-info"><h4>AI Chat — 30+ Topics</h4><p>NLP-based smart search</p></div></div>
+      <div class="summary-item"><div class="si-icon">🔑</div><div class="si-info"><h4>User Login System</h4><p>Register, Login, Profile</p></div></div>
+      <div class="summary-item"><div class="si-icon">🌿</div><div class="si-info"><h4>Karnataka Culture</h4><p>16 districts + GI embroidery</p></div></div>
+      <div class="summary-item"><div class="si-icon">🗣️</div><div class="si-info"><h4>Gor Boli Dictionary</h4><p>38 Banjara words EN+KN</p></div></div>
+      <div class="summary-item"><div class="si-icon">📱</div><div class="si-info"><h4>Mobile Responsive</h4><p>Works on all devices</p></div></div>
+    </div>
+
+    <!-- ── Quick Actions ── -->
+    <div class="sec-title">⚡ Quick Actions</div>
+    <div class="action-grid">
+      <a href="/admin/add_culture" class="action-btn">
+        <div class="ai">🎭</div><h3>Add Culture</h3><p>Add new cultural article</p>
+      </a>
+      <a href="/admin/add_temple" class="action-btn">
+        <div class="ai">🛕</div><h3>Add Temple</h3><p>Add pilgrimage site</p>
+      </a>
+      <a href="/admin/upload_media" class="action-btn">
+        <div class="ai">📸</div><h3>Upload Image</h3><p>Add photos to gallery</p>
+      </a>
+      <a href="/admin/upload_media" class="action-btn">
+        <div class="ai">🎵</div><h3>Upload Audio</h3><p>Add folk songs / bhajans</p>
+      </a>
+      <a href="/admin/upload_media" class="action-btn">
+        <div class="ai">🎬</div><h3>Upload Video</h3><p>Add cultural videos</p>
+      </a>
+      <a href="/admin/queries" class="action-btn">
+        <div class="ai">🤖</div><h3>AI Queries</h3><p>See user questions</p>
+      </a>
+      <a href="/admin/users" class="action-btn">
+        <div class="ai">👥</div><h3>View Users</h3><p>Registered members</p>
+      </a>
+      <a href="/" target="_blank" class="action-btn">
+        <div class="ai">🌐</div><h3>View Website</h3><p>Open public site</p>
+      </a>
+    </div>
+
+    <!-- ── Two Column: Queries + Progress ── -->
+    <div class="two-col">
+
+      <!-- Recent AI Queries -->
+      <div class="dash-card">
+        <div class="sec-title">🤖 Recent AI Queries</div>
+        {% if recent_queries %}
+        <table class="rtable">
+          <thead>
+            <tr><th>Question</th><th>Answer</th><th>Time</th></tr>
+          </thead>
+          <tbody>
+            {% for q in recent_queries %}
+            <tr>
+              <td><div class="query-text" title="{{ q[1] }}">{{ q[1] }}</div></td>
+              <td><div class="ans-text" title="{{ q[2] }}">{{ q[2][:60] if q[2] else '—' }}...</div></td>
+              <td><div class="time">{{ q[3].strftime('%d %b %H:%M') if q[3] else '' }}</div></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a href="/admin/queries" style="display:block;text-align:center;margin-top:14px;color:#8B1A1A;font-size:13px;font-weight:bold;text-decoration:none">View All Queries →</a>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:#aaa">
+          <div style="font-size:40px">🤖</div>
+          <p style="margin-top:8px">No AI queries yet.<br>Users will appear here when they use the chat.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Content Progress -->
+      <div class="dash-card">
+        <div class="sec-title">📊 Content Progress</div>
+
+        <div class="progress-row">
+          <div class="progress-label"><span>🎭 Culture Articles</span><span style="color:#8B1A1A;font-weight:bold">{{ culture_count }} / 20 target</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ [culture_count*5, 100]|min }}%;background:#8B1A1A"></div></div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-label"><span>🛕 Temple Profiles</span><span style="color:#8B1A1A;font-weight:bold">{{ temple_count }} / 10 target</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ [temple_count*10, 100]|min }}%;background:#c0392b"></div></div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-label"><span>👥 Registered Users</span><span style="color:#8B1A1A;font-weight:bold">{{ user_count }} users</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ [user_count*10, 100]|min }}%;background:#27ae60"></div></div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-label"><span>🤖 AI Queries Answered</span><span style="color:#8B1A1A;font-weight:bold">{{ query_count }} total</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ [query_count*2, 100]|min }}%;background:#2980b9"></div></div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-label"><span>📁 Media Files</span><span style="color:#8B1A1A;font-weight:bold">{{ media_count }} files</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ [media_count*10, 100]|min }}%;background:#8e44ad"></div></div>
+        </div>
+
+        <div style="margin-top:18px;padding-top:14px;border-top:1px solid #eee">
+          <div class="sec-title" style="font-size:14px;margin-bottom:10px">📋 Content Breakdown</div>
+          {% for cat, count in culture_by_cat %}
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f5f5f5">
+            <span style="color:#555;text-transform:capitalize">🏷️ {{ cat }}</span>
+            <span style="background:#8B1A1A;color:white;padding:1px 10px;border-radius:20px;font-size:11px;font-weight:bold">{{ count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Three Column: Tech + Pages + Tips ── -->
+    <div class="three-col">
+
+      <!-- Technology Stack -->
+      <div class="dash-card">
+        <div class="sec-title">⚙️ Technology Stack</div>
+        <ul class="activity-list">
+          <li class="activity-item"><div class="act-icon">🐍</div><div><div class="act-text"><strong>Python 3.12</strong><br>Backend language</div></div></li>
+          <li class="activity-item"><div class="act-icon">🌶️</div><div><div class="act-text"><strong>Flask Framework</strong><br>Web application server</div></div></li>
+          <li class="activity-item"><div class="act-icon">🗄️</div><div><div class="act-text"><strong>MySQL 8.0</strong><br>Database — 8 tables</div></div></li>
+          <li class="activity-item"><div class="act-icon">🌐</div><div><div class="act-text"><strong>HTML + CSS + JS</strong><br>Frontend with EN/KN</div></div></li>
+          <li class="activity-item"><div class="act-icon">🤖</div><div><div class="act-text"><strong>NLP AI Search</strong><br>30+ Banjara topics</div></div></li>
+          <li class="activity-item"><div class="act-icon">🔒</div><div><div class="act-text"><strong>SHA-256 Auth</strong><br>Secure user login</div></div></li>
+        </ul>
+      </div>
+
+      <!-- Website Pages -->
+      <div class="dash-card">
+        <div class="sec-title">🌐 Website Pages</div>
+        <ul class="activity-list">
+          <li class="activity-item"><div class="act-icon">🏠</div><div><div class="act-text"><strong>Homepage</strong><br>Search + Language toggle</div><div class="act-time"><a href="/" target="_blank" style="color:#8B1A1A;font-size:11px">Open →</a></div></div></li>
+          <li class="activity-item"><div class="act-icon">🎭</div><div><div class="act-text"><strong>Culture — 8 Tabs</strong><br>History to Gor Boli</div><div class="act-time"><a href="/culture" target="_blank" style="color:#8B1A1A;font-size:11px">Open →</a></div></div></li>
+          <li class="activity-item"><div class="act-icon">🛕</div><div><div class="act-text"><strong>Temples — 9 Tabs</strong><br>All sacred sites + maps</div><div class="act-time"><a href="/temples" target="_blank" style="color:#8B1A1A;font-size:11px">Open →</a></div></div></li>
+          <li class="activity-item"><div class="act-icon">🖼️</div><div><div class="act-text"><strong>Gallery — 4 Sections</strong><br>Photos, Songs, Videos, YT</div><div class="act-time"><a href="/gallery" target="_blank" style="color:#8B1A1A;font-size:11px">Open →</a></div></div></li>
+          <li class="activity-item"><div class="act-icon">📝</div><div><div class="act-text"><strong>Quiz — 5 Categories</strong><br>25 questions, EN + KN</div><div class="act-time"><a href="/quiz" target="_blank" style="color:#8B1A1A;font-size:11px">Open →</a></div></div></li>
+          <li class="activity-item"><div class="act-icon">🤖</div><div><div class="act-text"><strong>AI Chat Assistant</strong><br>30+ cultural topics</div><div class="act-time"><a href="/ai_chat" target="_blank" style="color:#8B1A1A;font-size:11px">Open →</a></div></div></li>
+        </ul>
+      </div>
+
+      <!-- Admin Tips -->
+      <div class="dash-card">
+        <div class="sec-title">💡 Admin Tips</div>
+        <ul class="activity-list">
+          <li class="activity-item"><div class="act-icon">📸</div><div><div class="act-text"><strong>Add photos</strong><br>Upload Media → Gallery section</div></div></li>
+          <li class="activity-item"><div class="act-icon">🎵</div><div><div class="act-text"><strong>Add folk songs</strong><br>Upload .mp3 → Culture or Gallery</div></div></li>
+          <li class="activity-item"><div class="act-icon">🎭</div><div><div class="act-text"><strong>Add culture content</strong><br>Use Add Culture with category</div></div></li>
+          <li class="activity-item"><div class="act-icon">🛕</div><div><div class="act-text"><strong>Add new temple</strong><br>Use Add Temple form</div></div></li>
+          <li class="activity-item"><div class="act-icon">🤖</div><div><div class="act-text"><strong>Monitor AI usage</strong><br>Check AI Queries regularly</div></div></li>
+          <li class="activity-item"><div class="act-icon">👥</div><div><div class="act-text"><strong>Track members</strong><br>View Users for registrations</div></div></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Project Info -->
+    <div class="dash-card" style="margin-bottom:24px">
+      <div class="sec-title">📋 Project Information</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #8B1A1A">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">Project Title</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">AI-Powered Cultural Knowledge Platform</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #ffd700">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">Community</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">Banjara (Lambani) Community</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #27ae60">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">Backend</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">Python Flask + MySQL</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #2980b9">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">AI Technology</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">NLP Keyword Search + DB Query</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #8e44ad">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">Languages</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">English + ಕನ್ನಡ (Bilingual)</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #e67e22">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">Duration</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">2 Months Development</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #c0392b">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">Database Tables</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">8 MySQL Tables</div>
+        </div>
+        <div style="background:#fef9f0;border-radius:8px;padding:14px;border-left:4px solid #16a085">
+          <div style="font-size:11px;color:#888;font-weight:bold;text-transform:uppercase">AI Topics</div>
+          <div style="font-size:13px;color:#333;margin-top:4px;font-weight:bold">30+ Banjara Cultural Topics</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main -->
+</div><!-- end layout -->
+
+<footer>🌿 Banjara Cultural Platform — Admin Panel &nbsp;|&nbsp; Built with Python Flask + MySQL</footer>
+</body>
+</html>

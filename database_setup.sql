@@ -1,0 +1,74 @@
+CREATE DATABASE IF NOT EXISTS banjara_db;
+USE banjara_db;
+
+CREATE TABLE IF NOT EXISTS admins (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  email VARCHAR(200) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  profile_pic VARCHAR(300) DEFAULT NULL,
+  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS cultural_content (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200),
+  category VARCHAR(100),
+  description TEXT,
+  image_path VARCHAR(300),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS temples (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200),
+  location VARCHAR(200),
+  description TEXT,
+  image_path VARCHAR(300),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS media (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200),
+  media_type ENUM('image','audio','video'),
+  file_path VARCHAR(300),
+  section VARCHAR(100),
+  description TEXT,
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_queries (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  query_text TEXT,
+  response_text TEXT,
+  asked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS quiz_questions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  question TEXT,
+  option_a VARCHAR(200),
+  option_b VARCHAR(200),
+  option_c VARCHAR(200),
+  option_d VARCHAR(200),
+  correct_option CHAR(1)
+);
+
+CREATE TABLE IF NOT EXISTS password_resets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(200) NOT NULL,
+  token VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  used TINYINT DEFAULT 0
+);
+
+-- Default admin account
+INSERT IGNORE INTO admins (username, password)
+VALUES ('admin', 'admin123');
