@@ -1,0 +1,1268 @@
+/* ============================================================
+   BANJARA PLATFORM — COMPLETE ANIMATIONS CSS
+   Add this file to every HTML template
+   ============================================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --red:    #8B1A1A;
+  --gold:   #ffd700;
+  --dark:   #2c2c2c;
+  --light:  #fef9f0;
+  --shadow: 0 8px 32px rgba(139,26,26,.15);
+  --ease:   cubic-bezier(.25,.46,.45,.94);
+}
+
+/* ============================================================
+   1. KEYFRAME ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes zoomInBounce {
+  0%   { opacity: 0; transform: scale(0.5); }
+  70%  { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.06); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,215,0,.4); }
+  50%       { box-shadow: 0 0 24px rgba(255,215,0,.9), 0 0 48px rgba(255,215,0,.4); }
+}
+
+@keyframes textGlow {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,215,0,.5); }
+  50%       { text-shadow: 0 0 24px rgba(255,215,0,1), 0 0 40px rgba(255,215,0,.6); }
+}
+
+@keyframes wave {
+  0%   { transform: rotate(0deg); }
+  10%  { transform: rotate(14deg); }
+  20%  { transform: rotate(-8deg); }
+  30%  { transform: rotate(14deg); }
+  40%  { transform: rotate(-4deg); }
+  50%  { transform: rotate(10deg); }
+  60%  { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes particleFly {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) translateX(20px) scale(0); opacity: 0; }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 50% { border-color: transparent; }
+  51%, 100% { border-color: #ffd700; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ripple {
+  0%   { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.1); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.1); }
+  70%  { transform: scale(1); }
+}
+
+@keyframes scanLine {
+  0%   { top: -10%; }
+  100% { top: 110%; }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50%       { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+@keyframes drawBorder {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+  80%  { transform: scale(1.1) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ============================================================
+   2. UTILITY ANIMATION CLASSES
+   ============================================================ */
+
+.anim-fade-up       { animation: fadeInUp 0.7s var(--ease) both; }
+.anim-fade-down     { animation: fadeInDown 0.7s var(--ease) both; }
+.anim-fade-left     { animation: fadeInLeft 0.7s var(--ease) both; }
+.anim-fade-right    { animation: fadeInRight 0.7s var(--ease) both; }
+.anim-fade          { animation: fadeIn 0.8s ease both; }
+.anim-zoom          { animation: zoomIn 0.6s var(--ease) both; }
+.anim-zoom-bounce   { animation: zoomInBounce 0.8s var(--ease) both; }
+.anim-float         { animation: float 3s ease-in-out infinite; }
+.anim-pulse         { animation: pulse 2s ease-in-out infinite; }
+.anim-glow          { animation: borderGlow 2s ease-in-out infinite; }
+.anim-text-glow     { animation: textGlow 2s ease-in-out infinite; }
+.anim-rotate        { animation: rotateSlow 8s linear infinite; }
+.anim-heartbeat     { animation: heartbeat 2s ease infinite; }
+.anim-pop           { animation: popIn 0.6s var(--ease) both; }
+
+/* Delay helpers */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+.delay-7 { animation-delay: 0.7s; }
+.delay-8 { animation-delay: 0.8s; }
+.delay-9 { animation-delay: 0.9s; }
+.delay-10{ animation-delay: 1.0s; }
+.delay-12{ animation-delay: 1.2s; }
+.delay-15{ animation-delay: 1.5s; }
+
+/* ============================================================
+   3. SCROLL-TRIGGERED REVEAL (Intersection Observer)
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-zoom {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal-zoom.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger children */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.stagger-children.visible > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay: 0.05s; }
+.stagger-children.visible > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay: 0.15s; }
+.stagger-children.visible > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay: 0.25s; }
+.stagger-children.visible > *:nth-child(4) { opacity:1; transform:translateY(0); transition-delay: 0.35s; }
+.stagger-children.visible > *:nth-child(5) { opacity:1; transform:translateY(0); transition-delay: 0.45s; }
+.stagger-children.visible > *:nth-child(6) { opacity:1; transform:translateY(0); transition-delay: 0.55s; }
+.stagger-children.visible > *:nth-child(7) { opacity:1; transform:translateY(0); transition-delay: 0.65s; }
+.stagger-children.visible > *:nth-child(8) { opacity:1; transform:translateY(0); transition-delay: 0.75s; }
+
+/* ============================================================
+   4. NAVIGATION ANIMATIONS
+   ============================================================ */
+
+nav {
+  animation: fadeInDown 0.6s var(--ease) both;
+  position: relative;
+  overflow: hidden;
+}
+
+nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: -100%;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  animation: shimmer 3s linear infinite;
+  background-size: 200% auto;
+}
+
+nav a {
+  position: relative;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 2px;
+  background: #ffd700;
+  transition: width 0.3s var(--ease);
+}
+
+nav a:hover { transform: translateY(-2px); }
+nav a:hover::after { width: 100%; }
+
+.logo {
+  animation: fadeInLeft 0.7s var(--ease) both;
+  transition: transform 0.3s ease;
+}
+.logo:hover {
+  transform: scale(1.05);
+  animation: textGlow 1.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   5. PAGE TITLE / HERO ANIMATIONS
+   ============================================================ */
+
+.page-title {
+  position: relative;
+  overflow: hidden;
+  background-size: 300% 300% !important;
+  animation: gradientShift 6s ease infinite;
+}
+
+.page-title::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255,215,0,.08) 0%, transparent 70%);
+  animation: rotateSlow 15s linear infinite;
+}
+
+.page-title h1 {
+  animation: fadeInDown 0.8s var(--ease) 0.2s both;
+  position: relative;
+}
+
+.page-title p {
+  animation: fadeInUp 0.8s var(--ease) 0.4s both;
+  position: relative;
+}
+
+/* Floating particles in hero */
+.page-title::after {
+  content: '✦ ✧ ✦ ✧ ✦';
+  position: absolute;
+  top: 15px; right: 20px;
+  color: rgba(255,215,0,.3);
+  font-size: 18px;
+  letter-spacing: 8px;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   6. TAB BAR ANIMATIONS
+   ============================================================ */
+
+.tab-bar, .section-tabs, .sec-tabs {
+  animation: fadeInUp 0.6s var(--ease) 0.3s both;
+}
+
+.tab-btn, .stab, .sectab {
+  transition: all 0.3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-btn::before, .stab::before, .sectab::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: rgba(139,26,26,.15);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+}
+
+.tab-btn:hover::before, .stab:hover::before, .sectab:hover::before {
+  width: 200px; height: 200px;
+}
+
+.tab-btn:hover, .stab:hover, .sectab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(139,26,26,.2);
+}
+
+.tab-btn.active, .stab.active, .sectab.active {
+  animation: zoomIn 0.3s var(--ease) both;
+}
+
+/* ============================================================
+   7. CARD ANIMATIONS
+   ============================================================ */
+
+/* Temple Cards */
+.temple-card, .dash-card, .card, .icard {
+  transition: transform 0.35s var(--ease), box-shadow 0.35s ease;
+  animation: fadeInUp 0.7s var(--ease) both;
+}
+
+.temple-card:hover, .dash-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(139,26,26,.18);
+}
+
+/* Stat Cards */
+.stat-card, .stat-mini {
+  transition: transform 0.3s var(--ease), box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,.06) 50%, transparent 70%);
+  transform: rotate(0deg);
+  transition: transform 0.6s ease;
+  opacity: 0;
+}
+
+.stat-card:hover::after {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.stat-card:hover, .stat-mini:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(139,26,26,.2);
+}
+
+.stat-num, .sm-num {
+  animation: countUp 0.8s var(--ease) both;
+  display: inline-block;
+}
+
+/* Gallery Cards */
+.gcard, .pcard, .song-card, .video-card, .yt-card, .sati-card {
+  transition: transform 0.35s var(--ease), box-shadow 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gcard::before, .pcard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.gcard:hover::before, .pcard:hover::before { left: 150%; }
+
+.gcard:hover, .pcard:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(0,0,0,.18);
+}
+
+.song-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(139,26,26,.2);
+}
+
+.yt-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(255,0,0,.2);
+}
+
+.sati-card {
+  transition: transform 0.3s var(--ease), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.sati-card:hover {
+  transform: translateY(-6px);
+  border-left-color: #ffd700;
+  box-shadow: 0 14px 40px rgba(139,26,26,.2);
+}
+
+/* Action Buttons */
+.action-btn {
+  transition: transform 0.3s var(--ease), box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 3px;
+  background: linear-gradient(90deg, #ffd700, #ff9900);
+  transition: width 0.4s var(--ease);
+}
+
+.action-btn:hover::after { width: 100%; }
+.action-btn:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.15);
+}
+
+/* Summary Items */
+.summary-item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.summary-item:hover {
+  transform: translateX(6px);
+  background: #fef9f0 !important;
+  box-shadow: 0 6px 20px rgba(139,26,26,.1);
+}
+
+/* Nav Links in sidebar */
+.nav-link {
+  transition: all 0.25s ease;
+  position: relative;
+}
+.nav-link:hover {
+  padding-left: 28px;
+  background: rgba(255,255,255,.12) !important;
+}
+
+/* ============================================================
+   8. BUTTON ANIMATIONS
+   ============================================================ */
+
+button, .btn, [class*="btn-"] {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+button::after, .btn::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+
+button:active::after, .btn:active::after {
+  width: 200px; height: 200px; opacity: 0;
+}
+
+.btn-primary:hover, button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(139,26,26,.4);
+}
+
+.btn-primary:active, button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* Login/Register buttons on nav */
+nav a[href="/login"], nav a[href="/register"] {
+  transition: all 0.3s ease;
+}
+nav a[href="/login"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255,215,0,.4);
+}
+
+/* ============================================================
+   9. HOMEPAGE SPECIFIC ANIMATIONS
+   ============================================================ */
+
+/* Hero Section */
+.hero-section, .hero-banner {
+  animation: fadeIn 1s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -30%; right: -20%;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,.06) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+/* Homepage title text */
+.hero-section h1, .hero-section h2 {
+  animation: fadeInUp 0.9s var(--ease) 0.3s both;
+}
+
+.hero-section p {
+  animation: fadeInUp 0.9s var(--ease) 0.5s both;
+}
+
+/* Search bar */
+.search-row input, .hero-section input {
+  transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+.search-row input:focus, .hero-section input:focus {
+  transform: scale(1.01);
+  box-shadow: 0 6px 24px rgba(139,26,26,.2);
+}
+
+/* Feature cards */
+.feature-card, .fcard, .dbox {
+  transition: transform 0.35s var(--ease), box-shadow 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+.feature-card::before, .fcard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, #8B1A1A, #ffd700, #8B1A1A);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.feature-card:hover::before, .fcard:hover::before { transform: scaleX(1); }
+.feature-card:hover, .fcard:hover, .dbox:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.15);
+}
+
+/* Stats bar */
+.stats-bar, .stat-box {
+  animation: fadeInUp 0.7s var(--ease) 0.5s both;
+}
+
+/* Quick facts */
+.quick-fact {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: zoomIn 0.5s var(--ease) both;
+}
+.quick-fact:hover {
+  transform: scale(1.05) rotate(1deg);
+  box-shadow: 0 10px 30px rgba(139,26,26,.2);
+}
+
+/* ============================================================
+   10. CULTURE PAGE ANIMATIONS
+   ============================================================ */
+
+/* Section hero */
+.sec-hero {
+  animation: fadeIn 0.8s ease both;
+  position: relative;
+  overflow: hidden;
+}
+.sec-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 60%; height: 3px;
+  background: linear-gradient(90deg, #ffd700, transparent);
+  animation: drawBorder 1.5s ease both;
+}
+
+/* Info cards */
+.info-card, .icard, .fbox {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.info-card:hover, .fbox:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(139,26,26,.15);
+}
+
+/* Timeline items */
+.timeline-item {
+  transition: transform 0.3s ease;
+  position: relative;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0;
+  width: 4px; height: 0;
+  background: linear-gradient(to bottom, #ffd700, #8B1A1A);
+  transition: height 0.8s ease;
+}
+.timeline-item:hover::before { height: 100%; }
+.timeline-item:hover { transform: translateX(8px); }
+
+/* District boxes */
+.dbox {
+  animation: fadeInUp 0.6s var(--ease) both;
+}
+.dbox:nth-child(1)  { animation-delay: 0.05s; }
+.dbox:nth-child(2)  { animation-delay: 0.10s; }
+.dbox:nth-child(3)  { animation-delay: 0.15s; }
+.dbox:nth-child(4)  { animation-delay: 0.20s; }
+.dbox:nth-child(5)  { animation-delay: 0.25s; }
+.dbox:nth-child(6)  { animation-delay: 0.30s; }
+.dbox:nth-child(7)  { animation-delay: 0.35s; }
+.dbox:nth-child(8)  { animation-delay: 0.40s; }
+.dbox:nth-child(9)  { animation-delay: 0.45s; }
+.dbox:nth-child(10) { animation-delay: 0.50s; }
+.dbox:nth-child(11) { animation-delay: 0.55s; }
+.dbox:nth-child(12) { animation-delay: 0.60s; }
+
+/* Language word table rows */
+.word-row {
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.word-row:hover {
+  background: #fef9f0 !important;
+  transform: scale(1.005);
+}
+
+/* ============================================================
+   11. TEMPLES PAGE ANIMATIONS
+   ============================================================ */
+
+.mini-box {
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+.mini-box:hover {
+  transform: scale(1.06) translateY(-3px);
+  background: linear-gradient(135deg, #fdf0d0, #fef9f0);
+  box-shadow: 0 8px 20px rgba(139,26,26,.15);
+}
+
+.tag, .gtag, .btag {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: inline-block;
+}
+.tag:hover, .gtag:hover, .btag:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.kannada-box {
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.kannada-box:hover {
+  border-color: #8B1A1A;
+  transform: translateX(4px);
+}
+
+/* Map box hover effect */
+.map-box {
+  transition: transform 0.3s ease;
+  filter: saturate(0.8);
+}
+.card-media:hover .map-box {
+  filter: saturate(1);
+  transform: scale(1.02);
+}
+
+/* Hero banner in temples */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+}
+.hero-banner::before {
+  content: '🙏';
+  position: absolute;
+  right: 20px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 64px;
+  opacity: 0.1;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   12. GALLERY PAGE ANIMATIONS
+   ============================================================ */
+
+/* Section tabs in gallery */
+.section-tabs {
+  animation: fadeInDown 0.6s ease 0.2s both;
+}
+
+/* Photo grid stagger */
+#photo-grid .pcard:nth-child(1)  { animation-delay: 0.05s; }
+#photo-grid .pcard:nth-child(2)  { animation-delay: 0.10s; }
+#photo-grid .pcard:nth-child(3)  { animation-delay: 0.15s; }
+#photo-grid .pcard:nth-child(4)  { animation-delay: 0.20s; }
+#photo-grid .pcard:nth-child(5)  { animation-delay: 0.25s; }
+#photo-grid .pcard:nth-child(6)  { animation-delay: 0.30s; }
+#photo-grid .pcard:nth-child(7)  { animation-delay: 0.35s; }
+#photo-grid .pcard:nth-child(8)  { animation-delay: 0.40s; }
+
+/* Song cards */
+.song-card {
+  animation: fadeInUp 0.7s var(--ease) both;
+}
+.songs-grid .song-card:nth-child(1) { animation-delay: 0.1s; }
+.songs-grid .song-card:nth-child(2) { animation-delay: 0.2s; }
+.songs-grid .song-card:nth-child(3) { animation-delay: 0.3s; }
+.songs-grid .song-card:nth-child(4) { animation-delay: 0.4s; }
+.songs-grid .song-card:nth-child(5) { animation-delay: 0.5s; }
+.songs-grid .song-card:nth-child(6) { animation-delay: 0.6s; }
+
+.song-icon {
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+.song-card:hover .song-icon {
+  animation: heartbeat 1s ease infinite;
+}
+
+/* YouTube cards */
+.yt-card {
+  animation: zoomIn 0.6s var(--ease) both;
+}
+.yt-grid .yt-card:nth-child(1) { animation-delay: 0.05s; }
+.yt-grid .yt-card:nth-child(2) { animation-delay: 0.15s; }
+.yt-grid .yt-card:nth-child(3) { animation-delay: 0.25s; }
+.yt-grid .yt-card:nth-child(4) { animation-delay: 0.35s; }
+.yt-grid .yt-card:nth-child(5) { animation-delay: 0.45s; }
+.yt-grid .yt-card:nth-child(6) { animation-delay: 0.55s; }
+
+/* Section banner */
+.sec-banner {
+  animation: fadeIn 0.7s ease both;
+  position: relative;
+  overflow: hidden;
+}
+.sec-banner::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+  animation: shimmer 4s linear infinite;
+}
+
+/* Modal */
+.modal.open .mbox, .modal.open .modal-box {
+  animation: zoomInBounce 0.4s var(--ease) both;
+}
+
+/* Filter buttons */
+.fbtn {
+  transition: all 0.25s var(--ease);
+}
+.fbtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139,26,26,.25);
+}
+.fbtn.active {
+  animation: zoomIn 0.2s ease both;
+}
+
+/* ============================================================
+   13. QUIZ PAGE ANIMATIONS
+   ============================================================ */
+
+.quiz-card {
+  animation: fadeInUp 0.7s var(--ease) both;
+  transition: transform 0.3s ease;
+}
+
+.option-btn {
+  transition: all 0.25s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.option-btn::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 0; height: 100%;
+  background: rgba(139,26,26,.08);
+  transition: width 0.3s ease;
+}
+
+.option-btn:hover::before { width: 100%; }
+
+.option-btn:hover {
+  transform: translateX(6px);
+  box-shadow: 0 6px 20px rgba(139,26,26,.2);
+}
+
+.option-btn.correct {
+  animation: zoomInBounce 0.4s ease both;
+  background: #d4edda !important;
+  border-color: #28a745 !important;
+}
+
+.option-btn.wrong {
+  animation: fadeIn 0.3s ease both;
+  background: #f8d7da !important;
+  border-color: #dc3545 !important;
+}
+
+.progress-fill {
+  transition: width 0.8s var(--ease);
+}
+
+.fact-box {
+  animation: slideInLeft 0.5s var(--ease) both;
+}
+
+.score-display {
+  animation: zoomInBounce 0.8s var(--ease) both;
+}
+
+.score-num {
+  animation: countUp 1s var(--ease) both;
+  display: inline-block;
+}
+
+/* ============================================================
+   14. AI CHAT ANIMATIONS
+   ============================================================ */
+
+.chat-container {
+  animation: fadeInUp 0.7s var(--ease) both;
+}
+
+.chat-msg {
+  animation: fadeInUp 0.4s var(--ease) both;
+}
+
+.chat-msg.user-msg {
+  animation: fadeInRight 0.4s var(--ease) both;
+}
+
+.chat-msg.bot-msg {
+  animation: fadeInLeft 0.4s var(--ease) both;
+}
+
+/* Typing indicator */
+.typing-indicator span {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: #8B1A1A;
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: float 0.8s ease-in-out infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Suggestion buttons */
+.suggestion-btn {
+  transition: all 0.25s var(--ease);
+  animation: popIn 0.5s var(--ease) both;
+}
+.suggestion-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 20px rgba(139,26,26,.2);
+}
+.suggestion-btn:nth-child(1) { animation-delay: 0.1s; }
+.suggestion-btn:nth-child(2) { animation-delay: 0.2s; }
+.suggestion-btn:nth-child(3) { animation-delay: 0.3s; }
+.suggestion-btn:nth-child(4) { animation-delay: 0.4s; }
+.suggestion-btn:nth-child(5) { animation-delay: 0.5s; }
+.suggestion-btn:nth-child(6) { animation-delay: 0.6s; }
+
+/* ============================================================
+   15. LOGIN / REGISTER / PROFILE ANIMATIONS
+   ============================================================ */
+
+.box {
+  animation: zoomInBounce 0.7s var(--ease) both;
+}
+
+.logo {
+  animation: float 3s ease-in-out infinite;
+}
+
+.fg {
+  animation: fadeInUp 0.5s var(--ease) both;
+}
+.fg:nth-child(1) { animation-delay: 0.1s; }
+.fg:nth-child(2) { animation-delay: 0.2s; }
+.fg:nth-child(3) { animation-delay: 0.3s; }
+.fg:nth-child(4) { animation-delay: 0.4s; }
+
+.fg input:focus {
+  animation: borderGlow 1.5s ease-in-out infinite;
+}
+
+.profile-card {
+  animation: fadeInUp 0.8s var(--ease) both;
+}
+
+.avatar {
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+.avatar:hover {
+  transform: scale(1.1) rotate(5deg);
+  animation: heartbeat 1s ease infinite;
+}
+
+.badge {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   16. ADMIN DASHBOARD ANIMATIONS
+   ============================================================ */
+
+.topbar {
+  animation: fadeInDown 0.6s var(--ease) both;
+}
+
+.sidebar {
+  animation: slideInLeft 0.7s var(--ease) both;
+}
+
+.welcome-banner {
+  animation: fadeInUp 0.8s var(--ease) 0.2s both;
+  position: relative;
+  overflow: hidden;
+  background-size: 300% 300% !important;
+  animation: gradientShift 8s ease infinite, fadeInUp 0.8s var(--ease) 0.2s both;
+}
+
+.welcome-banner::after {
+  content: '🌿';
+  position: absolute;
+  right: 30px; bottom: 10px;
+  font-size: 80px;
+  opacity: 0.06;
+  animation: rotateSlow 20s linear infinite;
+}
+
+/* Stat cards stagger */
+.stats-grid .stat-card:nth-child(1) { animation: fadeInUp 0.5s ease 0.1s both; }
+.stats-grid .stat-card:nth-child(2) { animation: fadeInUp 0.5s ease 0.2s both; }
+.stats-grid .stat-card:nth-child(3) { animation: fadeInUp 0.5s ease 0.3s both; }
+.stats-grid .stat-card:nth-child(4) { animation: fadeInUp 0.5s ease 0.4s both; }
+.stats-grid .stat-card:nth-child(5) { animation: fadeInUp 0.5s ease 0.5s both; }
+.stats-grid .stat-card:nth-child(6) { animation: fadeInUp 0.5s ease 0.6s both; }
+.stats-grid .stat-card:nth-child(7) { animation: fadeInUp 0.5s ease 0.7s both; }
+.stats-grid .stat-card:nth-child(8) { animation: fadeInUp 0.5s ease 0.8s both; }
+
+/* Summary items stagger */
+.summary-grid .summary-item:nth-child(1)  { animation: fadeInLeft 0.5s ease 0.05s both; }
+.summary-grid .summary-item:nth-child(2)  { animation: fadeInLeft 0.5s ease 0.10s both; }
+.summary-grid .summary-item:nth-child(3)  { animation: fadeInLeft 0.5s ease 0.15s both; }
+.summary-grid .summary-item:nth-child(4)  { animation: fadeInLeft 0.5s ease 0.20s both; }
+.summary-grid .summary-item:nth-child(5)  { animation: fadeInLeft 0.5s ease 0.25s both; }
+.summary-grid .summary-item:nth-child(6)  { animation: fadeInLeft 0.5s ease 0.30s both; }
+.summary-grid .summary-item:nth-child(7)  { animation: fadeInLeft 0.5s ease 0.35s both; }
+.summary-grid .summary-item:nth-child(8)  { animation: fadeInLeft 0.5s ease 0.40s both; }
+.summary-grid .summary-item:nth-child(9)  { animation: fadeInLeft 0.5s ease 0.45s both; }
+.summary-grid .summary-item:nth-child(10) { animation: fadeInLeft 0.5s ease 0.50s both; }
+
+/* Action grid */
+.action-grid .action-btn:nth-child(1) { animation: zoomIn 0.4s ease 0.1s both; }
+.action-grid .action-btn:nth-child(2) { animation: zoomIn 0.4s ease 0.2s both; }
+.action-grid .action-btn:nth-child(3) { animation: zoomIn 0.4s ease 0.3s both; }
+.action-grid .action-btn:nth-child(4) { animation: zoomIn 0.4s ease 0.4s both; }
+.action-grid .action-btn:nth-child(5) { animation: zoomIn 0.4s ease 0.5s both; }
+.action-grid .action-btn:nth-child(6) { animation: zoomIn 0.4s ease 0.6s both; }
+.action-grid .action-btn:nth-child(7) { animation: zoomIn 0.4s ease 0.7s both; }
+.action-grid .action-btn:nth-child(8) { animation: zoomIn 0.4s ease 0.8s both; }
+
+/* Progress bars */
+.progress-fill {
+  animation: drawBorder 1.5s var(--ease) both;
+  animation-delay: 0.5s;
+  width: 0;
+}
+
+/* Activity items */
+.activity-item {
+  transition: background 0.2s ease, transform 0.2s ease, padding 0.2s ease;
+}
+.activity-item:hover {
+  background: #fef9f0;
+  transform: translateX(6px);
+  padding-left: 8px;
+  border-radius: 8px;
+}
+
+/* ============================================================
+   17. UPLOAD MEDIA ANIMATIONS
+   ============================================================ */
+
+.upload-area {
+  transition: all 0.3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-area::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px;
+  right: -2px; bottom: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, #8B1A1A, #ffd700, #8B1A1A, #ffd700);
+  background-size: 300% 300%;
+  z-index: -1;
+  opacity: 0;
+  animation: gradientShift 3s ease infinite;
+  transition: opacity 0.3s ease;
+}
+
+.upload-area:hover::before { opacity: 1; }
+.upload-area:hover {
+  transform: scale(1.01);
+  box-shadow: 0 10px 30px rgba(139,26,26,.15);
+}
+
+.upload-area .ui {
+  transition: transform 0.3s ease;
+}
+.upload-area:hover .ui {
+  animation: float 1s ease-in-out infinite;
+}
+
+/* YouTube thumbnail cards */
+.yt-thumb-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.yt-thumb-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(255,0,0,.2);
+}
+
+/* ============================================================
+   18. FOOTER ANIMATIONS
+   ============================================================ */
+
+footer {
+  position: relative;
+  overflow: hidden;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  animation: shimmer 4s linear infinite;
+  background-size: 200% auto;
+}
+
+/* ============================================================
+   19. SCROLLBAR STYLING
+   ============================================================ */
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #fef9f0; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #8B1A1A, #c0392b);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: #a52020; }
+
+/* ============================================================
+   20. SELECTION HIGHLIGHT
+   ============================================================ */
+
+::selection {
+  background: rgba(139,26,26,.25);
+  color: #8B1A1A;
+}
+
+/* ============================================================
+   21. IMAGE HOVER EFFECTS
+   ============================================================ */
+
+img {
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.gcard img:hover, .pcard img:hover {
+  transform: scale(1.08);
+  filter: brightness(1.05) saturate(1.1);
+}
+
+.cm-preview img:hover {
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   22. LOADING SPINNER
+   ============================================================ */
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid #fdf0d0;
+  border-top-color: #8B1A1A;
+  border-radius: 50%;
+  animation: rotateSlow 0.8s linear infinite;
+  margin: 20px auto;
+}
+
+/* ============================================================
+   23. TOOLTIP ANIMATION
+   ============================================================ */
+
+[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 110%; left: 50%;
+  transform: translateX(-50%);
+  background: #2c2c2c;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  animation: fadeInDown 0.2s ease both;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ============================================================
+   24. BACK TO TOP BUTTON
+   ============================================================ */
+
+#back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, #8B1A1A, #c0392b);
+  color: white; border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(139,26,26,.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.3s ease both;
+}
+
+#back-to-top:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 12px 30px rgba(139,26,26,.5);
+  animation: float 1s ease-in-out infinite;
+}
+
+#back-to-top.visible { display: flex; }
+
+/* ============================================================
+   25. MOBILE RESPONSIVE ANIMATIONS
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Reduce motion on mobile for performance */
+  .page-title::before,
+  .page-title::after { display: none; }
+
+  .hero-section::before { display: none; }
+
+  .stat-card:hover,
+  .gcard:hover,
+  .pcard:hover { transform: translateY(-3px); }
+
+  .dbox:hover { transform: translateY(-3px); }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,5 +1,6 @@
-flask
-flask-mysqldb
-werkzeug
+Flask
+PyMySQL
+Werkzeug
 nltk
-pillow
+Pillow
+gunicorn

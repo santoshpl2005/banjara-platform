@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit YouTube Video — Admin</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#f5f5f5}
+    .topbar{background:#8B1A1A;padding:16px 30px;display:flex;justify-content:space-between;align-items:center}
+    .topbar h1{color:white;font-size:18px}
+    .topbar a{color:#ffd700;text-decoration:none;font-size:14px;font-weight:bold}
+    .container{max-width:800px;margin:30px auto;padding:0 20px}
+    .card{background:white;border-radius:14px;padding:32px;box-shadow:0 4px 14px rgba(0,0,0,.08);border-top:4px solid #FF0000;margin-bottom:20px}
+    .card h2{color:#8B1A1A;font-size:18px;margin-bottom:6px}
+    .card p{color:#888;font-size:14px;margin-bottom:22px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .fg{margin-bottom:16px}
+    .fg label{display:block;font-weight:bold;color:#555;font-size:13px;margin-bottom:6px}
+    .fg input,.fg select,.fg textarea{width:100%;padding:11px 16px;border:2px solid #ddd;border-radius:8px;font-size:14px;outline:none;transition:border .2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#FF0000}
+    .fg textarea{height:80px;resize:vertical}
+    .fg .hint{font-size:12px;color:#aaa;margin-top:4px}
+    .preview-box{border-radius:12px;overflow:hidden;border:2px solid #FF0000;margin-bottom:18px}
+    .preview-box iframe{width:100%;height:250px;border:none;display:block}
+    .preview-info{background:#fef9f0;padding:12px 16px;border-top:1px solid #eee}
+    .preview-info h3{color:#8B1A1A;font-size:14px;margin-bottom:3px}
+    .preview-info p{color:#888;font-size:12px}
+    .btn-row{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+    .btn{padding:12px 24px;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
+    .btn-red{background:#FF0000;color:white}
+    .btn-red:hover{background:#cc0000}
+    .btn-secondary{background:white;color:#8B1A1A;border:2px solid #8B1A1A}
+    .btn-danger{background:#dc3545;color:white}
+    .success{background:#d4edda;color:#155724;padding:14px;border-radius:8px;margin-bottom:18px;font-size:14px;border-left:4px solid #28a745}
+    .error{background:#f8d7da;color:#721c24;padding:14px;border-radius:8px;margin-bottom:18px;font-size:14px;border-left:4px solid #dc3545}
+    .yt-badge{display:inline-block;background:#FF0000;color:white;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:bold;margin-bottom:14px}
+    @media(max-width:600px){.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>✏️ Edit YouTube Video — #{{ video[0] }}</h1>
+  <div style="display:flex;gap:14px">
+    <a href="/admin/upload_media">← Back to Media</a>
+    <a href="/admin/dashboard">Dashboard</a>
+  </div>
+</div>
+
+<div class="container">
+
+  {% if success %}<div class="success">{{ success }}</div>{% endif %}
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+  <!-- Current Video Preview -->
+  <div class="card">
+    <span class="yt-badge">▶️ YouTube Video</span>
+    <h2>{{ video[1] }}</h2>
+    <p>Section: <strong>{{ video[4] }}</strong> • Category: <strong>{{ video[5] }}</strong></p>
+    <div class="preview-box">
+      <iframe src="https://www.youtube.com/embed/{{ video[3] }}"
+        allowfullscreen loading="lazy"></iframe>
+      <div class="preview-info">
+        <h3>{{ video[1] }}</h3>
+        <p>Video ID: {{ video[3] }} &nbsp;|&nbsp;
+          <a href="https://www.youtube.com/watch?v={{ video[3] }}"
+            target="_blank" style="color:#FF0000">Watch on YouTube ↗</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="card">
+    <h2>✏️ Edit Video Details</h2>
+    <p>Update title, section, category, description, or replace with a different YouTube video.</p>
+
+    <form method="POST">
+      <div class="two-col">
+        <div class="fg">
+          <label>📝 Title *</label>
+          <input type="text" name="title" value="{{ video[1] }}" required>
+        </div>
+        <div class="fg">
+          <label>▶️ YouTube URL or Video ID *</label>
+          <input type="text" name="youtube_url" id="yt-edit-url"
+            value="{{ video[2] }}" required oninput="previewEdit()">
+          <div class="hint" id="edit-vid-hint" style="color:#27ae60">
+            Current ID: {{ video[3] }}
+          </div>
+        </div>
+      </div>
+
+      <!-- New Preview on URL change -->
+      <div id="new-preview" style="display:none;margin-bottom:16px">
+        <div class="preview-box">
+          <iframe id="new-iframe" width="100%" height="200"
+            frameborder="0" allowfullscreen style="display:block"></iframe>
+        </div>
+        <p style="color:#27ae60;font-size:12px;margin-top:4px">✅ New video preview</p>
+      </div>
+
+      <div class="two-col">
+        <div class="fg">
+          <label>📂 Section *</label>
+          <select name="section" required>
+            <option value="gallery" {% if video[4]=='gallery' %}selected{% endif %}>🖼️ Gallery</option>
+            <option value="temples" {% if video[4]=='temples' %}selected{% endif %}>🛕 Temples</option>
+            <option value="culture" {% if video[4]=='culture' %}selected{% endif %}>🎭 Culture</option>
+            <option value="festival" {% if video[4]=='festival' %}selected{% endif %}>🎉 Festival</option>
+            <option value="karnataka" {% if video[4]=='karnataka' %}selected{% endif %}>🌿 Karnataka</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>🎯 Category</label>
+          <select name="category">
+            <option value="general" {% if video[5]=='general' %}selected{% endif %}>🌟 General</option>
+            <option value="sevalal" {% if video[5]=='sevalal' %}selected{% endif %}>🙏 Sevalal Maharaj</option>
+            <option value="jayanti" {% if video[5]=='jayanti' %}selected{% endif %}>🎉 Sevalal Jayanti</option>
+            <option value="birthplace" {% if video[5]=='birthplace' %}selected{% endif %}>🌱 Birthplace</option>
+            <option value="poharadevi" {% if video[5]=='poharadevi' %}selected{% endif %}>🛕 Poharadevi</option>
+            <option value="wedding" {% if video[5]=='wedding' %}selected{% endif %}>💒 Wedding (Biyav)</option>
+            <option value="holi" {% if video[5]=='holi' %}selected{% endif %}>🎊 Holi (Phag)</option>
+            <option value="navratri" {% if video[5]=='navratri' %}selected{% endif %}>💃 Navratri Garba</option>
+            <option value="embroidery" {% if video[5]=='embroidery' %}selected{% endif %}>🧵 Embroidery</option>
+            <option value="dance" {% if video[5]=='dance' %}selected{% endif %}>💃 Folk Dances</option>
+            <option value="music" {% if video[5]=='music' %}selected{% endif %}>🎵 Folk Music</option>
+            <option value="culture" {% if video[5]=='culture' %}selected{% endif %}>🎭 Culture</option>
+            <option value="karnataka" {% if video[5]=='karnataka' %}selected{% endif %}>🌿 Karnataka</option>
+            <option value="saatisati" {% if video[5]=='saatisati' %}selected{% endif %}>⭐ Saati Sati</option>
+            <option value="dress" {% if video[5]=='dress' %}selected{% endif %}>👗 Dress</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>📄 Description</label>
+        <textarea name="description">{{ video[6] or '' }}</textarea>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn btn-red">💾 Save Changes →</button>
+        <a href="/admin/upload_media" class="btn btn-secondary">✕ Cancel</a>
+        <form method="POST" action="/admin/delete_youtube/{{ video[0] }}"
+          onsubmit="return confirm('Delete this YouTube video?')" style="margin:0">
+          <button type="submit" class="btn btn-danger">🗑️ Delete Video</button>
+        </form>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+function previewEdit() {
+  const url = document.getElementById('yt-edit-url').value.trim();
+  const vid = extractYTId(url);
+  const newPrev = document.getElementById('new-preview');
+  const newIframe = document.getElementById('new-iframe');
+  const hint = document.getElementById('edit-vid-hint');
+  if (vid) {
+    newIframe.src = 'https://www.youtube.com/embed/' + vid;
+    newPrev.style.display = 'block';
+    hint.textContent = '✅ New Video ID: ' + vid;
+    hint.style.color = '#27ae60';
+  } else {
+    newPrev.style.display = 'none';
+    hint.textContent = '❌ Invalid YouTube URL';
+    hint.style.color = '#dc3545';
+  }
+}
+
+function extractYTId(url) {
+  if (!url) return null;
+  let m = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  m = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  m = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  return null;
+}
+</script>
+</body>
+</html>

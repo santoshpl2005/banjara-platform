@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+import pymysql
+pymysql.install_as_MySQLdb()
+
 from flask_mysqldb import MySQL
 from config import Config
 import os
@@ -87,8 +90,17 @@ def gallery():
     audios = cur.fetchall()
     cur.execute("SELECT * FROM media WHERE media_type='video'")
     videos = cur.fetchall()
+    # Get YouTube videos
+    yt_videos = []
+    try:
+        cur.execute("SELECT * FROM youtube_videos ORDER BY added_at DESC")
+        yt_videos = cur.fetchall()
+    except:
+        pass
     cur.close()
-    return render_template('gallery.html', images=images, audios=audios, videos=videos)
+    return render_template('gallery.html',
+        images=images, audios=audios,
+        videos=videos, yt_videos=yt_videos)
 
 @app.route('/quiz')
 def quiz():
@@ -390,10 +402,34 @@ def upload_media():
         else:
             error = 'Please select a file to upload!'
 
+    # Get YouTube videos data
+    yt_vids = []
+    yt_temples = yt_culture = yt_festival = yt_gallery = 0
+    try:
+        cur2 = mysql.connection.cursor()
+        cur2.execute("SELECT * FROM youtube_videos ORDER BY added_at DESC")
+        yt_vids = cur2.fetchall()
+        cur2.execute("SELECT COUNT(*) FROM youtube_videos WHERE section='temples'")
+        yt_temples = cur2.fetchone()[0]
+        cur2.execute("SELECT COUNT(*) FROM youtube_videos WHERE section='culture'")
+        yt_culture = cur2.fetchone()[0]
+        cur2.execute("SELECT COUNT(*) FROM youtube_videos WHERE section='festival'")
+        yt_festival = cur2.fetchone()[0]
+        cur2.execute("SELECT COUNT(*) FROM youtube_videos WHERE section='gallery'")
+        yt_gallery = cur2.fetchone()[0]
+        cur2.close()
+    except:
+        pass
+
     return render_template('admin/upload_media.html',
         success=success, error=error,
         all_media=get_all_media(),
-        stats=get_media_stats())
+        stats=get_media_stats(),
+        yt_videos=yt_vids,
+        yt_temples=yt_temples,
+        yt_culture=yt_culture,
+        yt_festival=yt_festival,
+        yt_gallery=yt_gallery)
 
 
 @app.route('/admin/delete_media/<int:media_id>', methods=['POST'])
@@ -595,6 +631,99 @@ def edit_media(media_id):
     cur.close()
     return render_template('admin/edit_media.html',
         media=media, success=success, error=error)
+
+# ─────────────────────────────────────
+#  YOUTUBE VIDEOS
+# ─────────────────────────────────────
+
+def extract_youtube_id(url):
+    """Extract YouTube video ID from any YouTube URL format"""
+    import re
+    if not url:
+        return None
+    # youtu.be/ID
+    m = re.search(r'youtu\.be/([a-zA-Z0-9_-]{11})', url)
+    if m: return m.group(1)
+    # youtube.com/watch?v=ID
+    m = re.search(r'[?&]v=([a-zA-Z0-9_-]{11})', url)
+    if m: return m.group(1)
+    # youtube.com/embed/ID
+    m = re.search(r'embed/([a-zA-Z0-9_-]{11})', url)
+    if m: return m.group(1)
+    # Just the ID itself
+    if re.match(r'^[a-zA-Z0-9_-]{11}$', url):
+        return url
+    return None
+
+
+@app.route('/admin/add_youtube', methods=['POST'])
+def add_youtube():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    title = request.form.get('title', '').strip()
+    youtube_url = request.form.get('youtube_url', '').strip()
+    section = request.form.get('section', 'gallery')
+    category = request.form.get('category', 'general')
+    description = request.form.get('description', '')
+    video_id = extract_youtube_id(youtube_url)
+    if not title or not video_id:
+        return redirect(url_for('upload_media') +
+            '?error=Invalid YouTube URL&tab=youtube')
+    cur = mysql.connection.cursor()
+    cur.execute("""INSERT INTO youtube_videos
+        (title, youtube_url, video_id, section, category, description)
+        VALUES (%s,%s,%s,%s,%s,%s)""",
+        (title, youtube_url, video_id, section, category, description))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('upload_media') + '#sec-youtube')
+
+
+@app.route('/admin/delete_youtube/<int:vid_id>', methods=['POST'])
+def delete_youtube(vid_id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM youtube_videos WHERE id=%s", (vid_id,))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('upload_media') + '#sec-youtube')
+
+
+@app.route('/admin/edit_youtube/<int:vid_id>', methods=['GET', 'POST'])
+def edit_youtube(vid_id):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM youtube_videos WHERE id=%s", (vid_id,))
+    video = cur.fetchone()
+    if not video:
+        return redirect(url_for('upload_media'))
+    success = None
+    error = None
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        youtube_url = request.form.get('youtube_url', '').strip()
+        section = request.form.get('section', 'gallery')
+        category = request.form.get('category', 'general')
+        description = request.form.get('description', '')
+        video_id = extract_youtube_id(youtube_url)
+        if not title or not video_id:
+            error = 'Invalid YouTube URL!'
+        else:
+            cur.execute("""UPDATE youtube_videos SET
+                title=%s, youtube_url=%s, video_id=%s,
+                section=%s, category=%s, description=%s
+                WHERE id=%s""",
+                (title, youtube_url, video_id,
+                 section, category, description, vid_id))
+            mysql.connection.commit()
+            success = '✅ YouTube video updated!'
+            cur.execute("SELECT * FROM youtube_videos WHERE id=%s", (vid_id,))
+            video = cur.fetchone()
+    cur.close()
+    return render_template('admin/edit_youtube.html',
+        video=video, success=success, error=error)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

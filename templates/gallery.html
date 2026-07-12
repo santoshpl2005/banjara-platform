@@ -133,6 +133,10 @@
       .songs-grid,.videos-grid,.yt-grid{grid-template-columns:1fr;padding:14px}
     }
   </style>
+  <!-- ANIMATIONS -->
+  <link rel="stylesheet" href="/static/css/animations.css">
+  <script src="/static/js/animations.js" defer></script>
+
 </head>
 <body>
 
@@ -491,6 +495,41 @@
       <p><span class="en">Curated YouTube videos about Banjara community — culture, festivals, temples and music</span><span class="kn">ಬಂಜಾರ ಸಮುದಾಯದ ಸಂಸ್ಕೃತಿ, ಹಬ್ಬ, ದೇವಸ್ಥಾನ ಮತ್ತು ಸಂಗೀತ ಯೂಟ್ಯೂಬ್ ವಿಡಿಯೋ</span></p>
     </div>
   </div>
+
+  <div class="yt-grid">
+  {% if yt_videos %}
+    {% for v in yt_videos %}
+    <div class="yt-card">
+      <iframe src="https://www.youtube.com/embed/{{ v[3] }}"
+        title="{{ v[1] }}" allowfullscreen loading="lazy"></iframe>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3>{{ v[1] }}</h3>
+        <p>{{ v[6][:100] if v[6] else '' }}</p>
+        <a href="https://www.youtube.com/watch?v={{ v[3] }}"
+          target="_blank"
+          style="display:inline-block;margin-top:8px;background:#FF0000;color:white;padding:5px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ▶️ <span class="en">Watch on YouTube</span><span class="kn">ಯೂಟ್ಯೂಬ್‌ನಲ್ಲಿ ನೋಡಿ</span>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <!-- Default YouTube cards when none added -->
+    <div class="yt-card">
+      <div style="height:220px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:48px">▶️</div>
+      <div class="yt-info">
+        <span class="yt-badge">▶️ YouTube</span>
+        <h3><span class="en">No YouTube videos yet</span><span class="kn">ಯೂಟ್ಯೂಬ್ ವಿಡಿಯೋ ಇಲ್ಲ</span></h3>
+        <p><span class="en">Admin can add YouTube videos via Admin Panel → Upload Media → YouTube Videos tab</span><span class="kn">ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್ ಮೂಲಕ YouTube ವಿಡಿಯೋ ಸೇರಿಸಿ</span></p>
+        <a href="/admin/upload_media"
+          style="display:inline-block;margin-top:8px;background:#8B1A1A;color:white;padding:5px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">
+          ➕ Add Videos (Admin)
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
 
   <div class="yt-grid">
 

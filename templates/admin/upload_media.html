@@ -82,6 +82,10 @@
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
     @media(max-width:768px){.two-col{grid-template-columns:1fr}.sec-tabs{overflow-x:auto}.sectab{min-width:90px}}
   </style>
+  <!-- ANIMATIONS -->
+  <link rel="stylesheet" href="/static/css/animations.css">
+  <script src="/static/js/animations.js" defer></script>
+
 </head>
 <body>
 
@@ -119,6 +123,7 @@
     <div class="sectab" onclick="showSec('festival',this)"><span class="si">🎉</span>Festival</div>
     <div class="sectab" onclick="showSec('karnataka',this)"><span class="si">🌿</span>Karnataka</div>
     <div class="sectab" onclick="showSec('upload',this)"><span class="si">⬆️</span>Upload New</div>
+<div class="sectab" onclick="showSec('youtube',this)"><span class="si">▶️</span>YouTube Videos</div>
   </div>
 
   <!-- ══════ ALL MEDIA ══════ -->
@@ -676,7 +681,196 @@
       </div>
     </div>
   </div>
+<!-- ══════ YOUTUBE VIDEOS SECTION ══════ -->
+<div id="sec-youtube" class="sec-panel">
 
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-mini"><div class="sm-num" id="yt-count">{{ yt_videos|length }}</div><div class="sm-lbl">▶️ YouTube Videos</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ yt_temples }}</div><div class="sm-lbl">🛕 Temples</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ yt_culture }}</div><div class="sm-lbl">🎭 Culture</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ yt_festival }}</div><div class="sm-lbl">🎉 Festival</div></div>
+    <div class="stat-mini"><div class="sm-num">{{ yt_gallery }}</div><div class="sm-lbl">🖼️ Gallery</div></div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- ── ADD YouTube Video ── -->
+    <div class="card">
+      <h2>▶️ Add YouTube Video</h2>
+      <p>Add YouTube video links to display in the gallery and cultural sections.</p>
+
+      <div class="info">
+        📋 <strong>How to get YouTube link:</strong><br>
+        1. Open any YouTube video<br>
+        2. Click <strong>Share</strong> button below the video<br>
+        3. Click <strong>Copy link</strong> — looks like: <code>https://youtu.be/VIDEOID</code><br>
+        4. OR copy from address bar: <code>https://www.youtube.com/watch?v=VIDEOID</code>
+      </div>
+
+      <form method="POST" action="/admin/add_youtube">
+        <div class="fg">
+          <label>📝 Video Title *</label>
+          <input type="text" name="title"
+            placeholder="e.g. Sevalal Maharaj Jayanti at Poharadevi 2024"
+            required>
+        </div>
+
+        <div class="fg">
+          <label>▶️ YouTube URL or Video ID *</label>
+          <input type="text" name="youtube_url" id="yt-url-input"
+            placeholder="https://youtu.be/XXXX or https://www.youtube.com/watch?v=XXXX"
+            required oninput="previewYT()">
+          <div class="hint">Paste the full YouTube URL or just the Video ID</div>
+        </div>
+
+        <!-- Live Preview -->
+        <div id="yt-preview" style="display:none;margin-bottom:18px">
+          <label style="display:block;font-weight:bold;color:#555;font-size:13px;margin-bottom:8px">
+            👁️ Preview
+          </label>
+          <div style="border-radius:10px;overflow:hidden;border:2px solid #8B1A1A">
+            <iframe id="yt-iframe" width="100%" height="200"
+              frameborder="0" allowfullscreen style="display:block"></iframe>
+          </div>
+          <p id="yt-preview-title" style="color:#27ae60;font-size:13px;margin-top:6px;font-weight:bold"></p>
+        </div>
+
+        <div class="fg">
+          <label>📂 Section *</label>
+          <select name="section" required>
+            <option value="">-- Select Section --</option>
+            <option value="gallery">🖼️ Gallery (main gallery page)</option>
+            <option value="temples">🛕 Temples section</option>
+            <option value="culture">🎭 Culture section</option>
+            <option value="festival">🎉 Festivals section</option>
+            <option value="karnataka">🌿 Karnataka section</option>
+          </select>
+        </div>
+
+        <div class="fg">
+          <label>🎯 Category</label>
+          <select name="category">
+            <option value="general">🌟 General</option>
+            <option value="sevalal">🙏 Sevalal Maharaj</option>
+            <option value="jayanti">🎉 Sevalal Jayanti</option>
+            <option value="birthplace">🌱 Birthplace Suragondankoppa</option>
+            <option value="poharadevi">🛕 Poharadevi Temple</option>
+            <option value="wedding">💒 Banjara Wedding (Biyav)</option>
+            <option value="holi">🎊 Banjara Holi (Phag)</option>
+            <option value="navratri">💃 Navratri Garba</option>
+            <option value="embroidery">🧵 Sandur Lambani Embroidery</option>
+            <option value="dance">💃 Folk Dances</option>
+            <option value="music">🎵 Folk Music & Songs</option>
+            <option value="culture">🎭 Culture & Traditions</option>
+            <option value="karnataka">🌿 Karnataka Lambani</option>
+            <option value="saatisati">⭐ Saati Sati</option>
+            <option value="dress">👗 Traditional Dress</option>
+          </select>
+        </div>
+
+        <div class="fg">
+          <label>📄 Description</label>
+          <textarea name="description"
+            placeholder="Brief description of this video..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary"
+          style="width:100%;padding:14px;font-size:15px">
+          ▶️ Add YouTube Video
+        </button>
+      </form>
+    </div>
+
+    <!-- ── Manage YouTube Videos ── -->
+    <div class="card">
+      <h2>🗑️ Manage YouTube Videos</h2>
+      <p>View, edit and delete saved YouTube videos.</p>
+
+      {% if yt_videos %}
+      <div style="max-height:600px;overflow-y:auto">
+        {% for v in yt_videos %}
+        <div style="background:#fef9f0;border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid #f0d9a0">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <!-- Thumbnail -->
+            <img src="https://img.youtube.com/vi/{{ v[3] }}/mqdefault.jpg"
+              alt="{{ v[1] }}"
+              style="width:120px;height:80px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid #eee"
+              onerror="this.src='';this.style.display='none'">
+            <!-- Info -->
+            <div style="flex:1;min-width:0">
+              <strong style="color:#8B1A1A;font-size:14px;display:block;margin-bottom:4px">{{ v[1] }}</strong>
+              <span style="background:#FF0000;color:white;padding:2px 8px;border-radius:10px;font-size:11px">▶️ YouTube</span>
+              <span style="background:#fdf0d0;color:#8B1A1A;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:4px">{{ v[4] }}</span>
+              <span style="background:#e8f5e8;color:#1a6b1a;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:4px">{{ v[5] or 'general' }}</span>
+              <p style="color:#666;font-size:12px;margin-top:6px">{{ v[6][:80] if v[6] else 'No description' }}...</p>
+              <p style="color:#aaa;font-size:11px">ID: {{ v[3] }}</p>
+            </div>
+          </div>
+          <!-- Actions -->
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <a href="https://www.youtube.com/watch?v={{ v[3] }}"
+              target="_blank"
+              style="background:#FF0000;color:white;padding:5px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+              ▶️ Watch
+            </a>
+            <a href="/admin/edit_youtube/{{ v[0] }}"
+              style="background:#2980b9;color:white;padding:5px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:bold">
+              ✏️ Edit
+            </a>
+            <form method="POST" action="/admin/delete_youtube/{{ v[0] }}"
+              onsubmit="return confirm('Delete {{ v[1] }}?')" style="margin:0">
+              <button type="submit"
+                style="background:#dc3545;color:white;padding:5px 12px;border-radius:6px;font-size:12px;border:none;cursor:pointer;font-weight:bold">
+                🗑️ Delete
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div style="text-align:center;padding:50px 20px;color:#aaa">
+        <div style="font-size:52px;margin-bottom:14px">▶️</div>
+        <p style="font-size:15px;margin-bottom:6px"><strong>No YouTube videos added yet</strong></p>
+        <p style="font-size:13px">Use the form on the left to add your first YouTube video!</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div><!-- end two-col -->
+
+  <!-- YouTube Video Grid Preview -->
+  {% if yt_videos %}
+  <div class="card">
+    <div class="sec-title" style="font-size:16px;font-weight:bold;color:#8B1A1A;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #ffd700">
+      👁️ Live Preview — How Videos Appear on Website
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+      {% for v in yt_videos[:6] %}
+      <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);border-top:4px solid #FF0000">
+        <div style="position:relative;padding-bottom:56.25%;height:0">
+          <iframe
+            src="https://www.youtube.com/embed/{{ v[3] }}"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"
+            loading="lazy" allowfullscreen></iframe>
+        </div>
+        <div style="padding:12px">
+          <strong style="color:#8B1A1A;font-size:13px">{{ v[1] }}</strong>
+          <p style="color:#888;font-size:11px;margin-top:4px">{{ v[4] }} • {{ v[5] or 'general' }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if yt_videos|length > 6 %}
+    <p style="text-align:center;color:#888;font-size:13px;margin-top:14px">
+      + {{ yt_videos|length - 6 }} more videos not shown in preview
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div><!-- end sec-youtube -->
 </div><!-- end container -->
 
 <script>
@@ -696,6 +890,39 @@ function updateGalleryAccept() {
     video: '.mp4 .webm — Video files'
   };
   document.getElementById('g-accept-hint').textContent = hints[type];
+}
+// YouTube URL preview
+function previewYT() {
+  const input = document.getElementById('yt-url-input').value.trim();
+  const preview = document.getElementById('yt-preview');
+  const iframe = document.getElementById('yt-iframe');
+  const ptitle = document.getElementById('yt-preview-title');
+
+  const vid = extractYTId(input);
+  if (vid) {
+    iframe.src = 'https://www.youtube.com/embed/' + vid;
+    preview.style.display = 'block';
+    ptitle.textContent = '✅ Valid YouTube video ID: ' + vid;
+  } else {
+    preview.style.display = 'none';
+    iframe.src = '';
+  }
+}
+
+function extractYTId(url) {
+  if (!url) return null;
+  // youtu.be/ID
+  let m = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/watch?v=ID
+  m = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/embed/ID
+  m = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  // Just the ID itself (11 chars)
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  return null;
 }
 </script>
 </body>
