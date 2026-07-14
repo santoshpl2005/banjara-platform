@@ -1,4 +1,6 @@
-Flask
+﻿Flask
+Flask-MySQLdb
+mysqlclient
 PyMySQL
 Werkzeug
 nltk

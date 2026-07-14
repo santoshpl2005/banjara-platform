@@ -42,3 +42,49 @@ of India using Artificial Intelligence and modern web technology.
 ```bash
 git clone https://github.com/santoshpl2005/banjara-platform.git
 cd banjara-platform
+```
+
+### 2. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 3. Create local config
+
+Copy `config_example.py` to `config.py` and update your MySQL credentials.
+You can also use `.env.example` for local environment variables.
+
+### 4. Initialize the database
+
+Import `database_setup.sql` into your MySQL server.
+
+### 5. Run locally
+
+```bash
+python app.py
+```
+
+## 🚢 Deploy to Railway
+
+1. Push this repository to GitHub.
+2. In Railway, create a new project and connect the GitHub repo.
+3. Add a MySQL plugin or external MySQL database, then configure these environment variables:
+   - `SECRET_KEY`
+   - `MYSQL_HOST`
+   - `MYSQL_USER`
+   - `MYSQL_PASSWORD`
+   - `MYSQL_DB`
+   - `UPLOAD_FOLDER` (optional, default: `static/images`)
+4. Railway uses the root `Procfile` already included in this repo:
+
+```text
+web: gunicorn -b 0.0.0.0:$PORT app:app
+```
+
+5. Ensure Railway installs dependencies from `requirements.txt`.
+6. Use the Railway MySQL connection info to populate the MySQL environment variables.
+7. If you need file uploads in production, consider using a cloud storage solution because the app currently stores uploads in local `static/`.
+8. Deploy and monitor logs from the Railway dashboard.
+
+> Note: `config.py` is already set up to read MySQL and secret values from environment variables, which works cleanly on Railway.
